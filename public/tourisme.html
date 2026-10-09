@@ -1,0 +1,747 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tourisme C&#244;te d'Ivoire &#8212; AITO</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+
+    <div class="nav-menu" id="navMenu">
+
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+
+      <div class="dropdown"><a href="#">Services &#9662;</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion &amp; Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<div class="page-content">
+
+
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.65),rgba(0,70,30,.55)),url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+
+  <div class="label" style="background:rgba(255,255,255,.2);color:#fff;">D&#233;couverte</div>
+
+  <h1>Tourisme en C&#244;te d'Ivoire</h1>
+
+  <p>Un pays aux mille visages : culture mill&#233;naire, nature luxuriante, gastronomie savoureuse et hospitalit&#233; l&#233;gendaire.</p>
+
+</div>
+
+
+
+<!-- Banni&#232;re d'accroche -->
+
+<section class="section" style="padding:2rem 0;background:linear-gradient(90deg,#F77F00,#00703C);color:#fff;">
+
+  <div class="container">
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;text-align:center;">
+
+      <div><div style="font-size:2rem;font-weight:800;">26,4 M</div><div style="font-size:.85rem;opacity:.9;">habitants (2024)</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">322 462 km&#178;</div><div style="font-size:.85rem;opacity:.9;">superficie</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">1 site UNESCO</div><div style="font-size:.85rem;opacity:.9;">Grand-Bassam</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">Nov &#8211; Mars</div><div style="font-size:.85rem;opacity:.9;">Meilleure p&#233;riode</div></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Galerie photo CI -->
+
+<section style="padding:0;margin:0;background:#000;">
+
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);height:220px;gap:2px;">
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=300&h=220&auto=format&fit=crop&q=80" alt="Paysage C&#244;te d'Ivoire" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=220&auto=format&fit=crop&q=80" alt="Plage Assinie" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=300&h=220&auto=format&fit=crop&q=80" alt="Cuisine ivoirienne" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300&h=220&auto=format&fit=crop&q=80" alt="For&#234;t tropicale" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=220&auto=format&fit=crop&q=80" alt="March&#233; africain" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=300&h=220&auto=format&fit=crop&q=80" alt="Coucher de soleil" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+  </div>
+
+  <p style="text-align:center;font-size:.72rem;color:rgba(255,255,255,.5);padding:.4rem;margin:0;">Photos &#169; Unsplash &#8212; libres de droit</p>
+
+</section>
+
+
+
+<section class="section">
+
+  <div class="container">
+
+    <div data-tabs>
+
+      <div class="tabs">
+
+        <button class="tab-btn active" data-tab="t-culture">&#127963;&#65039; Culture &amp; Histoire</button>
+
+        <button class="tab-btn" data-tab="t-incontournables">&#127796; Incontournables</button>
+
+        <button class="tab-btn" data-tab="t-gastro">&#127869;&#65039; Gastronomie</button>
+
+        <button class="tab-btn" data-tab="t-plages">&#127958;&#65039; Plages &amp; Nature</button>
+
+        <button class="tab-btn" data-tab="t-bonsplans">&#129523; Bons plans</button>
+
+        <button class="tab-btn" data-tab="t-diaspora">&#129309; Diaspora &amp; Retour</button>
+
+      </div>
+
+
+
+      <!-- CULTURE & HISTOIRE -->
+
+      <div class="tab-panel active" id="t-culture">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Culture &amp; Histoire</h2>
+
+          <p>La C&#244;te d'Ivoire est un carrefour de civilisations, riche de plus de 60 ethnies aux traditions vivantes.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#9962;</div>
+
+            <h3>Basilique Notre-Dame de la Paix</h3>
+
+            <p>&#192; Yamoussoukro, la plus grande basilique du monde (selon le Guinness World Records), inspir&#233;e de Saint-Pierre de Rome. Incontournable, ouverte aux visites libres.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127963;&#65039;</div>
+
+            <h3>Mus&#233;e des Civilisations</h3>
+
+            <p>&#192; Abidjan, ce mus&#233;e national rassemble masques sacr&#233;s, statuaires, bijoux et textiles des grandes ethnies ivoiriennes : Baoul&#233;, S&#233;noufo, Dan, Dioula.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127917;</div>
+
+            <h3>Festival MASA</h3>
+
+            <p>Le March&#233; des Arts du Spectacle Africain, organis&#233; &#224; Abidjan, est l'un des plus grands festivals culturels du continent. Th&#233;&#226;tre, danse, musique traditionnelle et contemporaine.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127912;</div>
+
+            <h3>Masques sacr&#233;s Dan &amp; S&#233;noufo</h3>
+
+            <p>Les masques ivoiriens sont reconnus dans le monde entier. La r&#233;gion de Man (ouest) et Korhogo (nord) sont les meilleurs endroits pour d&#233;couvrir cet art vivant.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128088;</div>
+
+            <h3>Tissus &amp; Artisanat</h3>
+
+            <p>Le pagne wax, le kente tiss&#233; &#224; la main et les bronzes Baoul&#233; sont des tr&#233;sors artisanaux. Le march&#233; de Treichville &#224; Abidjan est le paradis du shopping culturel.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127925;</div>
+
+            <h3>Musique &amp; Zouglou</h3>
+
+            <p>Berceau du coup&#233;-d&#233;cal&#233; et du zouglou, la C&#244;te d'Ivoire vibre au rythme de ses artistes. Les maquis d'Abidjan sont les meilleurs endroits pour vivre cette ambiance.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- INCONTOURNABLES -->
+
+      <div class="tab-panel" id="t-incontournables">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Sites incontournables</h2>
+
+          <p>Des paysages vari&#233;s, de la for&#234;t tropicale aux lagunes c&#244;ti&#232;res, en passant par les montagnes de l'ouest.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127807;</div>
+
+            <h3>Parc National de Ta&#239;</h3>
+
+            <p>Class&#233; au patrimoine mondial de l'UNESCO, ce parc abrite l'une des derni&#232;res grandes for&#234;ts tropicales primaires d'Afrique de l'Ouest. Chimpanz&#233;s, l&#233;opards, hippopotames pygm&#233;es.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127965;&#65039;</div>
+
+            <h3>&#206;les &#201;hotil&#233;</h3>
+
+            <p>Archipel lacustre class&#233; UNESCO sur la lagune Aby (Grand-Bassam). Sanctuaire de crocodiles sacr&#233;s, traditions ancestrales pr&#233;serv&#233;es, beaut&#233; naturelle exceptionnelle.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127963;&#65039;</div>
+
+            <h3>Grand-Bassam &#8212; UNESCO</h3>
+
+            <p>Premi&#232;re capitale coloniale de la C&#244;te d'Ivoire, class&#233;e au patrimoine mondial depuis 2012. Architecture coloniale pr&#233;serv&#233;e, mus&#233;e du Costume, plages de sable blanc.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128167;</div>
+
+            <h3>Chutes de Man</h3>
+
+            <p>&#192; l'ouest du pays, les chutes de la Cascade et de La Goutte d'eau offrent des panoramas spectaculaires dans un d&#233;cor de collines verdoyantes. Randonn&#233;es accessibles.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#9968;&#65039;</div>
+
+            <h3>Mont Nimba</h3>
+
+            <p>Point culminant de la C&#244;te d'Ivoire (1 752 m), partag&#233; avec la Guin&#233;e et le Liberia, inscrit &#224; l'UNESCO. Biodiversit&#233; remarquable, crapauds vivipares end&#233;miques.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127751;</div>
+
+            <h3>Abidjan &#8212; La ville lumi&#232;re</h3>
+
+            <p>Capitale &#233;conomique de l'Afrique de l'Ouest : Plateau (quartier d'affaires), Cocody (ambassades, Universit&#233;), Treichville (march&#233; anim&#233;), Bingerville (verdure et lac).</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- GASTRONOMIE -->
+
+      <div class="tab-panel" id="t-gastro">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Gastronomie ivoirienne</h2>
+
+          <p>Une cuisine g&#233;n&#233;reuse, parfum&#233;e et conviviale, partag&#233;e autour du maquis, symbole de la joie de vivre ivoirienne.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127806;</div>
+
+            <h3>Atti&#233;k&#233;</h3>
+
+            <p>Le plat national ! Semoule de manioc ferment&#233;e, l&#233;g&#232;re et l&#233;g&#232;rement acidul&#233;e. Accompagne le poisson brais&#233;, le poulet ou le garba. Incontournable &#224; tester absolument.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127831;</div>
+
+            <h3>Kedjenou</h3>
+
+            <p>Poulet (ou pintade) mijot&#233; lentement dans une canari (poterie) avec des l&#233;gumes et des &#233;pices, sans ajout d'eau. Une explosion de saveurs typique du peuple Baoul&#233;.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127820;</div>
+
+            <h3>Aloco</h3>
+
+            <p>Bananes plantains bien m&#251;res, frites jusqu'&#224; caram&#233;lisation, servies avec du poisson frit et une sauce piment&#233;e. Le snack de rue pr&#233;f&#233;r&#233; des Abidjanais.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128031;</div>
+
+            <h3>Garba</h3>
+
+            <p>Atti&#233;k&#233; accompagn&#233; de thon frit, plat populaire du quotidien vendu &#224; petits prix dans les garbadromes d'Abidjan. Nourrissant et d&#233;licieux, la street food ivoirienne par excellence.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127866;</div>
+
+            <h3>Bangui &amp; Tchapalo</h3>
+
+            <p>Le bangui est le vin de palme frais, l&#233;g&#232;rement alcoolis&#233; et sucr&#233;. Le tchapalo est une bi&#232;re traditionnelle &#224; base de mil, brass&#233;e artisanalement dans le nord du pays.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127978;</div>
+
+            <h3>Le Maquis ivoirien</h3>
+
+            <p>Institution culinaire et sociale unique : restaurant de plein air o&#249; l'on d&#233;guste poulet brais&#233;, atti&#233;k&#233; et poisson grill&#233; dans une ambiance musicale chaleureuse. Le c&#339;ur de la vie nocturne.</p>
+
+          </div>
+
+        </div>
+
+        <div style="background:linear-gradient(135deg,rgba(247,127,0,.08),rgba(0,112,60,.08));border-radius:var(--radius-lg);padding:2rem;margin-top:2rem;border:1px solid rgba(247,127,0,.2);">
+
+          <h3 style="color:var(--primary);margin-bottom:1rem;">&#127869;&#65039; O&#249; manger &#224; Abidjan ?</h3>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+
+            <div><strong style="color:var(--accent);">Treichville</strong><p style="font-size:.85rem;color:var(--gray-600);margin-top:.25rem;">March&#233; anim&#233;, restaurants populaires, garbadromes authentiques</p></div>
+
+            <div><strong style="color:var(--accent);">Cocody</strong><p style="font-size:.85rem;color:var(--gray-600);margin-top:.25rem;">Maquis hupp&#233;s, restaurants internationaux, Boulevard de la Corniche</p></div>
+
+            <div><strong style="color:var(--accent);">Plateau</strong><p style="font-size:.85rem;color:var(--gray-600);margin-top:.25rem;">Restaurants d'affaires, caf&#233;s, brasseries face &#224; la lagune</p></div>
+
+            <div><strong style="color:var(--accent);">Marcory</strong><p style="font-size:.85rem;color:var(--gray-600);margin-top:.25rem;">Zone 4, maquis festifs, cuisines de rue vari&#233;es, ambiance nocturne</p></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- PLAGES & NATURE -->
+
+      <div class="tab-panel" id="t-plages">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Plages &amp; Nature</h2>
+
+          <p>550 km de littoral atlantique avec des plages paradisiaques, des lagunes et une for&#234;t tropicale d'exception.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127754;</div>
+
+            <h3>Assinie</h3>
+
+            <p>La station baln&#233;aire de r&#233;f&#233;rence, &#224; 2h d'Abidjan. Plages de sable blanc entre l'oc&#233;an et la lagune, h&#244;tels de luxe, clubs nautiques, farniente garanti. Id&#233;ale en famille.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127958;&#65039;</div>
+
+            <h3>Grand-Bassam</h3>
+
+            <p>&#192; 40 km d'Abidjan, plages anim&#233;es avec p&#234;cheurs et restaurants de fruits de mer. Alliez visite du site UNESCO et baignade. Le week-end id&#233;al depuis Abidjan.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128032;</div>
+
+            <h3>San-P&#233;dro</h3>
+
+            <p>Deuxi&#232;me port du pays, entour&#233; de plages sauvages et pr&#233;serv&#233;es. Excellent spot de surf, eaux cristallines, atmosph&#232;re d&#233;tendue loin des foules touristiques.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#9973;</div>
+
+            <h3>Sassandra</h3>
+
+            <p>Petit port de p&#234;che pittoresque avec des plages sauvages aux eaux agit&#233;es. Excursions en pirogue, rencontres avec les p&#234;cheurs locaux, couchers de soleil inoubliables.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127796;</div>
+
+            <h3>Jacqueville</h3>
+
+            <p>&#192; 60 km d'Abidjan, sur une &#238;le-langue de sable entre lagune et oc&#233;an. Tr&#232;s appr&#233;ci&#233;e des locaux le week-end, ambiance d&#233;contract&#233;e, cocotiers et poisson frais.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#129409;</div>
+
+            <h3>Parc de la Como&#233;</h3>
+
+            <p>Le plus grand parc national d'Afrique de l'Ouest (class&#233; UNESCO). &#201;l&#233;phants, lions, hippopotames, buffles dans un &#233;cosyst&#232;me de savane et for&#234;t-galerie exceptionnel.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- BONS PLANS -->
+
+      <div class="tab-panel" id="t-bonsplans">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Bons plans pratiques</h2>
+
+          <p>Tout ce qu'il faut savoir pour pr&#233;parer son voyage depuis Toulouse vers la C&#244;te d'Ivoire.</p>
+
+        </div>
+
+        <div class="features-list">
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128197;</div>
+
+            <div>
+
+              <h4>Meilleure p&#233;riode pour voyager</h4>
+
+              <p><strong>Novembre &#224; mars</strong> : saison s&#232;che (harmattan), id&#233;ale pour le tourisme. &#201;vitez mai&#8211;juillet (grande saison des pluies). La c&#244;te reste agr&#233;able toute l'ann&#233;e avec des temp&#233;ratures autour de 27&#176;C.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#9992;&#65039;</div>
+
+            <div>
+
+              <h4>Vols depuis Toulouse</h4>
+
+              <p>Toulouse &#8594; Paris CDG (Air France, ~1h) puis CDG &#8594; Abidjan (Air France, Air C&#244;te d'Ivoire, ~6h30). Compter <strong>500&#8211;900&#8364;</strong> en moyenne en &#233;conomie selon la saison. Air C&#244;te d'Ivoire propose des tarifs comp&#233;titifs.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128176;</div>
+
+            <div>
+
+              <h4>Budget indicatif sur place</h4>
+
+              <p>H&#233;bergement : 15&#8211;30&#8364;/nuit (auberge) &#224; 80&#8211;200&#8364;/nuit (h&#244;tel confort). Repas au maquis : 2&#8211;5&#8364;. Transport urbain : 0,30&#8364; (w&#244;r&#244;-w&#244;r&#244;) &#224; 5&#8364; (taxi). Budget total : <strong>40&#8211;100&#8364;/jour</strong> selon le confort souhait&#233;.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128241;</div>
+
+            <div>
+
+              <h4>Applications utiles</h4>
+
+              <p><strong>Orange Money / MTN MoMo</strong> pour les paiements mobiles. <strong>Yango</strong> (VTC, moins cher que les taxis). <strong>WhatsApp</strong> (communication principale). Achetez une SIM locale &#224; l'a&#233;roport (MTN ou Orange CI).</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128737;&#65039;</div>
+
+            <div>
+
+              <h4>Sant&#233; &amp; S&#233;curit&#233;</h4>
+
+              <p>Vaccins recommand&#233;s : fi&#232;vre jaune (obligatoire), h&#233;patites A&amp;B, typho&#239;de. Traitement antipalud&#233;en indispensable. Abidjan est globalement s&#251;re dans les quartiers touristiques. &#201;vitez les d&#233;placements nocturnes isol&#233;s. Souscrivez une assurance voyage.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#129706;</div>
+
+            <div>
+
+              <h4>Visa &amp; Entr&#233;e</h4>
+
+              <p>Les ressortissants fran&#231;ais n'ont <strong>plus besoin de visa</strong> pour la C&#244;te d'Ivoire (accord bilat&#233;ral). Passeport valide 6 mois apr&#232;s le retour. Les r&#233;sidents fran&#231;ais non-europ&#233;ens doivent v&#233;rifier leur situation consulaire.</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- DIASPORA & RETOUR -->
+
+      <div class="tab-panel" id="t-diaspora">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Diaspora &amp; Retour au pays</h2>
+
+          <p>Vous &#234;tes ivoirien(ne) en France ? D&#233;couvrez les opportunit&#233;s et d&#233;marches pour rester connect&#233; &#224; votre pays.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#128188;</div>
+
+            <h3>Investir en C&#244;te d'Ivoire</h3>
+
+            <p>Le Centre de Promotion des Investissements (CEPICI) accompagne les membres de la diaspora. Secteurs porteurs : immobilier, agrobusiness, num&#233;rique, sant&#233;. Guichet unique &#224; Abidjan.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127974;</div>
+
+            <h3>Transferts d'argent</h3>
+
+            <p>Comparez les frais : <strong>Wave</strong> (tarifs tr&#232;s bas), <strong>Orange Money</strong>, <strong>Western Union</strong>, <strong>Ria</strong>. Les banques en ligne (N26, Revolut) proposent aussi des transferts comp&#233;titifs vers la CI.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128203;</div>
+
+            <h3>D&#233;marches consulaires</h3>
+
+            <p>Consulat G&#233;n&#233;ral de C&#244;te d'Ivoire &#224; Paris : passeport, carte nationale d'identit&#233;, actes d'&#233;tat civil, certificats de nationalit&#233;. Antenne consulaire &#224; Lyon pour la r&#233;gion Sud-Est.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127891;</div>
+
+            <h3>Programme Diaspora CI</h3>
+
+            <p>Le gouvernement ivoirien encourage le retour des comp&#233;tences. Programmes de recrutement dans la fonction publique, exon&#233;rations fiscales pour les entrepreneurs de la diaspora.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127960;&#65039;</div>
+
+            <h3>Investissement immobilier</h3>
+
+            <p>March&#233; immobilier en pleine croissance &#224; Abidjan (Cocody, Bingerville, Bassam). Plusieurs promoteurs proposent des offres sp&#233;ciales diaspora avec paiement depuis la France.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#129309;</div>
+
+            <h3>L'AITO vous accompagne</h3>
+
+            <p>L'AITO peut vous mettre en relation avec des membres ayant investi au pays, vous orienter dans vos d&#233;marches et partager les retours d'exp&#233;rience de la communaut&#233;.</p>
+
+          </div>
+
+        </div>
+
+        <div style="margin-top:2rem;text-align:center;">
+
+          <a href="contact.html" class="btn btn-primary">Contacter l'association</a>
+
+          <a href="adhesion.html" class="btn btn-outline" style="margin-left:1rem;">Rejoindre l'AITO</a>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- CTA final -->
+
+<section class="section section-alt">
+
+  <div class="container" style="max-width:700px;text-align:center;">
+
+    <div class="label">Voyager ensemble</div>
+
+    <h2>L'AITO organise des voyages de retour au pays</h2>
+
+    <p style="color:var(--gray-600);margin:1rem 0 2rem;">Chaque ann&#233;e, l'association organise des voyages collectifs en C&#244;te d'Ivoire pour ses membres. Une fa&#231;on unique de red&#233;couvrir le pays entre compatriotes.</p>
+
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+
+      <a href="evenements.html" class="btn btn-primary">Voir les prochains voyages</a>
+
+      <a href="contact.html" class="btn btn-outline">Nous contacter</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&#233;</a></li></ul></div>
+
+  </div>
+
+  <div class="footer-bottom"><span>&#169; 2025 AITO &#8212; Amicale des Ivoiriens de l'H&#233;rault</span><a href="mentions-legales.html">Mentions l&#233;gales</a></div>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+</body>
+
+</html>
+
+

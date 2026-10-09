@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Pr&#233;sident &#8211; AITO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4faf6;color:#1a2e20}
+.db-wrapper{display:block;min-height:100vh}
+.db-sidebar{background:#004d2a;color:#fff;width:260px;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:100}
+.db-sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.db-logo{height:44px;margin-bottom:.75rem}
+.role-badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:50px;padding:.3rem .9rem;font-size:.75rem;font-weight:700;text-transform:uppercase;margin-bottom:.5rem}
+.db-username{font-size:.85rem;opacity:.7}
+.db-nav{flex:1;padding:1rem 0}
+.db-nav-section{padding:.4rem 1.25rem .2rem;font-size:.68rem;font-weight:700;text-transform:uppercase;opacity:.45;letter-spacing:.08em;margin-top:.5rem}
+.db-nav a{display:flex;align-items:center;gap:.65rem;padding:.65rem 1.25rem;color:rgba(255,255,255,.75);text-decoration:none;font-size:.88rem;cursor:pointer;transition:background .15s}
+.db-nav a:hover,.db-nav a.active{background:rgba(255,255,255,.12);color:#fff}
+.db-nav .icon{font-size:1rem;width:20px;text-align:center}
+.db-sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1)}
+.db-sidebar-footer a{color:rgba(255,255,255,.55);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.db-main{margin-left:260px;padding:2rem;min-height:100vh}
+.db-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:2px solid #cce3d4}
+.db-header h1{font-size:1.4rem;font-weight:800;color:#1a2e20}
+.db-header .date{font-size:.85rem;color:#4a6652}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem;margin-bottom:2rem}
+.kpi-card{background:#fff;border-radius:12px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #00703C}
+.kpi-card .kpi-value{font-size:1.8rem;font-weight:800;color:#00703C}
+.kpi-card .kpi-label{font-size:.82rem;color:#4a6652;margin-top:.25rem}
+.kpi-card .kpi-sub{font-size:.75rem;color:#888;margin-top:.1rem}
+.section-card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:1.5rem;margin-bottom:1.5rem}
+.section-card h2{font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;color:#1a2e20;display:flex;align-items:center;gap:.5rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;padding:.6rem .75rem;background:#f0f7f2;color:#4a6652;font-weight:600;font-size:.8rem}
+td{padding:.65rem .75rem;border-bottom:1px solid #e4f0e8;color:#1a2e20}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-orange{background:#ffedd5;color:#9a3412}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-gray{background:#f3f4f6;color:#374151}
+.badge-red{background:#fee2e2;color:#991b1b}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:#00703C;color:#fff}
+.btn-outline{background:#fff;color:#00703C;border:2px solid #00703C}
+.btn-danger{background:#fee2e2;color:#991b1b;border:none}
+.btn-sm{padding:.35rem .75rem;font-size:.78rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.83rem;font-weight:600;color:#4a6652;margin-bottom:.35rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:.65rem .9rem;border:1px solid #cce3d4;border-radius:8px;font-size:.9rem;color:#1a2e20;background:#f4faf6}
+.form-group textarea{min-height:100px;resize:vertical}
+.progress-bar-wrap{background:#e4f0e8;border-radius:50px;height:10px;overflow:hidden;margin-top:.4rem}
+.progress-fill{height:10px;border-radius:50px;background:#00703C;transition:width .4s}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:#4a6652;margin-bottom:.2rem}
+.agenda-item{display:flex;align-items:flex-start;gap:1rem;padding:.75rem 0;border-bottom:1px solid #e4f0e8}
+.agenda-item:last-child{border-bottom:none}
+.agenda-date{background:#00703C;color:#fff;border-radius:8px;padding:.4rem .7rem;text-align:center;min-width:52px;font-size:.78rem;font-weight:700;line-height:1.3}
+.agenda-info strong{font-size:.9rem}
+.agenda-info span{font-size:.8rem;color:#4a6652;display:block}
+.rapport-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.rapport-card{background:#f4faf6;border:2px solid #cce3d4;border-radius:12px;padding:1.25rem;text-decoration:none;color:#1a2e20;display:flex;flex-direction:column;gap:.5rem;transition:background .15s,border-color .15s}
+.rapport-card:hover{background:#dcfce7;border-color:#00703C}
+.rapport-card .r-icon{font-size:1.8rem}
+.rapport-card .r-title{font-weight:700;font-size:.95rem}
+.rapport-card .r-arrow{color:#00703C;font-weight:700;margin-top:.25rem}
+.note-info{background:#f0fdf4;border-left:4px solid #00703C;border-radius:6px;padding:.85rem 1rem;font-size:.83rem;color:#166534;margin-bottom:1rem}
+.indicator-row{margin-bottom:1.25rem}
+.msg-table-wrap{overflow-x:auto}
+.db-section{display:none}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:2rem;max-width:520px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-box h3{margin-bottom:1rem;font-size:1.1rem}
+.modal-close{float:right;cursor:pointer;font-size:1.2rem;color:#666}
+@media(max-width:768px){.db-wrapper{grid-template-columns:1fr}.db-sidebar{transform:translateX(-100%)}.db-sidebar.open{transform:translateX(0)}.db-main{margin-left:0}.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="db-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="db-sidebar" id="sidebar">
+    <div class="db-sidebar-header">
+      <img src="images/logo.png" class="db-logo" alt="AITO Logo" onerror="this.style.display='none'">
+      <div class="role-badge">Pr&#233;sident</div>
+      <div class="db-username">Tableau de bord ex&#233;cutif</div>
+    </div>
+    <nav class="db-nav">
+      <a href="#" class="active" onclick="showSection('s-overview',this);return false;"><span class="icon">&#128202;</span> Vue d'ensemble</a>
+      <a href="#" onclick="showSection('s-comms',this);return false;"><span class="icon">&#128226;</span> Communications</a>
+      <a href="#" onclick="showSection('s-rapports',this);return false;"><span class="icon">&#128193;</span> Rapports consolid&#233;s</a>
+      <a href="#" onclick="showSection('s-indicateurs',this);return false;"><span class="icon">&#127919;</span> Indicateurs annuels</a>
+      <div class="db-nav-section">Membres</div>
+      <a href="#" onclick="showSection('s-membres',this);loadMembres();return false;"><span class="icon">&#128101;</span> Gestion des membres</a>
+      <div class="db-nav-section">Finances</div>
+      <a href="dashboard-tresorier.html"><span class="icon">&#128279;</span> Acc&#232;s Tr&#233;sorier</a>
+      <a href="dashboard-secretaire.html"><span class="icon">&#128279;</span> Acc&#232;s Secr&#233;taire</a>
+      <div class="db-nav-section">Navigation</div>
+      <a href="index.html"><span class="icon">&#127968;</span> Retour au site public</a>
+      <a href="#" onclick="logout();return false;"><span class="icon">&#128275;</span> Se d&#233;connecter</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="db-main">
+    <div class="db-header">
+      <h1>&#127464;&#127470; AITO &#8212; Espace Pr&#233;sident</h1>
+      <span class="date" id="dateHeader"></span>
+    </div>
+
+    <!-- ===== SECTION : VUE D'ENSEMBLE ===== -->
+    <div class="db-section" id="s-overview">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value">42</div>
+          <div class="kpi-label">Membres actifs</div>
+          <div class="kpi-sub">Objectif : 60 membres</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">3</div>
+          <div class="kpi-label">&#201;v&#233;nements r&#233;alis&#233;s</div>
+          <div class="kpi-sub">Objectif : 12 sur l'ann&#233;e</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">1 840 &#8364;</div>
+          <div class="kpi-label">Tr&#233;sorerie</div>
+          <div class="kpi-sub">Solde courant</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">1 260 &#8364;</div>
+          <div class="kpi-label">Cotisations encaiss&#233;es</div>
+          <div class="kpi-sub">Objectif : 1 800 &#8364;</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#9203; Actions en attente de validation</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Action</th><th>Demand&#233; par</th><th>Date</th><th>D&#233;cision</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>D&#233;pense sono 7 Ao&#251;t &#8212; 350 &#8364;</td>
+                <td>Tr&#233;sorier</td>
+                <td>28/03/2026</td>
+                <td>
+                  <button class="btn btn-primary btn-sm" onclick="validerAction(this,'Approuv&#233;')">&#10004; Approuver</button>
+                  <button class="btn btn-danger btn-sm" style="margin-left:.4rem" onclick="validerAction(this,'Refus&#233;')">&#10008; Refuser</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Convention Orange Money</td>
+                <td>Vice-Pr&#233;sident</td>
+                <td>30/03/2026</td>
+                <td>
+                  <button class="btn btn-primary btn-sm" onclick="validerAction(this,'Approuv&#233;')">&#10004; Approuver</button>
+                  <button class="btn btn-danger btn-sm" style="margin-left:.4rem" onclick="validerAction(this,'Refus&#233;')">&#10008; Refuser</button>
+                </td>
+              </tr>
+              <tr>
+                <td>PV AG Janvier</td>
+                <td>Secr&#233;taire</td>
+                <td>15/01/2026</td>
+                <td>
+                  <button class="btn btn-primary btn-sm" onclick="validerAction(this,'Approuv&#233;')">&#10004; Approuver</button>
+                  <button class="btn btn-danger btn-sm" style="margin-left:.4rem" onclick="validerAction(this,'Refus&#233;')">&#10008; Refuser</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128197; Agenda bureau &#8212; Prochains &#233;v&#233;nements</h2>
+        <div class="agenda-item">
+          <div class="agenda-date">AVR<br>20</div>
+          <div class="agenda-info"><strong>Sortie nature & randonn&#233;e</strong><span>Responsable : Vice-Pr&#233;sident</span></div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-date">MAI<br>15</div>
+          <div class="agenda-info"><strong>Tournoi sportif AITO</strong><span>Responsable : Commission Sport</span></div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-date">AO&#219;T<br>07</div>
+          <div class="agenda-info"><strong>&#127881; F&#234;te de l'Ind&#233;pendance &#8212; &#201;v&#233;nement phare</strong><span>Responsable : Bureau complet</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : COMMUNICATIONS ===== -->
+    <div class="db-section" id="s-comms">
+      <div class="section-card">
+        <h2>&#128221; Nouveau message officiel</h2>
+        <div class="form-group">
+          <label>Destinataire</label>
+          <select id="comm-dest">
+            <option value="Tous les membres">Tous les membres</option>
+            <option value="Bureau uniquement">Bureau uniquement</option>
+            <option value="Partenaires">Partenaires</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Objet</label>
+          <input type="text" id="comm-objet" placeholder="Objet du message">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="comm-message" placeholder="R&#233;diger votre message officiel&#8230;"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="archiverMessage()">&#128190; Archiver le message</button>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128236; Messages archiv&#233;s</h2>
+        <div style="overflow-x:auto">
+          <table id="comm-table">
+            <thead><tr><th>Date</th><th>Destinataire</th><th>Objet</th><th>Action</th></tr></thead>
+            <tbody id="comm-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : RAPPORTS ===== -->
+    <div class="db-section" id="s-rapports">
+      <div class="note-info">&#8505;&#65039; Acc&#232;s en lecture &#8212; vos actions n'affectent pas ces tableaux de bord</div>
+      <div class="rapport-grid">
+        <a class="rapport-card" href="dashboard-secretaire.html">
+          <span class="r-icon">&#128203;</span>
+          <span class="r-title">Rapport Secr&#233;taire</span>
+          <span class="r-arrow">Voir le tableau de bord &#8594;</span>
+        </a>
+        <a class="rapport-card" href="dashboard-tresorier.html">
+          <span class="r-icon">&#128176;</span>
+          <span class="r-title">Rapport Tr&#233;sorier</span>
+          <span class="r-arrow">Voir le tableau de bord &#8594;</span>
+        </a>
+        <a class="rapport-card" href="dashboard-vicepresident.html">
+          <span class="r-icon">&#128197;</span>
+          <span class="r-title">Rapport Vice-Pr&#233;sident</span>
+          <span class="r-arrow">Voir le tableau de bord &#8594;</span>
+        </a>
+        <a class="rapport-card" href="connexion.html">
+          <span class="r-icon">&#9881;&#65039;</span>
+          <span class="r-title">Rapport Admin</span>
+          <span class="r-arrow">Voir le tableau de bord &#8594;</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : INDICATEURS ===== -->
+    <div class="db-section" id="s-indicateurs">
+      <div class="section-card">
+        <h2>&#127919; Indicateurs annuels 2026</h2>
+        <div class="indicator-row">
+          <div class="progress-label"><span>Membres actifs</span><span>42 / 60 &#8212; 70%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-fill" style="width:70%"></div></div>
+        </div>
+        <div class="indicator-row">
+          <div class="progress-label"><span>&#201;v&#233;nements r&#233;alis&#233;s</span><span>3 / 12 &#8212; 25%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-fill" style="width:25%"></div></div>
+        </div>
+        <div class="indicator-row">
+          <div class="progress-label"><span>Participants F&#234;te 7 Ao&#251;t</span><span>0 / 100 &#8212; 0%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-fill" style="width:0%"></div></div>
+        </div>
+        <div class="indicator-row">
+          <div class="progress-label"><span>Nouveaux membres</span><span>8 / 20 &#8212; 40%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-fill" style="width:40%"></div></div>
+        </div>
+        <div class="indicator-row">
+          <div class="progress-label"><span>Publications Instagram</span><span>12 / 48 &#8212; 25%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-fill" style="width:25%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : MEMBRES ===== -->
+    <div class="db-section" id="s-membres" style="display:none">
+      <h2 style="font-size:1.2rem;font-weight:800;color:#00703C;margin-bottom:1.25rem">&#128101; Gestion des membres</h2>
+      <div class="card" style="overflow-x:auto;padding:.5rem">
+        <table style="width:100%;border-collapse:collapse;font-size:.85rem;min-width:620px">
+          <thead>
+            <tr style="background:#f0fdf4;border-bottom:2px solid #bbf7d0">
+              <th style="padding:.6rem .75rem;text-align:left;color:#166534">Nom complet</th>
+              <th style="padding:.6rem .75rem;text-align:left;color:#166534">Email</th>
+              <th style="padding:.6rem .75rem;text-align:left;color:#166534">Formule</th>
+              <th style="padding:.6rem .75rem;text-align:left;color:#166534">Statut</th>
+              <th style="padding:.6rem .75rem;text-align:left;color:#166534">R&ocirc;le</th>
+              <th style="padding:.6rem .75rem;text-align:left;color:#166534">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="membres-pres-tbody">
+            <tr><td colspan="6" style="text-align:center;padding:2rem;color:#888">Chargement&hellip;</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal message -->
+<div class="modal-overlay" id="modal-msg">
+  <div class="modal-box">
+    <span class="modal-close" onclick="document.getElementById('modal-msg').classList.remove('open')">&#10005;</span>
+    <h3 id="modal-msg-title"></h3>
+    <p id="modal-msg-body" style="font-size:.9rem;white-space:pre-wrap;margin-top:.75rem;color:#1a2e20"></p>
+  </div>
+</div>
+
+<!-- Modal suppression membre -->
+<div id="modal-suppr" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:2rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:1.25rem">
+      <div style="font-size:2.5rem">&#128465;</div>
+      <h3 style="font-size:1.1rem;font-weight:800;color:#dc2626;margin:.5rem 0">Supprimer ce membre</h3>
+    </div>
+    <p id="modal-suppr-msg" style="text-align:center;color:#4a6652;font-size:.92rem;line-height:1.6;margin-bottom:1.5rem"></p>
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:.9rem 1rem;font-size:.82rem;color:#991b1b;margin-bottom:1.5rem">
+      &#9888; La fiche sera supprim&eacute;e de la base de donn&eacute;es. Le compte de connexion reste intact.
+    </div>
+    <div style="display:flex;gap:.75rem">
+      <button onclick="fermerModalSuppr()" style="flex:1;padding:.75rem;border:1.5px solid #d1d5db;border-radius:10px;background:#fff;color:#374151;font-weight:600;cursor:pointer;font-size:.9rem">Annuler</button>
+      <button onclick="confirmerSuppression()" style="flex:1;padding:.75rem;border:none;border-radius:10px;background:#dc2626;color:#fff;font-weight:700;cursor:pointer;font-size:.9rem">&#128465; Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal confirmation Valider adhésion -->
+<div id="modal-valider" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:2rem;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:1.25rem">
+      <div style="font-size:2.5rem">&#9989;</div>
+      <h3 style="font-size:1.1rem;font-weight:800;color:#1a2e20;margin:.5rem 0">Valider l'adh&eacute;sion</h3>
+    </div>
+    <p id="modal-valider-msg" style="text-align:center;color:#4a6652;font-size:.92rem;line-height:1.6;margin-bottom:1.5rem"></p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.9rem 1rem;font-size:.82rem;color:#166534;margin-bottom:1.5rem">
+      &#128231; Un email d'invitation sera envoy&eacute; automatiquement au membre pour cr&eacute;er son espace personnel.
+    </div>
+    <div style="display:flex;gap:.75rem">
+      <button onclick="fermerModalValider()" style="flex:1;padding:.75rem;border:1.5px solid #d1d5db;border-radius:10px;background:#fff;color:#374151;font-weight:600;cursor:pointer;font-size:.9rem">Annuler</button>
+      <button id="btn-confirmer-valider" onclick="confirmerValidation()" style="flex:1;padding:.75rem;border:none;border-radius:10px;background:#00703C;color:#fff;font-weight:700;cursor:pointer;font-size:.9rem">&#10003; Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Guard role Supabase
+let msgsCache = [];
+(async () => {
+  const user = await guardRole(['president','admin']);
+  if (!user) return;
+  document.getElementById('dateHeader').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  showSection('s-overview', document.querySelector('.db-nav a'));
+  await loadKPIs();
+  await renderMessages();
+})();
+
+// Navigation SPA
+function showSection(id, el) {
+  document.querySelectorAll('.db-section').forEach(s => s.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.db-nav a').forEach(a => a.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+// ---- KPIs ----
+async function loadKPIs() {
+  const [{ count: nbMembres }, { count: nbEvts }, { data: finances }] = await Promise.all([
+    db.from('membres').select('*', { count:'exact', head:true }),
+    db.from('evenements').select('*', { count:'exact', head:true }),
+    db.from('finances').select('montant,type')
+  ]);
+  const recettes  = (finances||[]).filter(f=>f.type==='recette').reduce((s,f)=>s+parseFloat(f.montant),0);
+  const depenses  = (finances||[]).filter(f=>f.type==='depense').reduce((s,f)=>s+parseFloat(f.montant),0);
+  const kpis = document.querySelectorAll('.kpi-card .kpi-value');
+  if(kpis[0]) kpis[0].textContent = nbMembres || 0;
+  if(kpis[1]) kpis[1].textContent = nbEvts || 0;
+  if(kpis[2]) kpis[2].textContent = (recettes - depenses).toFixed(0) + '\u00a0\u20ac';
+}
+
+// ---- GESTION MEMBRES ----
+let membresCache = [];
+async function loadMembres() {
+  const tbody = document.getElementById('membres-pres-tbody');
+  if(!tbody) return;
+  const { data, error } = await db.from('membres').select('id,nom,prenom,email,formule,statut,statut_cotisation,avatar_url').order('nom');
+  if (error) { tbody.innerHTML='<tr><td colspan="6" style="color:#dc2626;padding:1rem">Erreur chargement</td></tr>'; return; }
+  membresCache = data || [];
+  if(!membresCache.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:2rem">Aucun membre enregistr\u00e9</td></tr>'; return; }
+  tbody.innerHTML = membresCache.map((m,i) => `<tr>
+    <td style="padding:.55rem .75rem;border-bottom:1px solid #e5e7eb">${[m.nom,m.prenom].filter(Boolean).join(' ')||'&mdash;'}</td>
+    <td style="padding:.55rem .75rem;border-bottom:1px solid #e5e7eb">${m.email||'&mdash;'}</td>
+    <td style="padding:.55rem .75rem;border-bottom:1px solid #e5e7eb">${m.formule||'&mdash;'}</td>
+    <td style="padding:.55rem .75rem;border-bottom:1px solid #e5e7eb" id="mst-${i}"><span class="badge ${m.statut==='banni'?'badge-red':m.statut==='suspendu'?'badge-orange':'badge-green'}">${m.statut||'actif'}</span></td>
+    <td style="padding:.55rem .75rem;border-bottom:1px solid #e5e7eb">
+      <select id="role-sel-${i}" class="form-select" style="font-size:.78rem;padding:.3rem .6rem" onchange="assignerRole('${m.id}','${m.email||''}',${i})">
+        <option value="">-- Choisir --</option>
+        <option value="membre">Membre</option>
+        <option value="secretaire">Secr\u00e9taire</option>
+        <option value="tresorier">Tr\u00e9sorier</option>
+        <option value="vicepresident">Vice-Pr\u00e9sident</option>
+        <option value="president">Pr\u00e9sident</option>
+        <option value="admin">Admin</option>
+      </select>
+    </td>
+    <td style="padding:.55rem .75rem;border-bottom:1px solid #e5e7eb;white-space:nowrap">
+      ${m.statut_cotisation==='en_attente'||!m.statut_cotisation ? `<button class="btn btn-sm" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;margin-bottom:.2rem" onclick="validerAdhesion('${m.id}','${m.email||''}','${m.nom||''}','${m.prenom||''}')">&#9989; Valider</button><br>` : ''}
+      ${m.statut!=='banni' ? `<button class="btn btn-danger btn-sm" onclick="changerStatut('${m.id}','banni',${i})">&#128683; Bannir</button> ` : ''}
+      ${m.statut==='banni' ? `<button class="btn btn-success btn-sm" onclick="changerStatut('${m.id}','actif',${i})">&#10004; R\u00e9tablir</button> ` : ''}
+      ${m.statut==='actif' ? `<button class="btn btn-sm" style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;margin-top:.2rem" onclick="changerStatut('${m.id}','suspendu',${i})">&#9888; Suspendre</button> ` : ''}
+      <button class="btn btn-sm" style="background:#f3f4f6;color:#6b7280;border:1px solid #d1d5db;margin-top:.2rem" onclick="supprimerMembre(${i})">&#128465; Supprimer</button>
+    </td>
+  </tr>`).join('');
+}
+
+let _validerPending = null;
+let _supprimerPending = null;
+
+function supprimerMembre(i) {
+  const m = membresCache[i];
+  const nomComplet = [m.nom, m.prenom].filter(Boolean).join(' ') || m.email || 'ce membre';
+  _supprimerPending = { id: m.id, nomComplet };
+  document.getElementById('modal-suppr-msg').innerHTML =
+    `Vous allez supprimer d\u00e9finitivement<br><strong style="color:#dc2626;font-size:1.05rem">${nomComplet}</strong><br><span style="font-size:.82rem;color:#6b7280">Cette action est irr\u00e9versible.</span>`;
+  document.getElementById('modal-suppr').style.display = 'flex';
+}
+
+function fermerModalSuppr() {
+  document.getElementById('modal-suppr').style.display = 'none';
+  _supprimerPending = null;
+}
+
+async function confirmerSuppression() {
+  if (!_supprimerPending) return;
+  const { id, nomComplet } = _supprimerPending;
+  fermerModalSuppr();
+  const { error } = await db.from('membres').delete().eq('id', id);
+  if (error) { showToast('Erreur suppression : ' + error.message, 'error'); return; }
+  showToast(`${nomComplet} supprim\u00e9 avec succ\u00e8s.`);
+  await loadMembres();
+}
+
+function validerAdhesion(id, email, nom, prenom) {
+  if (!email) { showToast('Email manquant \u2014 impossible d\u2019envoyer l\u2019invitation.', 'error'); return; }
+  _validerPending = { id, email, nom, prenom };
+  document.getElementById('modal-valider-msg').innerHTML =
+    `Vous allez valider l'adh\u00e9sion de<br><strong style="color:#00703C;font-size:1.05rem">${nom} ${prenom}</strong><br><span style="font-size:.82rem;color:#6b7280">${email}</span>`;
+  const m = document.getElementById('modal-valider');
+  m.style.display = 'flex';
+}
+
+function fermerModalValider() {
+  document.getElementById('modal-valider').style.display = 'none';
+  _validerPending = null;
+}
+
+async function confirmerValidation() {
+  if (!_validerPending) return;
+  const { id, email, nom, prenom } = _validerPending;
+  const btn = document.getElementById('btn-confirmer-valider');
+  btn.disabled = true; btn.textContent = 'En cours\u2026';
+  fermerModalValider();
+  const { error: updErr } = await db.from('membres').update({ statut_cotisation: 'paye', statut: 'actif' }).eq('id', id);
+  if (updErr) { showToast('Erreur mise \u00e0 jour : ' + updErr.message, 'error'); btn.disabled=false; btn.textContent='\u2713 Confirmer'; return; }
+  const { data: { session } } = await db.auth.getSession();
+  try {
+    const res = await fetch('https://dztciljhkecdcwulxqge.supabase.co/functions/v1/invite-member', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ email, nom, prenom })
+    });
+    const json = await res.json().catch(() => ({}));
+    if (res.ok) {
+      showToast(`Adh\u00e9sion valid\u00e9e \u2014 invitation envoy\u00e9e \u00e0 ${email} !`);
+    } else {
+      showToast('Statut mis \u00e0 jour \u2014 erreur email : ' + (json.error||res.status), 'error');
+    }
+  } catch(e) {
+    showToast('Statut mis \u00e0 jour \u2014 erreur r\u00e9seau : ' + e.message, 'error');
+  }
+  btn.disabled=false; btn.textContent='\u2713 Confirmer';
+  await loadMembres();
+}
+
+async function changerStatut(id, statut, rowIdx) {
+  const labels = { banni: 'bannir', suspendu: 'suspendre', actif: 'r\u00e9tablir' };
+  if(!confirm(`Confirmer l\u2019action : ${labels[statut]} ce membre ?`)) return;
+  const { error } = await db.from('membres').update({ statut }).eq('id', id);
+  if (error) { showToast('Erreur : ' + error.message, 'error'); return; }
+  const el = document.getElementById('mst-'+rowIdx);
+  if(el) el.innerHTML = `<span class="badge ${statut==='banni'?'badge-red':statut==='suspendu'?'badge-orange':'badge-green'}">${statut}</span>`;
+  showToast('Statut mis \u00e0 jour !');
+  await loadMembres();
+}
+
+async function assignerRole(membreId, email, rowIdx) {
+  const sel = document.getElementById('role-sel-'+rowIdx);
+  const role = sel.value;
+  if(!role) return;
+  if(!email) { showToast('Cet membre n\u2019a pas d\u2019email \u2014 impossible d\u2019assigner un r\u00f4le', 'error'); sel.value=''; return; }
+  if(!confirm(`Assigner le r\u00f4le "${role}" \u00e0 ce membre ?`)) { sel.value=''; return; }
+
+  const { error } = await db.rpc('assign_role_by_email', {
+    target_email: email,
+    new_role: role
+  });
+  if (error) { showToast('Erreur : ' + error.message, 'error'); sel.value=''; return; }
+  showToast(`R\u00f4le "${role}" assign\u00e9 !`);
+  sel.value='';
+}
+
+// Valider action
+function validerAction(btn, decision) {
+  const tr = btn.closest('tr');
+  tr.cells[3].innerHTML = '<span class="badge ' + (decision==='Approuv\u00e9' ? 'badge-green' : 'badge-red') + '">' + decision + '</span>';
+}
+
+// ---- COMMUNICATIONS ----
+async function archiverMessage() {
+  const dest  = document.getElementById('comm-dest').value;
+  const objet = document.getElementById('comm-objet').value.trim();
+  const msg   = document.getElementById('comm-message').value.trim();
+  if(!objet || !msg) { showToast('Objet et message obligatoires.','error'); return; }
+  const { data: { user } } = await db.auth.getUser();
+  const { error } = await db.from('courriers').insert({ type: dest, destinataire: dest, objet, statut:'envoye', created_by: user.id });
+  if (error) { showToast('Erreur : ' + error.message,'error'); return; }
+  document.getElementById('comm-objet').value = '';
+  document.getElementById('comm-message').value = '';
+  showToast('Message archiv\u00e9 !');
+  await renderMessages();
+}
+async function renderMessages() {
+  const { data, error } = await db.from('courriers').select('*').order('created_at', { ascending: false }).limit(20);
+  if (error) return;
+  msgsCache = data;
+  const tbody = document.getElementById('comm-tbody');
+  if(!tbody) return;
+  if(!data.length) { tbody.innerHTML='<tr><td colspan="4" style="color:#888;text-align:center;padding:1rem">Aucun message archiv\u00e9</td></tr>'; return; }
+  tbody.innerHTML = data.map((m,i) => `<tr>
+    <td>${m.date_envoi||'&mdash;'}</td>
+    <td>${m.destinataire}</td>
+    <td>${m.objet}</td>
+    <td><button class="btn btn-outline btn-sm" onclick="voirMessage(${i})">&#128065; Voir</button></td>
+  </tr>`).join('');
+}
+function voirMessage(i) {
+  const m = msgsCache[i];
+  document.getElementById('modal-msg-title').textContent = m.objet + ' \u2014 ' + m.destinataire;
+  document.getElementById('modal-msg-body').textContent = m.objet;
+  document.getElementById('modal-msg').classList.add('open');
+}
+</script>
+</body>
+</html>
+

@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statuts — AITO · Amicale des Ivoiriens de Toulouse et de l'Occitanie</title>
+  <link rel="stylesheet" href="css/style.css">
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+    <div class="nav-occitanie"><img src="images/occitanie.svg" alt="Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html">Accueil</a>
+      <a href="presentation.html">Présentation</a>
+      <a href="actualites.html">Actualités</a>
+      <a href="evenements.html">Événements</a>
+      <div class="dropdown">
+        <a href="#">Services ▾</a>
+        <div class="dropdown-menu">
+          <a href="adhesion.html">Adhésion &amp; Cotisations</a>
+          <a href="collectivites.html">Collectivités</a>
+          <a href="projets-economiques.html">Projets économiques</a>
+          <a href="financement.html">Financement &amp; Subventions</a>
+          <a href="assurances.html">Assurances décès</a>
+          <a href="compatriotes.html">Infos Compatriotes</a>
+          <a href="tourisme.html">Tourisme Côte d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a>
+        </div>
+      </div>
+      <a href="partenaires.html">Partenaires</a>
+      <a href="contact.html">Contact</a>
+      <a href="connexion.html" class="btn-nav">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-content">
+
+  <!-- Hero -->
+  <div class="page-hero" style="background:linear-gradient(135deg,#1A1208,#2A2010);padding:3rem 1.5rem;text-align:center;">
+    <div class="container">
+      <div class="label" style="color:#F2C45A;">Document officiel</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:#fff;margin:.5rem 0 1rem;">Statuts de l'AITO</h1>
+      <p style="color:rgba(255,255,255,.65);max-width:560px;margin:0 auto 1.5rem;font-size:.97rem;line-height:1.7;">Amicale des Ivoiriens de Toulouse et de l'Occitanie — Association loi du 1er juillet 1901</p>
+      <a href="docs/AITO_statuts.pdf" download class="btn btn-primary" style="margin-right:.75rem;">⬇ Télécharger les statuts (PDF)</a>
+      <a href="adhesion.html" class="btn btn-outline">Adhérer à l'AITO</a>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container" style="max-width:860px;">
+
+      <!-- Sommaire -->
+      <div style="background:#F5F0EB;border-radius:16px;padding:1.75rem 2rem;margin-bottom:3rem;border-left:4px solid var(--primary);">
+        <h2 style="font-size:1.05rem;font-weight:700;color:var(--gray-800);margin-bottom:1rem;">Sommaire</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .5rem;">
+          <a href="#titre1" style="font-size:.875rem;color:var(--primary);font-weight:500;">Titre I — Constitution et objet</a>
+          <a href="#titre2" style="font-size:.875rem;color:var(--primary);font-weight:500;">Titre II — Membres</a>
+          <a href="#titre3" style="font-size:.875rem;color:var(--primary);font-weight:500;">Titre III — Administration</a>
+          <a href="#titre4" style="font-size:.875rem;color:var(--primary);font-weight:500;">Titre IV — Ressources</a>
+          <a href="#titre5" style="font-size:.875rem;color:var(--primary);font-weight:500;">Titre V — Dissolution</a>
+          <a href="#titre6" style="font-size:.875rem;color:var(--primary);font-weight:500;">Titre VI — Dispositions finales</a>
+        </div>
+      </div>
+
+      <!-- TITRE I -->
+      <h2 id="titre1" style="font-family:'Playfair Display',serif;font-size:1.5rem;background:#1A1208;color:#fff;padding:.75rem 1.25rem;border-radius:10px;margin-bottom:1.5rem;">TITRE I — CONSTITUTION ET OBJET</h2>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Article 1 — Dénomination</h3>
+      <p style="line-height:1.8;color:var(--gray-600);">Il est fondé entre les adhérents aux présents statuts une association régie par la loi du 1er juillet 1901 et le décret du 16 août 1901, ayant pour titre : <strong>« Amicale des Ivoiriens de Toulouse et de l'Occitanie »</strong>, abrégée en <strong>AITO</strong>.</p>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Article 2 — Objet</h3>
+      <p style="line-height:1.8;color:var(--gray-600);margin-bottom:.75rem;">L'association a pour objet de :</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;padding-left:1rem;">
+        <li style="display:flex;gap:.6rem;align-items:baseline;color:var(--gray-600);font-size:.94rem;line-height:1.65;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">–</span> Fédérer la communauté ivoirienne vivant dans le département de Toulouse Toulouse et de l'Occitanie et les départements limitrophes</li>
+        <li style="display:flex;gap:.6rem;align-items:baseline;color:var(--gray-600);font-size:.94rem;line-height:1.65;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">–</span> Promouvoir et valoriser la culture, les traditions, la langue et le patrimoine ivoiriens</li>
+        <li style="display:flex;gap:.6rem;align-items:baseline;color:var(--gray-600);font-size:.94rem;line-height:1.65;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">–</span> Favoriser l'intégration, la cohésion sociale et l'entraide entre les membres</li>
+        <li style="display:flex;gap:.6rem;align-items:baseline;color:var(--gray-600);font-size:.94rem;line-height:1.65;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">–</span> Accompagner les nouveaux arrivants ivoiriens dans leurs démarches administratives, sociales et professionnelles</li>
+        <li style="display:flex;gap:.6rem;align-items:baseline;color:var(--gray-600);font-size:.94rem;line-height:1.65;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">–</span> Organiser des événements culturels, sportifs, gastronomiques et de cohésion</li>
+        <li style="display:flex;gap:.6rem;align-items:baseline;color:var(--gray-600);font-size:.94rem;line-height:1.65;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">–</span> Faciliter la mise en réseau professionnel et économique entre les membres</li>
+      </ul>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Article 3 — Siège social</h3>
+      <p style="line-height:1.8;color:var(--gray-600);">Le siège social est fixé à : <em>[Adresse — Toulouse, 31000]</em>. Il pourra être transféré par décision du bureau, ratifiée par l'assemblée générale.</p>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Article 4 — Durée</h3>
+      <p style="line-height:1.8;color:var(--gray-600);">La durée de l'association est illimitée.</p>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Article 5 — Aire géographique</h3>
+      <p style="line-height:1.8;color:var(--gray-600);">L'association exerce ses activités principalement dans le département de Toulouse et de l'Occitanie (34) et plus largement en région Occitanie.</p>
+
+      <!-- TITRE II -->
+      <h2 id="titre2" style="font-family:'Playfair Display',serif;font-size:1.5rem;background:#1A1208;color:#fff;padding:.75rem 1.25rem;border-radius:10px;margin:2.5rem 0 1.5rem;">TITRE II — MEMBRES</h2>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .75rem;">Article 6 — Composition</h3>
+      <div style="overflow-x:auto;border-radius:12px;border:1.5px solid #E5E7EB;">
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+          <thead>
+            <tr style="background:#1A1208;">
+              <th style="padding:.75rem 1rem;text-align:left;color:#fff;font-weight:600;">Catégorie</th>
+              <th style="padding:.75rem 1rem;text-align:left;color:#fff;font-weight:600;">Description</th>
+              <th style="padding:.75rem 1rem;text-align:center;color:#fff;font-weight:600;">Cotisation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#FFF4EC;">
+              <td style="padding:.75rem 1rem;font-weight:700;color:#1A1208;border-top:1px solid #E5E7EB;">Membre actif</td>
+              <td style="padding:.75rem 1rem;color:#4B5563;border-top:1px solid #E5E7EB;">Personne physique <strong>de nationalité ivoirienne</strong>, à jour de cotisation, participant à la vie associative. Droit de vote en AG et éligibilité au bureau.</td>
+              <td style="padding:.75rem 1rem;text-align:center;color:#E8650A;font-weight:600;border-top:1px solid #E5E7EB;">Oui — tarif plein</td>
+            </tr>
+            <tr style="background:#E8F5EE;">
+              <td style="padding:.75rem 1rem;font-weight:700;color:#1A1208;border-top:1px solid #E5E7EB;">Membre sympathisant</td>
+              <td style="padding:.75rem 1rem;color:#4B5563;border-top:1px solid #E5E7EB;">Toute personne, <strong>quelle que soit sa nationalité</strong>, témoignant de son attachement à la Côte d'Ivoire et souhaitant participer aux activités. Sans droit de vote en AG.</td>
+              <td style="padding:.75rem 1rem;text-align:center;color:#1A7A3C;font-weight:600;border-top:1px solid #E5E7EB;">Oui — tarif réduit</td>
+            </tr>
+            <tr style="background:#FDF5E3;">
+              <td style="padding:.75rem 1rem;font-weight:700;color:#1A1208;border-top:1px solid #E5E7EB;">Membre étudiant / solidaire</td>
+              <td style="padding:.75rem 1rem;color:#4B5563;border-top:1px solid #E5E7EB;">Étudiant(e) ou personne en situation de précarité, sur présentation d'un justificatif (carte étudiante, attestation CAF…). Mêmes droits que membre actif ou sympathisant selon la nationalité.</td>
+              <td style="padding:.75rem 1rem;text-align:center;color:#C8922A;font-weight:700;border-top:1px solid #E5E7EB;">15 € / an</td>
+            </tr>
+            <tr style="background:#FFF4EC;">
+              <td style="padding:.75rem 1rem;font-weight:700;color:#1A1208;border-top:1px solid #E5E7EB;">Membre bienfaiteur</td>
+              <td style="padding:.75rem 1rem;color:#4B5563;border-top:1px solid #E5E7EB;">Personne physique ou morale ayant versé un don ou cotisation supérieure au tarif plein. Voix consultative en AG.</td>
+              <td style="padding:.75rem 1rem;text-align:center;color:#C8922A;font-weight:600;border-top:1px solid #E5E7EB;">Oui — montant libre</td>
+            </tr>
+            <tr style="background:#E8F4FA;">
+              <td style="padding:.75rem 1rem;font-weight:700;color:#1A1208;border-top:1px solid #E5E7EB;">Membre d'honneur</td>
+              <td style="padding:.75rem 1rem;color:#4B5563;border-top:1px solid #E5E7EB;">Distinction proposée par le bureau et ratifiée par l'AG pour services exceptionnels rendus à l'association. Invité permanent.</td>
+              <td style="padding:.75rem 1rem;text-align:center;color:#3366CC;font-weight:600;border-top:1px solid #E5E7EB;">Non</td>
+            </tr>
+            <tr style="background:#FFF4EC;">
+              <td style="padding:.75rem 1rem;font-weight:700;color:#1A1208;border-top:1px solid #E5E7EB;">Membre associé</td>
+              <td style="padding:.75rem 1rem;color:#4B5563;border-top:1px solid #E5E7EB;">Associations, collectivités ou partenaires institutionnels admis à titre consultatif.</td>
+              <td style="padding:.75rem 1rem;text-align:center;color:#6B7280;font-weight:600;border-top:1px solid #E5E7EB;">Non</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Article 7 — Conditions d'adhésion</h3>
+      <p style="line-height:1.8;color:var(--gray-600);margin-bottom:.75rem;">La qualité de <strong>membre actif</strong> est réservée aux <strong>ressortissants ivoiriens</strong> domiciliés dans Toulouse et de l'Occitanie ou les départements limitrophes, à jour de cotisation et ayant signé le bulletin d'adhésion.</p>
+      <p style="line-height:1.8;color:var(--gray-600);">La qualité de <strong>membre sympathisant</strong> est ouverte à <strong>toute personne, quelle que soit sa nationalité</strong>, témoignant d'un attachement sincère à la Côte d'Ivoire, à sa culture et à ses valeurs, et souhaitant prendre part aux activités de l'association.</p>
+      <div style="background:#FFF4EC;border-left:4px solid #E8650A;border-radius:0 8px 8px 0;padding:.9rem 1.2rem;margin-top:1rem;">
+        <p style="font-size:.88rem;color:#5A5040;font-style:italic;margin:0;">Le bureau se réserve le droit de refuser toute adhésion contraire aux valeurs de l'association, sans avoir à en justifier le motif.</p>
+      </div>
+
+      <h3 style="color:var(--primary);font-size:1.05rem;margin:1.5rem 0 .5rem;">Articles 8 et 9 — Perte de qualité et cotisations</h3>
+      <p style="line-height:1.8;color:var(--gray-600);">La qualité de membre se perd par démission, décès, radiation (non-paiement) ou exclusion pour motif grave. Le montant des cotisations est fixé annuellement par l'assemblée générale sur proposition du bureau.</p>
+
+      <!-- TITRES III–VI résumés -->
+      <h2 id="titre3" style="font-family:'Playfair Display',serif;font-size:1.5rem;background:#1A1208;color:#fff;padding:.75rem 1.25rem;border-radius:10px;margin:2.5rem 0 1.5rem;">TITRE III — ADMINISTRATION ET FONCTIONNEMENT</h2>
+      <p style="line-height:1.8;color:var(--gray-600);margin-bottom:1rem;">L'association est administrée par un <strong>bureau</strong> composé a minima d'un(e) président(e), d'un(e) vice-président(e), d'un(e) secrétaire général(e) et d'un(e) trésorier(ère), élus pour deux ans par l'assemblée générale ordinaire.</p>
+      <p style="line-height:1.8;color:var(--gray-600);">L'<strong>assemblée générale ordinaire</strong> se réunit au moins une fois par an. Elle approuve les comptes, vote le programme, fixe les cotisations et élit le bureau. Une <strong>assemblée générale extraordinaire</strong> peut être convoquée pour modifier les statuts ou prononcer la dissolution.</p>
+
+      <h2 id="titre4" style="font-family:'Playfair Display',serif;font-size:1.5rem;background:#1A1208;color:#fff;padding:.75rem 1.25rem;border-radius:10px;margin:2.5rem 0 1.5rem;">TITRE IV — RESSOURCES ET GESTION FINANCIÈRE</h2>
+      <p style="line-height:1.8;color:var(--gray-600);">Les ressources comprennent les cotisations, les subventions publiques, les dons, les produits des événements et les partenariats privés. L'exercice comptable court du 1er janvier au 31 décembre.</p>
+
+      <h2 id="titre5" style="font-family:'Playfair Display',serif;font-size:1.5rem;background:#1A1208;color:#fff;padding:.75rem 1.25rem;border-radius:10px;margin:2.5rem 0 1.5rem;">TITRE V — MODIFICATION ET DISSOLUTION</h2>
+      <p style="line-height:1.8;color:var(--gray-600);">Les statuts ne peuvent être modifiés que par une AGE statuant à la majorité des deux tiers. La dissolution est également prononcée en AGE à la même majorité. L'actif net est alors attribué à une association poursuivant des buts similaires.</p>
+
+      <h2 id="titre6" style="font-family:'Playfair Display',serif;font-size:1.5rem;background:#1A1208;color:#fff;padding:.75rem 1.25rem;border-radius:10px;margin:2.5rem 0 1.5rem;">TITRE VI — DISPOSITIONS FINALES</h2>
+      <p style="line-height:1.8;color:var(--gray-600);">Les présents statuts ont été adoptés lors de l'Assemblée Générale Constitutive du <em>[DATE]</em>, à Toulouse.</p>
+
+      <!-- CTA -->
+      <div style="background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:16px;padding:2.5rem 2rem;text-align:center;color:#fff;margin-top:3rem;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🇨🇮</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.75rem;">Rejoindre l'AITO</h3>
+        <p style="color:rgba(255,255,255,.82);margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto;">Membre actif, sympathisant ou bienfaiteur — choisissez la formule qui vous correspond.</p>
+        <a href="adhesion.html" class="btn btn-primary" style="background:#fff;color:var(--primary);margin-right:.75rem;">Adhérer maintenant</a>
+        <a href="docs/AITO_statuts.pdf" download class="btn btn-outline">⬇ Télécharger PDF</a>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;">
+      <strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+        <img src="images/occitanie.svg" alt="Région Occitanie" style="height:32px;width:auto;">
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de<br>Toulouse et de l'Occitanie</span>
+      </div>
+      <p>Association loi 1901 au service de ses membres et de la communauté.</p>
+    </div>
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Présentation</a></li><li><a href="actualites.html">Actualités</a></li><li><a href="evenements.html">Événements</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adhésion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="statuts.html" style="color:var(--primary);">Statuts</a></li><li><a href="financement.html">Financement</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+    <div class="footer-col"><h4>Légal</h4><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="statuts.html">Statuts</a></li><li><a href="mentions-legales.html#rgpd">RGPD</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>&#169; 2025 AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</span>
+    <span>Fait avec &#10084;&#65039; pour notre communauté</span>
+    <div style="display:flex;gap:1.2rem;"><a href="mentions-legales.html">Mentions légales</a><a href="contact.html">Contact</a></div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

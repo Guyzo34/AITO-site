@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Visiteur — AITO</title>
+  <script src="js/maintenance.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #F5F0EB; }
+    .visitor-wrap { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .visitor-header { background: linear-gradient(135deg, #E8650A, #C4530A); border-radius: 20px; padding: 2.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; box-shadow: 0 8px 32px rgba(232,101,10,.35); }
+    .visitor-header h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.3); }
+    .visitor-header p { color: rgba(255,255,255,.85); font-size: .9rem; margin-top: .3rem; }
+    .notice { background: #fff; border-radius: 16px; padding: 2rem; border: 1.5px solid var(--gray-200); text-align: center; }
+    .notice .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .notice h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--dark); margin-bottom: .75rem; }
+    .notice p { color: var(--gray-500); line-height: 1.7; margin-bottom: 1.5rem; }
+    .feedback-form { background: #fff; border-radius: 16px; padding: 2rem; border: 1.5px solid var(--gray-200); margin-top: 1.5rem; }
+    .feedback-form h3 { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; }
+    .feedback-form textarea { width: 100%; padding: .85rem; border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: inherit; font-size: .95rem; resize: vertical; min-height: 120px; }
+    .feedback-form textarea:focus { outline: none; border-color: var(--primary); }
+    .stars { display: flex; gap: .5rem; margin-bottom: 1rem; font-size: 1.8rem; cursor: pointer; }
+    .star { opacity: .3; transition: opacity .15s; }
+    .star.active { opacity: 1; }
+    .sent-msg { display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.5rem; text-align: center; color: #166534; }
+  </style>
+</head>
+<body>
+<script>
+(async function(){
+  const user = (await db.auth.getUser()).data.user;
+  if(!user){ window.location.href='acces-admin.html'; return; }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.getElementById('visitor-name').textContent = (user.user_metadata?.prenom || 'Visiteur') + ' ' + (user.user_metadata?.nom || '');
+    document.getElementById('visitor-email').textContent = user.email;
+  });
+})();
+</script>
+
+<div class="flag-bar"></div>
+<div class="visitor-wrap">
+
+  <div class="visitor-header">
+    <div>
+      <h1>👋 Bienvenue sur la prévisualisation AITO</h1>
+      <p id="visitor-email">—</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span id="visitor-name" style="color:rgba(255,255,255,.7);font-size:.9rem;"></span>
+      <button onclick="logout()" class="btn btn-ghost" style="font-size:.85rem;padding:.5rem 1rem;">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="notice">
+    <div class="icon">🔍</div>
+    <h2>Site en cours de finalisation</h2>
+    <p>Vous avez été invité à prévisualiser le site de l'<strong>Amicale des Ivoiriens de l'Haute-Garonne (AITO)</strong> avant sa publication officielle.<br>Naviguez librement sur le site et laissez-nous vos impressions ci-dessous.</p>
+    <a href="index.html" class="btn btn-primary">Voir le site →</a>
+  </div>
+
+  <div class="feedback-form">
+    <h3>💬 Votre avis nous intéresse</h3>
+    <div class="stars" id="stars">
+      <span class="star" data-v="1">⭐</span>
+      <span class="star" data-v="2">⭐</span>
+      <span class="star" data-v="3">⭐</span>
+      <span class="star" data-v="4">⭐</span>
+      <span class="star" data-v="5">⭐</span>
+    </div>
+    <textarea id="feedback-text" placeholder="Vos impressions, suggestions, remarques sur le site..."></textarea>
+    <div style="margin-top:1rem;">
+      <button onclick="sendFeedback()" class="btn btn-primary">Envoyer mon avis</button>
+    </div>
+    <div class="sent-msg" id="sent-msg">
+      ✅ Merci pour votre retour ! L'administrateur en sera informé.
+    </div>
+  </div>
+
+</div>
+
+<script>
+var rating = 0;
+document.querySelectorAll('.star').forEach(function(s){
+  s.addEventListener('click', function(){
+    rating = parseInt(this.dataset.v);
+    document.querySelectorAll('.star').forEach(function(st, i){ st.classList.toggle('active', i < rating); });
+  });
+});
+
+function sendFeedback(){
+  var txt = document.getElementById('feedback-text').value.trim();
+  if(!txt){ alert('Veuillez écrire un commentaire.'); return; }
+  var feedbacks = JSON.parse(localStorage.getItem('aito_feedbacks') || '[]');
+  feedbacks.push({ email: document.getElementById('visitor-email').textContent, rating: rating, text: txt, date: new Date().toLocaleString('fr-FR') });
+  localStorage.setItem('aito_feedbacks', JSON.stringify(feedbacks));
+  document.getElementById('feedback-text').value = '';
+  document.getElementById('sent-msg').style.display = 'block';
+  setTimeout(function(){ document.getElementById('sent-msg').style.display = 'none'; }, 4000);
+}
+</script>
+</body>
+</html>

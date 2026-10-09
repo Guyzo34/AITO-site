@@ -1,0 +1,449 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galerie — AITO · Amicale des Ivoiriens de Toulouse et de l'Occitanie</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .gallery-hero {
+      background: linear-gradient(135deg, #1A1208, #2A2010);
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+    .filter-group { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .filter-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      padding: .45rem 0;
+      margin-right: .4rem;
+      white-space: nowrap;
+    }
+    .filter-btn {
+      padding: .4rem 1rem;
+      border-radius: 50px;
+      border: 1.5px solid var(--gray-200);
+      background: var(--white);
+      color: var(--gray-600);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .filter-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--gray-200);
+      margin: 0 .4rem;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--gray-100);
+      cursor: pointer;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .gallery-item:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.15); }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s;
+    }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,18,8,.85) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity .3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+    }
+    .gallery-item:hover .overlay { opacity: 1; }
+    .overlay-text { color: #fff; }
+    .overlay-text h4 { font-size: .9rem; font-weight: 700; margin-bottom: .2rem; }
+    .overlay-text span { font-size: .78rem; color: rgba(255,255,255,.7); }
+    .gallery-item .event-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .25rem .7rem;
+      border-radius: 50px;
+      letter-spacing: .5px;
+    }
+    .gallery-item[data-event="fete"] .event-badge { background: #E8650A; }
+    .gallery-item[data-event="tournoi"] .event-badge { background: #1A7A3C; }
+    .gallery-item[data-event="brunch"] .event-badge { background: #C8922A; }
+    .gallery-item[data-event="sortie"] .event-badge { background: #1A7FAA; }
+    .gallery-item[data-event="soiree"] .event-badge { background: #7A3CA0; }
+    .gallery-item.hidden { display: none; }
+    .gallery-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--gray-400);
+    }
+    .gallery-empty .icon { font-size: 3rem; margin-bottom: 1rem; }
+    /* Upload zone */
+    .upload-info {
+      background: var(--gray-50);
+      border: 2px dashed var(--gray-200);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .upload-info h3 { font-size: 1rem; font-weight: 700; color: var(--gray-700); margin-bottom: .5rem; }
+    .upload-info p { font-size: .875rem; color: var(--gray-500); }
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.92);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 0 60px rgba(0,0,0,.5);
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 1.5rem; right: 1.5rem;
+      background: rgba(255,255,255,.15);
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,.25); }
+    .lightbox-caption {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.7);
+      color: #fff;
+      padding: .6rem 1.4rem;
+      border-radius: 50px;
+      font-size: .875rem;
+      white-space: nowrap;
+    }
+    /* Stats */
+    .gallery-stats {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 50px;
+      padding: .4rem 1rem;
+      font-size: .82rem;
+      color: var(--gray-600);
+    }
+    .stat-pill strong { color: var(--gray-800); }
+    @media(max-width:640px){
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .filter-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="flag-bar" aria-hidden="true"></div>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+    <div class="nav-occitanie"><img src="images/occitanie.svg" alt="Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html">Accueil</a>
+      <a href="presentation.html">Présentation</a>
+      <a href="actualites.html">Actualités</a>
+      <a href="evenements.html">Événements</a>
+      <a href="galerie.html" class="active">Galerie</a>
+      <div class="dropdown">
+        <a href="#">Services ▾</a>
+        <div class="dropdown-menu">
+          <a href="adhesion.html">Adhésion &amp; Cotisations</a>
+          <a href="collectivites.html">Collectivités</a>
+          <a href="projets-economiques.html">Projets économiques</a>
+          <a href="financement.html">Financement &amp; Subventions</a>
+          <a href="assurances.html">Assurances décès</a>
+          <a href="compatriotes.html">Infos Compatriotes</a>
+          <a href="tourisme.html">Tourisme Côte d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a>
+        </div>
+      </div>
+      <a href="partenaires.html">Partenaires</a>
+      <a href="contact.html">Contact</a>
+      <a href="connexion.html" class="btn-nav">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-content">
+
+  <!-- Hero -->
+  <div class="gallery-hero">
+    <div class="container">
+      <div class="label" style="color:#F2C45A;">Notre communauté en images</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:#fff;margin:.5rem 0 1rem;">Galerie photos</h1>
+      <p style="color:rgba(255,255,255,.65);max-width:520px;margin:0 auto;font-size:.97rem;line-height:1.7;">Retrouvez les meilleurs moments de la vie associative de l'AITO — événements, sorties, rencontres et fêtes.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Stats -->
+      <div class="gallery-stats">
+        <div class="stat-pill"><span>📸</span><span id="total-count"><strong>0</strong> photos</span></div>
+        <div class="stat-pill"><span>🎉</span><span id="event-count"><strong>0</strong> événements</span></div>
+        <div class="stat-pill"><span>📅</span><span id="year-count"><strong>0</strong> années</span></div>
+      </div>
+
+      <!-- Filtres -->
+      <div class="filters">
+        <span class="filter-label">Par année :</span>
+        <div class="filter-group" id="year-filters">
+          <button class="filter-btn active" data-filter="year" data-value="all">Toutes</button>
+          <button class="filter-btn" data-filter="year" data-value="2026">2026</button>
+          <button class="filter-btn" data-filter="year" data-value="2025">2025</button>
+        </div>
+        <div class="filter-divider"></div>
+        <span class="filter-label">Par événement :</span>
+        <div class="filter-group" id="event-filters">
+          <button class="filter-btn active" data-filter="event" data-value="all">Tous</button>
+          <button class="filter-btn" data-filter="event" data-value="fete">🇨🇮 Fête Indépendance</button>
+          <button class="filter-btn" data-filter="event" data-value="tournoi">⚽ Tournoi sportif</button>
+          <button class="filter-btn" data-filter="event" data-value="brunch">🍽️ Brunch</button>
+          <button class="filter-btn" data-filter="event" data-value="sortie">🌳 Sorties</button>
+          <button class="filter-btn" data-filter="event" data-value="soiree">🎶 Soirées</button>
+        </div>
+      </div>
+
+      <!-- Info upload (visible admin seulement) -->
+      <div class="upload-info" id="upload-info" style="display:none;">
+        <div style="font-size:2rem;margin-bottom:.5rem;">📂</div>
+        <h3>Ajouter des photos</h3>
+        <p>Uploadez vos photos dans le dossier <code>images/galerie/</code> sur IONOS, puis ajoutez-les dans le code HTML de cette page avec les attributs <code>data-year</code> et <code>data-event</code>.</p>
+      </div>
+
+      <!-- Grille galerie -->
+      <div class="gallery-grid" id="gallery-grid">
+
+        <!-- ══ PHOTOS EXEMPLES ══ -->
+        <!-- Pour ajouter une vraie photo : remplacez src="https://..." par src="images/galerie/nom-photo.jpg" -->
+
+        <div class="gallery-item" data-year="2026" data-event="fete" data-caption="Fête de l'Indépendance 2026">
+          <img src="https://images.unsplash.com/photo-1521737604082-28b955bc1a8a?w=600&h=450&auto=format&fit=crop&q=80" alt="Fête Indépendance 2026" loading="lazy">
+          <span class="event-badge">🇨🇮 Fête Indépendance</span>
+          <div class="overlay"><div class="overlay-text"><h4>Fête de l'Indépendance</h4><span>7 Août 2026</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2026" data-event="tournoi" data-caption="Tournoi sportif 2026">
+          <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&h=450&auto=format&fit=crop&q=80" alt="Tournoi 2026" loading="lazy">
+          <span class="event-badge">⚽ Tournoi sportif</span>
+          <div class="overlay"><div class="overlay-text"><h4>Tournoi inter-associations</h4><span>Mai 2026</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2026" data-event="brunch" data-caption="Brunch des membres 2026">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=450&auto=format&fit=crop&q=80" alt="Brunch 2026" loading="lazy">
+          <span class="event-badge">🍽️ Brunch</span>
+          <div class="overlay"><div class="overlay-text"><h4>Brunch des membres</h4><span>Mars 2026</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2026" data-event="sortie" data-caption="Sortie plage 2026">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=450&auto=format&fit=crop&q=80" alt="Sortie plage 2026" loading="lazy">
+          <span class="event-badge">🌳 Sortie</span>
+          <div class="overlay"><div class="overlay-text"><h4>Sortie plage Palavas</h4><span>Juillet 2026</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2026" data-event="soiree" data-caption="Soirée Talents 2026">
+          <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600&h=450&auto=format&fit=crop&q=80" alt="Soirée talents 2026" loading="lazy">
+          <span class="event-badge">🎶 Soirée</span>
+          <div class="overlay"><div class="overlay-text"><h4>Soirée Talents des membres</h4><span>Novembre 2026</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2025" data-event="fete" data-caption="Fête de l'Indépendance 2025">
+          <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&h=450&auto=format&fit=crop&q=80&sat=-20" alt="Fête 2025" loading="lazy">
+          <span class="event-badge">🇨🇮 Fête Indépendance</span>
+          <div class="overlay"><div class="overlay-text"><h4>Fête de l'Indépendance</h4><span>7 Août 2025</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2025" data-event="brunch" data-caption="Brunch 2025">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=450&auto=format&fit=crop&q=80&hue=20" alt="Brunch 2025" loading="lazy">
+          <span class="event-badge">🍽️ Brunch</span>
+          <div class="overlay"><div class="overlay-text"><h4>Brunch convivial</h4><span>Avril 2025</span></div></div>
+        </div>
+
+        <div class="gallery-item" data-year="2025" data-event="sortie" data-caption="Randonnée Haute-Garonne 2025">
+          <img src="https://images.unsplash.com/photo-1521737604082-28b955bc1a8a?w=600&h=450&auto=format&fit=crop&q=80&hue=40" alt="Randonnée 2025" loading="lazy">
+          <span class="event-badge">🌳 Sortie</span>
+          <div class="overlay"><div class="overlay-text"><h4>Randonnée dans l'Haute-Garonne</h4><span>Avril 2025</span></div></div>
+        </div>
+
+        <!-- Message si aucun résultat -->
+        <div class="gallery-empty" id="gallery-empty" style="display:none;">
+          <div class="icon">📷</div>
+          <p>Aucune photo pour cette sélection.</p>
+        </div>
+
+      </div><!-- /gallery-grid -->
+
+      <!-- CTA ajout photos -->
+      <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--gray-200);">
+        <p style="color:var(--gray-500);font-size:.9rem;margin-bottom:1rem;">Tu as des photos à partager avec la communauté ?</p>
+        <a href="contact.html" class="btn btn-dark">📩 Envoyer vos photos</a>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;">
+      <strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+        <img src="images/occitanie.svg" alt="Occitanie" style="height:32px;width:auto;">
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de<br>Toulouse et de l'Occitanie</span>
+      </div>
+      <p>Association loi 1901 au service de ses membres et de la communauté.</p>
+    </div>
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Présentation</a></li><li><a href="galerie.html">Galerie</a></li><li><a href="evenements.html">Événements</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adhésion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="statuts.html">Statuts</a></li><li><a href="financement.html">Financement</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+    <div class="footer-col"><h4>Légal</h4><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialité</a></li><li><a href="mentions-legales.html#rgpd">RGPD</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>&#169; 2026 AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</span>
+    <span>Fait avec &#10084;&#65039; pour notre communauté</span>
+    <div style="display:flex;gap:1.2rem;"><a href="mentions-legales.html">Mentions légales</a><a href="contact.html">Contact</a></div>
+  </div>
+</footer>
+
+<script src="js/maintenance.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ── Filtres ──
+var activeYear = 'all';
+var activeEvent = 'all';
+
+function applyFilters() {
+  var items = document.querySelectorAll('.gallery-item[data-year]');
+  var visible = 0;
+  items.forEach(function(item) {
+    var matchYear  = activeYear  === 'all' || item.dataset.year  === activeYear;
+    var matchEvent = activeEvent === 'all' || item.dataset.event === activeEvent;
+    if (matchYear && matchEvent) {
+      item.classList.remove('hidden');
+      visible++;
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+  document.getElementById('gallery-empty').style.display = visible === 0 ? 'block' : 'none';
+  updateStats();
+}
+
+function updateStats() {
+  var items = document.querySelectorAll('.gallery-item[data-year]:not(.hidden)');
+  var years  = new Set();
+  var events = new Set();
+  items.forEach(function(i){ years.add(i.dataset.year); events.add(i.dataset.event); });
+  document.getElementById('total-count').innerHTML  = '<strong>' + items.length + '</strong> photo' + (items.length > 1 ? 's' : '');
+  document.getElementById('event-count').innerHTML  = '<strong>' + events.size + '</strong> événement' + (events.size > 1 ? 's' : '');
+  document.getElementById('year-count').innerHTML   = '<strong>' + years.size + '</strong> année' + (years.size > 1 ? 's' : '');
+}
+
+document.querySelectorAll('.filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var group = this.dataset.filter;
+    document.querySelectorAll('[data-filter="' + group + '"]').forEach(function(b){ b.classList.remove('active'); });
+    this.classList.add('active');
+    if (group === 'year')  activeYear  = this.dataset.value;
+    if (group === 'event') activeEvent = this.dataset.value;
+    applyFilters();
+  });
+});
+
+// ── Lightbox ──
+document.querySelectorAll('.gallery-item[data-year]').forEach(function(item) {
+  item.addEventListener('click', function() {
+    var img = this.querySelector('img');
+    document.getElementById('lightbox-img').src = img.src;
+    document.getElementById('lightbox-caption').textContent = this.dataset.caption || '';
+    document.getElementById('lightbox').classList.add('open');
+  });
+});
+
+document.getElementById('lightbox-close').addEventListener('click', function() {
+  document.getElementById('lightbox').classList.remove('open');
+});
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') document.getElementById('lightbox').classList.remove('open');
+});
+
+// Init stats
+updateStats();
+</script>
+</body>
+</html>

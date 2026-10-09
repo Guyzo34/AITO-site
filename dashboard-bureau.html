@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tableau de bord &#8212; Bureau AITO</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+
+    /* &#9472;&#9472; LAYOUT DASHBOARD &#9472;&#9472; */
+
+    body { background: var(--gray-50); }
+
+
+
+    .db-wrapper {
+
+      display: grid;
+
+      grid-template-columns: 260px 1fr;
+
+      min-height: 100vh;
+
+      padding-top: 72px;
+
+    }
+
+
+
+    /* SIDEBAR */
+
+    .db-sidebar {
+
+      background: var(--primary-dark);
+
+      color: #fff;
+
+      position: fixed;
+
+      top: 72px; left: 0; bottom: 0;
+
+      width: 260px;
+
+      overflow-y: auto;
+
+      z-index: 100;
+
+      display: flex;
+
+      flex-direction: column;
+
+      transition: transform .3s;
+
+    }
+
+    .db-sidebar-header {
+
+      padding: 1.5rem 1.25rem 1rem;
+
+      border-bottom: 1px solid rgba(255,255,255,.08);
+
+    }
+
+    .db-role-badge {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: .4rem;
+
+      padding: .3rem .85rem;
+
+      border-radius: 50px;
+
+      font-size: .78rem;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      letter-spacing: .06em;
+
+      margin-bottom: .75rem;
+
+    }
+
+    .role-president  { background: rgba(247,127,0,.25);  color: #ffb347; }
+
+    .role-vice       { background: rgba(0,147,79,.25);   color: #5fdf9f; }
+
+    .role-secretaire { background: rgba(59,130,246,.25); color: #93c5fd; }
+
+    .role-tresorier  { background: rgba(168,85,247,.25); color: #d8b4fe; }
+
+
+
+    .db-user-info h3 { font-size: 1rem; font-weight: 700; }
+
+    .db-user-info p  { font-size: .8rem; opacity: .6; margin-top: .15rem; }
+
+
+
+    .db-nav { flex: 1; padding: 1rem 0; }
+
+    .db-nav-section {
+
+      padding: .35rem 1.25rem .2rem;
+
+      font-size: .7rem;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      letter-spacing: .1em;
+
+      color: rgba(255,255,255,.35);
+
+    }
+
+    .db-nav a {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: .75rem;
+
+      padding: .65rem 1.25rem;
+
+      color: rgba(255,255,255,.75);
+
+      font-size: .88rem;
+
+      font-weight: 500;
+
+      border-left: 3px solid transparent;
+
+      transition: background .2s, color .2s, border-color .2s;
+
+    }
+
+    .db-nav a:hover { background: rgba(255,255,255,.07); color: #fff; }
+
+    .db-nav a.active { background: rgba(247,127,0,.12); color: #ffb347; border-left-color: var(--accent); }
+
+    .db-nav a .icon { font-size: 1.1rem; width: 22px; flex-shrink: 0; }
+
+    .db-nav a .badge-count {
+
+      margin-left: auto;
+
+      background: var(--accent);
+
+      color: #fff;
+
+      font-size: .7rem;
+
+      font-weight: 700;
+
+      padding: .1rem .45rem;
+
+      border-radius: 50px;
+
+    }
+
+
+
+    .db-sidebar-footer {
+
+      padding: 1rem 1.25rem;
+
+      border-top: 1px solid rgba(255,255,255,.08);
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: .5rem;
+
+    }
+
+    .db-sidebar-footer a {
+
+      color: rgba(255,255,255,.5);
+
+      font-size: .82rem;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: .5rem;
+
+      transition: color .2s;
+
+    }
+
+    .db-sidebar-footer a:hover { color: rgba(255,255,255,.85); }
+
+
+
+    /* MAIN CONTENT */
+
+    .db-main {
+
+      margin-left: 260px;
+
+      padding: 2rem;
+
+      min-width: 0;
+
+    }
+
+    .db-topbar {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      margin-bottom: 2rem;
+
+      flex-wrap: wrap;
+
+      gap: 1rem;
+
+    }
+
+    .db-topbar h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); }
+
+    .db-topbar p  { color: var(--gray-600); font-size: .9rem; margin-top: .2rem; }
+
+
+
+    /* R&#212;LE SWITCHER */
+
+    .role-switcher {
+
+      display: flex;
+
+      gap: .5rem;
+
+      background: var(--white);
+
+      border: 1px solid var(--gray-200);
+
+      border-radius: 50px;
+
+      padding: .3rem;
+
+      flex-wrap: wrap;
+
+    }
+
+    .role-btn {
+
+      padding: .4rem 1rem;
+
+      border-radius: 50px;
+
+      font-size: .82rem;
+
+      font-weight: 600;
+
+      border: none;
+
+      cursor: pointer;
+
+      background: transparent;
+
+      color: var(--gray-600);
+
+      transition: background .2s, color .2s;
+
+    }
+
+    .role-btn.active { color: #fff; }
+
+    .role-btn.active.p  { background: #F77F00; }
+
+    .role-btn.active.vp { background: var(--primary); }
+
+    .role-btn.active.s  { background: #2563eb; }
+
+    .role-btn.active.t  { background: #7c3aed; }
+
+
+
+    /* KPI CARDS */
+
+    .kpi-grid {
+
+      display: grid;
+
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+      gap: 1.25rem;
+
+      margin-bottom: 2rem;
+
+    }
+
+    .kpi-card {
+
+      background: var(--white);
+
+      border-radius: var(--radius-lg);
+
+      padding: 1.5rem;
+
+      border: 1px solid var(--gray-200);
+
+      box-shadow: var(--shadow);
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 1.1rem;
+
+    }
+
+    .kpi-icon {
+
+      width: 52px; height: 52px;
+
+      border-radius: 14px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 1.5rem;
+
+      flex-shrink: 0;
+
+    }
+
+    .kpi-card h4 { font-size: .82rem; color: var(--gray-600); font-weight: 500; margin-bottom: .25rem; }
+
+    .kpi-card .kpi-value { font-size: 1.9rem; font-weight: 800; color: var(--primary-dark); line-height: 1; }
+
+    .kpi-card .kpi-delta { font-size: .78rem; color: #16a34a; margin-top: .2rem; }
+
+    .kpi-card .kpi-delta.down { color: #dc2626; }
+
+
+
+    /* SECTION PANEL */
+
+    .db-section { display: none; }
+
+    .db-section.active { display: block; }
+
+
+
+    /* TABLE */
+
+    .db-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+
+    .db-table {
+
+      width: 100%;
+
+      border-collapse: collapse;
+
+      background: var(--white);
+
+      font-size: .88rem;
+
+    }
+
+    .db-table th {
+
+      background: var(--primary-dark);
+
+      color: rgba(255,255,255,.85);
+
+      padding: .85rem 1.1rem;
+
+      text-align: left;
+
+      font-size: .78rem;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      letter-spacing: .06em;
+
+      white-space: nowrap;
+
+    }
+
+    .db-table td { padding: .85rem 1.1rem; border-bottom: 1px solid var(--gray-100); color: var(--gray-800); }
+
+    .db-table tr:last-child td { border-bottom: none; }
+
+    .db-table tr:hover td { background: var(--gray-50); }
+
+
+
+    /* CONTENT EDITOR */
+
+    .editor-toolbar {
+
+      display: flex;
+
+      gap: .35rem;
+
+      flex-wrap: wrap;
+
+      padding: .6rem .75rem;
+
+      background: var(--gray-100);
+
+      border: 1px solid var(--gray-200);
+
+      border-bottom: none;
+
+      border-radius: var(--radius) var(--radius) 0 0;
+
+    }
+
+    .editor-toolbar button {
+
+      padding: .3rem .65rem;
+
+      background: var(--white);
+
+      border: 1px solid var(--gray-200);
+
+      border-radius: 5px;
+
+      font-size: .82rem;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      color: var(--gray-800);
+
+      transition: background .15s;
+
+    }
+
+    .editor-toolbar button:hover { background: var(--gray-200); }
+
+    .editor-area {
+
+      width: 100%;
+
+      min-height: 200px;
+
+      padding: 1rem;
+
+      border: 1px solid var(--gray-200);
+
+      border-radius: 0 0 var(--radius) var(--radius);
+
+      font-family: inherit;
+
+      font-size: .93rem;
+
+      color: var(--text);
+
+      resize: vertical;
+
+      background: var(--white);
+
+    }
+
+    .editor-area:focus { outline: none; border-color: var(--primary); }
+
+
+
+    /* TWO-COL GRID */
+
+    .db-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    .db-card {
+
+      background: var(--white);
+
+      border-radius: var(--radius-lg);
+
+      border: 1px solid var(--gray-200);
+
+      box-shadow: var(--shadow);
+
+      overflow: hidden;
+
+    }
+
+    .db-card-header {
+
+      padding: 1.1rem 1.5rem;
+
+      border-bottom: 1px solid var(--gray-200);
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 1rem;
+
+    }
+
+    .db-card-header h3 { font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
+
+    .db-card-body { padding: 1.25rem 1.5rem; }
+
+
+
+    /* TOGGLE SWITCH */
+
+    .toggle-sw {
+
+      position: relative; width: 44px; height: 24px; flex-shrink: 0;
+
+    }
+
+    .toggle-sw input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-track {
+
+      position: absolute; inset: 0;
+
+      background: var(--gray-200); border-radius: 50px; cursor: pointer;
+
+      transition: background .2s;
+
+    }
+
+    .toggle-track::before {
+
+      content: '';
+
+      position: absolute;
+
+      width: 18px; height: 18px;
+
+      left: 3px; top: 3px;
+
+      background: #fff;
+
+      border-radius: 50%;
+
+      transition: transform .2s;
+
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+
+    }
+
+    .toggle-sw input:checked + .toggle-track { background: var(--primary); }
+
+    .toggle-sw input:checked + .toggle-track::before { transform: translateX(20px); }
+
+
+
+    /* STATUS PILL */
+
+    .status { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; font-weight: 600; }
+
+    .status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    .status-ok::before  { background: #16a34a; }
+
+    .status-warn::before { background: #d97706; }
+
+    .status-err::before  { background: #dc2626; }
+
+    .status-ok  { color: #15803d; }
+
+    .status-warn { color: #b45309; }
+
+    .status-err  { color: #b91c1c; }
+
+
+
+    /* SIDEBAR MOBILE TOGGLE */
+
+    .sidebar-toggle-btn {
+
+      display: none;
+
+      position: fixed;
+
+      bottom: 1.5rem; left: 1.5rem;
+
+      z-index: 200;
+
+      background: var(--primary);
+
+      color: #fff;
+
+      width: 48px; height: 48px;
+
+      border-radius: 50%;
+
+      border: none;
+
+      font-size: 1.3rem;
+
+      cursor: pointer;
+
+      box-shadow: var(--shadow-md);
+
+    }
+
+
+
+    @media (max-width: 900px) {
+
+      .db-sidebar { transform: translateX(-100%); }
+
+      .db-sidebar.open { transform: translateX(0); }
+
+      .db-main { margin-left: 0; padding: 1.25rem; }
+
+      .db-wrapper { grid-template-columns: 1fr; }
+
+      .db-two-col { grid-template-columns: 1fr; }
+
+      .sidebar-toggle-btn { display: flex; align-items: center; justify-content: center; }
+
+      .db-topbar { flex-direction: column; align-items: flex-start; }
+
+    }
+
+
+
+    @media (max-width: 480px) {
+
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+
+      .role-switcher { gap: .25rem; }
+
+      .role-btn { padding: .35rem .7rem; font-size: .75rem; }
+
+    }
+
+  </style>
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:44px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:44px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+
+
+<!-- &#9472;&#9472; NAVBAR BUREAU &#9472;&#9472; -->
+
+<nav class="navbar" style="top:4px;">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie">
+
+      <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;">
+
+    </div>
+
+    <div style="margin-left:auto;display:flex;align-items:center;gap:1rem;">
+
+      <span style="color:rgba(255,255,255,.7);font-size:.85rem;">Bureau AITO</span>
+
+      <a href="index.html" style="color:rgba(255,255,255,.6);font-size:.82rem;display:flex;align-items:center;gap:.4rem;">&#8592; Site public</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+<!-- &#9472;&#9472; SIDEBAR &#9472;&#9472; -->
+
+<div class="db-sidebar" id="dbSidebar">
+
+  <div class="db-sidebar-header">
+
+    <div class="db-role-badge role-president" id="sideRoleBadge">&#128081; Pr&#233;sident</div>
+
+    <div class="db-user-info">
+
+      <h3 id="sideUserName">Jean-Baptiste Kon&#233;</h3>
+
+      <p id="sideUserEmail">president@aito34.fr</p>
+
+    </div>
+
+  </div>
+
+
+
+  <nav class="db-nav" id="dbNav">
+
+    <!-- Sections communes -->
+
+    <div class="db-nav-section">Tableau de bord</div>
+
+    <a href="#" class="active" data-section="accueil" onclick="showSection('accueil',this)">
+
+      <span class="icon">&#127968;</span> Vue d'ensemble
+
+    </a>
+
+
+
+    <!-- Contenu du site -->
+
+    <div class="db-nav-section">Contenu du site</div>
+
+    <a href="#" data-section="actualites" onclick="showSection('actualites',this)">
+
+      <span class="icon">&#128240;</span> Actualit&#233;s <span class="badge-count">3</span>
+
+    </a>
+
+    <a href="#" data-section="evenements" onclick="showSection('evenements',this)">
+
+      <span class="icon">&#128197;</span> &#201;v&#233;nements <span class="badge-count">2</span>
+
+    </a>
+
+    <a href="#" data-section="partenaires" onclick="showSection('partenaires',this)">
+
+      <span class="icon">&#129309;</span> Partenaires
+
+    </a>
+
+    <a href="#" data-section="projets" onclick="showSection('projets',this)">
+
+      <span class="icon">&#128188;</span> Projets &#233;conomiques
+
+    </a>
+
+    <a href="#" data-section="documents" onclick="showSection('documents',this)">
+
+      <span class="icon">&#128193;</span> Documents internes
+
+    </a>
+
+
+
+    <!-- Gestion membres -->
+
+    <div class="db-nav-section">Membres</div>
+
+    <a href="#" data-section="adherents" onclick="showSection('adherents',this)">
+
+      <span class="icon">&#128101;</span> Adh&#233;rents <span class="badge-count">12</span>
+
+    </a>
+
+    <a href="#" data-section="cotisations" onclick="showSection('cotisations',this)">
+
+      <span class="icon">&#128182;</span> Cotisations
+
+    </a>
+
+    <a href="#" data-section="messagerie" onclick="showSection('messagerie',this)">
+
+      <span class="icon">&#128172;</span> Messagerie <span class="badge-count">5</span>
+
+    </a>
+
+
+
+    <!-- Finances -->
+
+    <div class="db-nav-section">Finances</div>
+
+    <a href="#" data-section="budget" onclick="showSection('budget',this)">
+
+      <span class="icon">&#128202;</span> Budget & D&#233;penses
+
+    </a>
+
+    <a href="#" data-section="dons" onclick="showSection('dons',this)">
+
+      <span class="icon">&#127873;</span> Dons & Re&#231;us fiscaux
+
+    </a>
+
+    <a href="financement.html" target="_blank">
+
+      <span class="icon">&#128176;</span> Financement & Subventions
+
+    </a>
+
+
+
+    <!-- Institutionnel -->
+
+    <div class="db-nav-section">Institutionnel</div>
+
+    <a href="#" data-section="collectivites" onclick="showSection('collectivites',this)">
+
+      <span class="icon">&#127963;&#65039;</span> Collectivit&#233;s
+
+    </a>
+
+    <a href="#" data-section="commissions" onclick="showSection('commissions',this)">
+
+      <span class="icon">&#128450;&#65039;</span> Commissions
+
+    </a>
+
+    <a href="#" data-section="pv" onclick="showSection('pv',this)">
+
+      <span class="icon">&#128221;</span> PV & Comptes-rendus
+
+    </a>
+
+  </nav>
+
+
+
+    <!-- Th&#232;me -->
+
+    <div style="padding:.75rem 1rem;border-top:1px solid rgba(255,255,255,.1);">
+
+      <p style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:.5rem;">Th&#232;me</p>
+
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+
+        <button onclick="setMiaTheme('')" title="Clair" style="width:22px;height:22px;border-radius:50%;background:#00703C;border:2px solid rgba(255,255,255,.3);cursor:pointer;"></button>
+
+        <button onclick="setMiaTheme('dark')" title="Sombre" style="width:22px;height:22px;border-radius:50%;background:#161b22;border:2px solid #3fb950;cursor:pointer;"></button>
+
+        <button onclick="setMiaTheme('festif')" title="Festif" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#D4A017,#F77F00);border:2px solid rgba(255,255,255,.3);cursor:pointer;"></button>
+
+        <button onclick="setMiaTheme('lisible')" title="Haute lisibilit&#233;" style="width:22px;height:22px;border-radius:50%;background:#000;border:3px solid #fff;cursor:pointer;"></button>
+
+      </div>
+
+    </div>
+
+  <div class="db-sidebar-footer">
+
+    <a href="espace-membre.html">&#128275; D&#233;connexion</a>
+
+    <a href="dashboard-admin.html">&#9881;&#65039; Acc&#232;s administration</a>
+
+  </div>
+
+</div>
+
+
+
+<!-- &#9472;&#9472; CONTENU PRINCIPAL &#9472;&#9472; -->
+
+<div class="db-wrapper">
+
+  <div><!-- sidebar placeholder --></div>
+
+  <main class="db-main">
+
+
+
+    <!-- TOP BAR -->
+
+    <div class="db-topbar">
+
+      <div>
+
+        <h1 id="dbTitle">Vue d'ensemble</h1>
+
+        <p id="dbSubtitle">Bienvenue, <strong id="dbUserShort">Pr&#233;sident</strong>. Voici l'&#233;tat du site et de l'association.</p>
+
+      </div>
+
+      <!-- S&#233;lecteur de r&#244;le (d&#233;mo) -->
+
+      <div>
+
+        <p style="font-size:.75rem;color:var(--gray-400);margin-bottom:.4rem;text-align:right;">Connexion en tant que :</p>
+
+        <div class="role-switcher">
+
+          <button class="role-btn p active" onclick="switchRole('president')">&#128081; Pr&#233;sident</button>
+
+          <button class="role-btn vp" onclick="switchRole('vice')">&#129309; Vice-Pr&#233;sident</button>
+
+          <button class="role-btn s" onclick="switchRole('secretaire')">&#9997;&#65039; Secr&#233;taire</button>
+
+          <button class="role-btn t" onclick="switchRole('tresorier')">&#128176; Tr&#233;sorier</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : ACCUEIL / VUE D'ENSEMBLE &#9552;&#9552; -->
+
+    <div class="db-section active" id="s-accueil">
+
+
+
+      <!-- KPI selon r&#244;le -->
+
+      <div class="kpi-grid" id="kpiGrid">
+
+        <!-- inject&#233; par JS selon le r&#244;le -->
+
+      </div>
+
+
+
+      <!-- &#9552;&#9552; INDICATEURS DE SUCC&#200;S AITO &#9552;&#9552; -->
+
+      <div class="db-card" style="margin-bottom:1.5rem;">
+
+        <div class="db-card-header">
+
+          <h3>&#127919; Indicateurs de succ&#232;s &#8212; Cahier des charges 2025</h3>
+
+          <span class="badge badge-primary">Objectifs annuels</span>
+
+        </div>
+
+        <div class="db-card-body" style="padding:0;">
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;">
+
+
+
+            <!-- Membres actifs -->
+
+            <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--gray-100);border-right:1px solid var(--gray-100);">
+
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+
+                <div>
+
+                  <p style="font-size:.78rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;">Membres actifs</p>
+
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary-dark);">40 &#8211; 60</div>
+
+                </div>
+
+                <div style="background:rgba(0,112,60,.12);border-radius:10px;padding:.6rem;font-size:1.2rem;">&#128101;</div>
+
+              </div>
+
+              <div style="background:var(--gray-100);border-radius:50px;height:8px;overflow:hidden;">
+
+                <div style="background:var(--primary);height:100%;width:33%;border-radius:50px;transition:width .6s;"></div>
+
+              </div>
+
+              <p style="font-size:.76rem;color:var(--gray-400);margin-top:.4rem;">Sur 400+ Ivoiriens recens&#233;s &#224; Toulouse</p>
+
+            </div>
+
+
+
+            <!-- Taux de participation -->
+
+            <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--gray-100);border-right:1px solid var(--gray-100);">
+
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+
+                <div>
+
+                  <p style="font-size:.78rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;">Taux de participation cible</p>
+
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary-dark);">50 %</div>
+
+                </div>
+
+                <div style="background:rgba(247,127,0,.12);border-radius:10px;padding:.6rem;font-size:1.2rem;">&#128202;</div>
+
+              </div>
+
+              <div style="background:var(--gray-100);border-radius:50px;height:8px;overflow:hidden;">
+
+                <div style="background:var(--accent);height:100%;width:50%;border-radius:50px;transition:width .6s;"></div>
+
+              </div>
+
+              <p style="font-size:.76rem;color:var(--gray-400);margin-top:.4rem;">Des membres pr&#233;sents &#224; chaque &#233;v&#233;nement</p>
+
+            </div>
+
+
+
+            <!-- &#201;v&#233;nements &#224; r&#233;aliser -->
+
+            <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--gray-100);">
+
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+
+                <div>
+
+                  <p style="font-size:.78rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;">&#201;v&#233;nements &#224; r&#233;aliser</p>
+
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary-dark);">12 min.</div>
+
+                </div>
+
+                <div style="background:rgba(59,130,246,.12);border-radius:10px;padding:.6rem;font-size:1.2rem;">&#128197;</div>
+
+              </div>
+
+              <div style="background:var(--gray-100);border-radius:50px;height:8px;overflow:hidden;">
+
+                <div style="background:#2563eb;height:100%;width:25%;border-radius:50px;transition:width .6s;"></div>
+
+              </div>
+
+              <p style="font-size:.76rem;color:var(--gray-400);margin-top:.4rem;">1 &#233;v&#233;nement / mois minimum sur l'ann&#233;e</p>
+
+            </div>
+
+
+
+            <!-- F&#234;te Ind&#233;pendance -->
+
+            <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--gray-100);border-right:1px solid var(--gray-100);">
+
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+
+                <div>
+
+                  <p style="font-size:.78rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;">F&#234;te Ind&#233;pendance 7 Ao&#251;t</p>
+
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary-dark);">100+</div>
+
+                </div>
+
+                <div style="background:rgba(0,112,60,.12);border-radius:10px;padding:.6rem;font-size:1.2rem;">&#127464;&#127470;</div>
+
+              </div>
+
+              <div style="background:var(--gray-100);border-radius:50px;height:8px;overflow:hidden;">
+
+                <div style="background:var(--primary);height:100%;width:0%;border-radius:50px;transition:width .6s;"></div>
+
+              </div>
+
+              <p style="font-size:.76rem;color:var(--gray-400);margin-top:.4rem;">Participants attendus &#8212; Inscriptions &#224; ouvrir</p>
+
+            </div>
+
+
+
+            <!-- Nouveaux membres -->
+
+            <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--gray-100);border-right:1px solid var(--gray-100);">
+
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+
+                <div>
+
+                  <p style="font-size:.78rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;">Nouveaux membres / an</p>
+
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary-dark);">15 &#8211; 20</div>
+
+                </div>
+
+                <div style="background:rgba(139,92,246,.12);border-radius:10px;padding:.6rem;font-size:1.2rem;">&#127381;</div>
+
+              </div>
+
+              <div style="background:var(--gray-100);border-radius:50px;height:8px;overflow:hidden;">
+
+                <div style="background:#7c3aed;height:100%;width:40%;border-radius:50px;transition:width .6s;"></div>
+
+              </div>
+
+              <p style="font-size:.76rem;color:var(--gray-400);margin-top:.4rem;">Via rentr&#233;e associative + bouche-&#224;-oreille</p>
+
+            </div>
+
+
+
+            <!-- Publications Instagram -->
+
+            <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--gray-100);">
+
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+
+                <div>
+
+                  <p style="font-size:.78rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;">Publications Instagram</p>
+
+                  <div style="font-size:1.6rem;font-weight:800;color:var(--primary-dark);">4 / mois</div>
+
+                </div>
+
+                <div style="background:rgba(236,72,153,.12);border-radius:10px;padding:.6rem;font-size:1.2rem;">&#128248;</div>
+
+              </div>
+
+              <div style="background:var(--gray-100);border-radius:50px;height:8px;overflow:hidden;">
+
+                <div style="background:#db2777;height:100%;width:50%;border-radius:50px;transition:width .6s;"></div>
+
+              </div>
+
+              <p style="font-size:.76rem;color:var(--gray-400);margin-top:.4rem;">Minimum requis pour la visibilit&#233; de l'association</p>
+
+            </div>
+
+
+
+          </div>
+
+
+
+          <!-- L&#233;gende -->
+
+          <div style="padding:1rem 1.5rem;background:var(--gray-50);border-top:1px solid var(--gray-200);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+
+            <span style="font-size:.78rem;color:var(--gray-500);font-weight:600;">Progression :</span>
+
+            <span style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gray-600);">
+
+              <span style="display:inline-block;width:20px;height:6px;border-radius:50px;background:var(--primary);"></span> Objectif atteint
+
+            </span>
+
+            <span style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gray-600);">
+
+              <span style="display:inline-block;width:20px;height:6px;border-radius:50px;background:var(--accent);"></span> En cours
+
+            </span>
+
+            <span style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gray-600);">
+
+              <span style="display:inline-block;width:20px;height:6px;border-radius:50px;background:var(--gray-200);"></span> &#192; d&#233;marrer
+
+            </span>
+
+            <span style="margin-left:auto;font-size:.78rem;color:var(--gray-400);">Source : Cahier des charges AITO v1.0 &#8212; 2025</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="db-two-col">
+
+        <!-- Activit&#233; r&#233;cente -->
+
+        <div class="db-card">
+
+          <div class="db-card-header">
+
+            <h3>&#9889; Activit&#233; r&#233;cente</h3>
+
+            <span class="badge badge-green">En direct</span>
+
+          </div>
+
+          <div class="db-card-body" style="padding:0;">
+
+            <div style="display:flex;flex-direction:column;">
+
+              <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--gray-100);display:flex;gap:.85rem;align-items:flex-start;">
+
+                <span style="font-size:1.2rem;">&#128100;</span>
+
+                <div><p style="font-size:.88rem;color:var(--gray-800);">Nouvelle adh&#233;sion &#8212; <strong>Marie Dupont</strong></p><p style="font-size:.76rem;color:var(--gray-400);">Il y a 12 min &#183; En attente de validation</p></div>
+
+                <span class="badge badge-accent" style="margin-left:auto;flex-shrink:0;">Nouveau</span>
+
+              </div>
+
+              <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--gray-100);display:flex;gap:.85rem;align-items:flex-start;">
+
+                <span style="font-size:1.2rem;">&#128182;</span>
+
+                <div><p style="font-size:.88rem;color:var(--gray-800);">Cotisation re&#231;ue &#8212; <strong>Ali Traor&#233;</strong> (30&#8364;)</p><p style="font-size:.76rem;color:var(--gray-400);">Il y a 1h &#183; Valid&#233; automatiquement</p></div>
+
+                <span class="badge badge-green" style="margin-left:auto;flex-shrink:0;">Pay&#233;</span>
+
+              </div>
+
+              <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--gray-100);display:flex;gap:.85rem;align-items:flex-start;">
+
+                <span style="font-size:1.2rem;">&#128221;</span>
+
+                <div><p style="font-size:.88rem;color:var(--gray-800);">Demande collectivit&#233; &#8212; Salle du Conseil</p><p style="font-size:.76rem;color:var(--gray-400);">Hier &#183; Soumis &#224; la mairie de Toulouse</p></div>
+
+                <span class="badge badge-primary" style="margin-left:auto;flex-shrink:0;">En cours</span>
+
+              </div>
+
+              <div style="padding:.85rem 1.25rem;display:flex;gap:.85rem;align-items:flex-start;">
+
+                <span style="font-size:1.2rem;">&#129309;</span>
+
+                <div><p style="font-size:.88rem;color:var(--gray-800);">Dossier partenaire &#8212; Assurances S&#233;r&#233;nit&#233;</p><p style="font-size:.76rem;color:var(--gray-400);">Il y a 2 jours &#183; &#192; valider</p></div>
+
+                <span class="badge badge-accent" style="margin-left:auto;flex-shrink:0;">&#192; valider</span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Actions rapides selon r&#244;le -->
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#128640; Actions rapides</h3></div>
+
+          <div class="db-card-body" id="quickActions">
+
+            <!-- inject&#233; par JS -->
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Agenda &#224; venir -->
+
+      <div class="db-card" style="margin-top:1.5rem;">
+
+        <div class="db-card-header"><h3>&#128197; Prochains &#233;v&#233;nements</h3><a href="#" onclick="showSection('evenements',null)" style="color:var(--accent);font-size:.85rem;font-weight:600;">Tout g&#233;rer &#8594;</a></div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>&#201;v&#233;nement</th><th>Date</th><th>Lieu</th><th>Inscrits</th><th>Statut</th><th>Action</th></tr></thead>
+
+            <tbody>
+
+              <tr><td><strong>Assembl&#233;e G&#233;n&#233;rale</strong></td><td>15 juin 2025</td><td>Mairie &#8212; Salle conseil</td><td>38 / 80</td><td><span class="status status-ok">Ouvert</span></td><td><button class="btn btn-dark" style="padding:.3rem .8rem;font-size:.78rem;">G&#233;rer</button></td></tr>
+
+              <tr><td><strong>Gala annuel</strong></td><td>28 juin 2025</td><td>Salle des f&#234;tes</td><td>62 / 100</td><td><span class="status status-warn">Presque complet</span></td><td><button class="btn btn-primary" style="padding:.3rem .8rem;font-size:.78rem;">G&#233;rer</button></td></tr>
+
+              <tr><td><strong>Tournoi sportif</strong></td><td>12 juil. 2025</td><td>Stade municipal</td><td>24 / 60</td><td><span class="status status-ok">Ouvert</span></td><td><button class="btn btn-dark" style="padding:.3rem .8rem;font-size:.78rem;">G&#233;rer</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : ACTUALIT&#201;S &#9552;&#9552; -->
+
+    <div class="db-section" id="s-actualites">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128240; G&#233;rer les actualit&#233;s</h3>
+
+          <button class="btn btn-primary" style="padding:.45rem 1rem;font-size:.85rem;" onclick="toggleForm('formActu')">+ Nouvelle actualit&#233;</button>
+
+        </div>
+
+        <div class="db-card-body" id="formActu" style="display:none;border-bottom:1px solid var(--gray-200);padding-bottom:1.5rem;margin-bottom:1.5rem;">
+
+          <form data-form="actucreate" style="display:flex;flex-direction:column;gap:1rem;">
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Titre *</label><input type="text" required placeholder="Titre de l'actualit&#233;"></div>
+
+              <div class="form-group"><label>Cat&#233;gorie</label>
+
+                <select><option>Communiqu&#233;</option><option>&#201;v&#233;nement</option><option>Partenariat</option><option>Projets</option></select>
+
+              </div>
+
+            </div>
+
+            <div class="form-group"><label>R&#233;sum&#233;</label><input type="text" placeholder="Court r&#233;sum&#233; affich&#233; en liste"></div>
+
+            <div class="form-group">
+
+              <label>Contenu *</label>
+
+              <div class="editor-toolbar">
+
+                <button type="button">G</button><button type="button"><em>I</em></button><button type="button"><u>U</u></button>
+
+                <button type="button">H2</button><button type="button">&#128279; Lien</button><button type="button">&#128247; Image</button>
+
+              </div>
+
+              <textarea class="editor-area" required placeholder="R&#233;digez le contenu complet ici..."></textarea>
+
+            </div>
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Date de publication</label><input type="date"></div>
+
+              <div class="form-group"><label>Statut</label>
+
+                <select><option>Brouillon</option><option>Publi&#233;</option><option>Archiv&#233;</option></select>
+
+              </div>
+
+            </div>
+
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+
+              <button type="submit" class="btn btn-primary">Publier l'actualit&#233;</button>
+
+              <button type="button" class="btn btn-dark" onclick="toggleForm('formActu')">Annuler</button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Titre</th><th>Cat&#233;gorie</th><th>Date</th><th>Auteur</th><th>Statut</th><th>Actions</th></tr></thead>
+
+            <tbody>
+
+              <tr><td><strong>AG Annuelle 2025 &#8212; Convocation</strong></td><td>Communiqu&#233;</td><td>15 mai 2025</td><td>Pr&#233;sident</td><td><span class="status status-ok">Publi&#233;</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039;</button> <button onclick="confirmDelete(this)" class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;background:rgba(220,38,38,.12);color:#dc2626;border-color:#dc2626;">&#128465;&#65039;</button></td></tr>
+
+              <tr><td><strong>Gala annuel &#8212; Inscriptions ouvertes</strong></td><td>&#201;v&#233;nement</td><td>2 mai 2025</td><td>Vice-Pr&#233;sident</td><td><span class="status status-ok">Publi&#233;</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039;</button> <button onclick="confirmDelete(this)" class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;background:rgba(220,38,38,.12);color:#dc2626;border-color:#dc2626;">&#128465;&#65039;</button></td></tr>
+
+              <tr><td><strong>Nouveau partenaire : Assurances S&#233;r&#233;nit&#233;</strong></td><td>Partenariat</td><td>20 avr. 2025</td><td>Secr&#233;taire</td><td><span class="status status-warn">Brouillon</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039;</button> <button onclick="confirmDelete(this)" class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;background:rgba(220,38,38,.12);color:#dc2626;border-color:#dc2626;">&#128465;&#65039;</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : &#201;V&#201;NEMENTS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-evenements">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128197; G&#233;rer les &#233;v&#233;nements</h3>
+
+          <button class="btn btn-primary" style="padding:.45rem 1rem;font-size:.85rem;" onclick="toggleForm('formEvent')">+ Nouvel &#233;v&#233;nement</button>
+
+        </div>
+
+        <div class="db-card-body" id="formEvent" style="display:none;border-bottom:1px solid var(--gray-200);padding-bottom:1.5rem;margin-bottom:1.5rem;">
+
+          <form data-form="eventcreate" style="display:flex;flex-direction:column;gap:1rem;">
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Nom de l'&#233;v&#233;nement *</label><input type="text" required></div>
+
+              <div class="form-group"><label>Type</label>
+
+                <select><option>Assembl&#233;e</option><option>Gala / Soir&#233;e</option><option>Sport</option><option>Culturel</option><option>Formation</option></select>
+
+              </div>
+
+            </div>
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Date *</label><input type="date" required></div>
+
+              <div class="form-group"><label>Heure</label><input type="time" value="19:00"></div>
+
+            </div>
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Lieu *</label><input type="text" required placeholder="Adresse compl&#232;te"></div>
+
+              <div class="form-group"><label>Capacit&#233; max.</label><input type="number" min="1" value="100"></div>
+
+            </div>
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Tarif (0 = gratuit)</label><input type="number" min="0" value="0" step="0.50">
+
+              </div>
+
+              <div class="form-group"><label>Acc&#232;s</label>
+
+                <select><option>Ouvert &#224; tous</option><option>Adh&#233;rents uniquement</option><option>Bureau uniquement</option></select>
+
+              </div>
+
+            </div>
+
+            <div class="form-group"><label>Description</label><textarea placeholder="D&#233;tails de l'&#233;v&#233;nement..." style="min-height:100px;width:100%;padding:.75rem;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-family:inherit;font-size:.93rem;"></textarea></div>
+
+            <div style="display:flex;gap:.75rem;">
+
+              <button type="submit" class="btn btn-primary">Cr&#233;er l'&#233;v&#233;nement</button>
+
+              <button type="button" class="btn btn-dark" onclick="toggleForm('formEvent')">Annuler</button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>&#201;v&#233;nement</th><th>Date</th><th>Inscrits</th><th>Tarif</th><th>Statut</th><th>Actions</th></tr></thead>
+
+            <tbody>
+
+              <tr><td><strong>Assembl&#233;e G&#233;n&#233;rale</strong></td><td>15 juin 2025</td><td>38 / 80</td><td>Gratuit</td><td><span class="status status-ok">Ouvert</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td></tr>
+
+              <tr><td><strong>Gala annuel</strong></td><td>28 juin 2025</td><td>62 / 100</td><td>25&#8364;</td><td><span class="status status-warn">Presque complet</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td></tr>
+
+              <tr><td><strong>Tournoi sportif</strong></td><td>12 juil. 2025</td><td>24 / 60</td><td>Gratuit</td><td><span class="status status-ok">Ouvert</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : ADH&#201;RENTS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-adherents">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128101; Gestion des adh&#233;rents</h3>
+
+          <div style="display:flex;gap:.75rem;align-items:center;">
+
+            <input type="search" placeholder="Rechercher un membre&#8230;" style="padding:.45rem .9rem;border:1.5px solid var(--gray-200);border-radius:50px;font-size:.85rem;">
+
+            <button class="btn btn-primary" style="padding:.45rem 1rem;font-size:.85rem;">+ Ajouter</button>
+
+          </div>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Membre</th><th>Formule</th><th>Cotisation</th><th>Depuis</th><th>Statut</th><th>Actions</th></tr></thead>
+
+            <tbody>
+
+              <tr><td><div><strong>Jean-Baptiste Kon&#233;</strong><br><small style="color:var(--gray-400);">president@mia.fr</small></div></td><td>Famille</td><td>50&#8364; / pay&#233;</td><td>2019</td><td><span class="status status-ok">Actif</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">Fiche</button></td></tr>
+
+              <tr><td><div><strong>Aminata Coulibaly</strong><br><small style="color:var(--gray-400);">aminata.c@mail.com</small></div></td><td>Actif</td><td>30&#8364; / pay&#233;</td><td>2021</td><td><span class="status status-ok">Actif</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">Fiche</button></td></tr>
+
+              <tr><td><div><strong>Pierre Diallo</strong><br><small style="color:var(--gray-400);">p.diallo@mail.com</small></div></td><td>&#201;tudiant</td><td>15&#8364; / <strong style="color:#dc2626;">impay&#233;</strong></td><td>2024</td><td><span class="status status-err">Relance</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">Relancer</button></td></tr>
+
+              <tr><td><div><strong>Fatou Traor&#233;</strong><br><small style="color:var(--gray-400);">fatou.t@mail.com</small></div></td><td>Actif</td><td>30&#8364; / pay&#233;</td><td>2022</td><td><span class="status status-ok">Actif</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">Fiche</button></td></tr>
+
+              <tr><td><div><strong>Marie Dupont</strong><br><small style="color:var(--gray-400);">marie.d@mail.com</small></div></td><td>Actif</td><td>&#8212;</td><td>2025</td><td><span class="status status-warn">En attente</span></td><td><button class="btn btn-primary" style="padding:.3rem .7rem;font-size:.76rem;">Valider</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <div style="padding:1rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;border-top:1px solid var(--gray-200);">
+
+          <button class="btn btn-dark" style="font-size:.82rem;padding:.45rem 1rem;">&#128229; Exporter CSV</button>
+
+          <button class="btn btn-dark" style="font-size:.82rem;padding:.45rem 1rem;">&#128231; Envoyer relances</button>
+
+          <button class="btn btn-dark" style="font-size:.82rem;padding:.45rem 1rem;">&#128203; Importer liste</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : COTISATIONS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-cotisations">
+
+      <div class="kpi-grid">
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(0,112,60,.12);">&#128182;</div><div><h4>Total encaiss&#233;</h4><div class="kpi-value">3 450&#8364;</div><div class="kpi-delta">&#8593; +12% vs 2024</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(247,127,0,.12);">&#9203;</div><div><h4>En attente</h4><div class="kpi-value">3</div><div class="kpi-delta down">Relances &#224; envoyer</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(34,197,94,.12);">&#9989;</div><div><h4>Adh&#233;rents &#224; jour</h4><div class="kpi-value">112</div><div class="kpi-delta">sur 115 membres</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(139,92,246,.12);">&#128196;</div><div><h4>Re&#231;us &#233;mis</h4><div class="kpi-value">112</div><div class="kpi-delta">T&#233;l&#233;chargeables</div></div></div>
+
+      </div>
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128182; Historique des paiements</h3>
+
+          <button class="btn btn-dark" style="font-size:.82rem;padding:.45rem 1rem;">&#128229; Exporter</button>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Membre</th><th>Type</th><th>Montant</th><th>Date</th><th>M&#233;thode</th><th>Re&#231;u</th></tr></thead>
+
+            <tbody>
+
+              <tr><td>Aminata Coulibaly</td><td>Cotisation</td><td><strong>30&#8364;</strong></td><td>3 avr. 2025</td><td>CB en ligne</td><td><button class="btn btn-dark" style="padding:.25rem .7rem;font-size:.75rem;">&#128196; PDF</button></td></tr>
+
+              <tr><td>Ali Traor&#233;</td><td>Cotisation</td><td><strong>30&#8364;</strong></td><td>3 avr. 2025</td><td>CB en ligne</td><td><button class="btn btn-dark" style="padding:.25rem .7rem;font-size:.75rem;">&#128196; PDF</button></td></tr>
+
+              <tr><td>Jean-Baptiste Kon&#233;</td><td>Famille</td><td><strong>50&#8364;</strong></td><td>1 janv. 2025</td><td>Virement</td><td><button class="btn btn-dark" style="padding:.25rem .7rem;font-size:.75rem;">&#128196; PDF</button></td></tr>
+
+              <tr><td>Club Diaspora</td><td>Don</td><td><strong>200&#8364;</strong></td><td>20 f&#233;v. 2025</td><td>Ch&#232;que</td><td><button class="btn btn-dark" style="padding:.25rem .7rem;font-size:.75rem;">&#128196; PDF</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : BUDGET &#9552;&#9552; -->
+
+    <div class="db-section" id="s-budget">
+
+      <div class="kpi-grid">
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(0,112,60,.12);">&#128176;</div><div><h4>Solde disponible</h4><div class="kpi-value">8 240&#8364;</div><div class="kpi-delta">Tr&#233;sorerie association</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(34,197,94,.12);">&#128200;</div><div><h4>Recettes 2025</h4><div class="kpi-value">5 650&#8364;</div><div class="kpi-delta">&#8593; +8% vs 2024</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(220,38,38,.12);">&#128201;</div><div><h4>D&#233;penses 2025</h4><div class="kpi-value">2 180&#8364;</div><div class="kpi-delta down">&#8593; +5% vs 2024</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(139,92,246,.12);">&#128202;</div><div><h4>R&#233;sultat net</h4><div class="kpi-value">+3 470&#8364;</div><div class="kpi-delta">Exc&#233;dent</div></div></div>
+
+      </div>
+
+      <div class="db-two-col">
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#128200; Recettes</h3><button class="btn btn-primary" style="font-size:.8rem;padding:.35rem .8rem;">+ Saisir</button></div>
+
+          <div class="db-table-wrap">
+
+            <table class="db-table">
+
+              <thead><tr><th>Libell&#233;</th><th>Montant</th><th>Date</th></tr></thead>
+
+              <tbody>
+
+                <tr><td>Cotisations membres</td><td><strong style="color:var(--primary);">3 450&#8364;</strong></td><td>2025</td></tr>
+
+                <tr><td>Gala 2024</td><td><strong style="color:var(--primary);">1 800&#8364;</strong></td><td>d&#233;c. 2024</td></tr>
+
+                <tr><td>Subvention mairie</td><td><strong style="color:var(--primary);">400&#8364;</strong></td><td>f&#233;v. 2025</td></tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#128201; D&#233;penses</h3><button class="btn btn-primary" style="font-size:.8rem;padding:.35rem .8rem;">+ Saisir</button></div>
+
+          <div class="db-table-wrap">
+
+            <table class="db-table">
+
+              <thead><tr><th>Libell&#233;</th><th>Montant</th><th>Date</th></tr></thead>
+
+              <tbody>
+
+                <tr><td>Location salle AG</td><td><strong style="color:#dc2626;">-350&#8364;</strong></td><td>mars 2025</td></tr>
+
+                <tr><td>Communication / Flyers</td><td><strong style="color:#dc2626;">-180&#8364;</strong></td><td>avr. 2025</td></tr>
+
+                <tr><td>Frais bancaires</td><td><strong style="color:#dc2626;">-45&#8364;</strong></td><td>2025</td></tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : DOCUMENTS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-documents">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128193; Documents internes</h3>
+
+          <label class="btn btn-primary" style="padding:.45rem 1rem;font-size:.85rem;cursor:pointer;">
+
+            + D&#233;poser un document <input type="file" style="display:none;" multiple>
+
+          </label>
+
+        </div>
+
+        <div class="db-card-body">
+
+          <div style="display:flex;flex-direction:column;gap:.75rem;">
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200);">
+
+              <span style="font-size:1.5rem;">&#128196;</span>
+
+              <div style="flex:1;"><p style="font-weight:600;font-size:.9rem;">PV Assembl&#233;e G&#233;n&#233;rale 2024.pdf</p><p style="font-size:.78rem;color:var(--gray-400);">1.2 Mo &#183; Partag&#233; avec : Membres &#183; 12 avr. 2024</p></div>
+
+              <span class="badge badge-primary">Membres</span>
+
+              <button class="btn btn-dark" style="padding:.3rem .75rem;font-size:.78rem;">&#11015;&#65039;</button>
+
+              <button onclick="confirmDelete(this)" class="btn btn-dark" style="padding:.3rem .75rem;font-size:.78rem;color:#dc2626;border-color:#dc2626;">&#128465;&#65039;</button>
+
+            </div>
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200);">
+
+              <span style="font-size:1.5rem;">&#128202;</span>
+
+              <div style="flex:1;"><p style="font-weight:600;font-size:.9rem;">Rapport financier 2024.xlsx</p><p style="font-size:.78rem;color:var(--gray-400);">245 Ko &#183; Partag&#233; avec : Bureau &#183; 15 janv. 2025</p></div>
+
+              <span class="badge badge-accent">Bureau</span>
+
+              <button class="btn btn-dark" style="padding:.3rem .75rem;font-size:.78rem;">&#11015;&#65039;</button>
+
+              <button onclick="confirmDelete(this)" class="btn btn-dark" style="padding:.3rem .75rem;font-size:.78rem;color:#dc2626;border-color:#dc2626;">&#128465;&#65039;</button>
+
+            </div>
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200);">
+
+              <span style="font-size:1.5rem;">&#128221;</span>
+
+              <div style="flex:1;"><p style="font-weight:600;font-size:.9rem;">Statuts de l'association AITO.pdf</p><p style="font-size:.78rem;color:var(--gray-400);">890 Ko &#183; Partag&#233; avec : Tous &#183; 1 janv. 2020</p></div>
+
+              <span class="badge badge-green">Public</span>
+
+              <button class="btn btn-dark" style="padding:.3rem .75rem;font-size:.78rem;">&#11015;&#65039;</button>
+
+              <button onclick="confirmDelete(this)" class="btn btn-dark" style="padding:.3rem .75rem;font-size:.78rem;color:#dc2626;border-color:#dc2626;">&#128465;&#65039;</button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : PARTENAIRES &#9552;&#9552; -->
+
+    <div class="db-section" id="s-partenaires">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#129309; Dossiers partenaires</h3></div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Entreprise</th><th>Secteur</th><th>Contact</th><th>D&#233;pos&#233; le</th><th>Statut</th><th>Actions</th></tr></thead>
+
+            <tbody>
+
+              <tr><td><strong>Assurances S&#233;r&#233;nit&#233;</strong></td><td>Assurances</td><td>contact@serenite.fr</td><td>1 avr. 2025</td><td><span class="status status-warn">&#192; valider</span></td>
+
+                <td><button class="btn btn-primary" style="padding:.3rem .7rem;font-size:.76rem;">&#9989; Valider</button> <button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;color:#dc2626;border-color:#dc2626;">&#10060; Refuser</button></td>
+
+              </tr>
+
+              <tr><td><strong>Le Saveur d'Afrique</strong></td><td>Restauration</td><td>contact@saveur.fr</td><td>10 mars 2025</td><td><span class="status status-ok">Publi&#233;</span></td>
+
+                <td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td>
+
+              </tr>
+
+              <tr><td><strong>VTC Confort Plus</strong></td><td>Transport</td><td>info@vtcconfort.fr</td><td>5 f&#233;v. 2025</td><td><span class="status status-ok">Publi&#233;</span></td>
+
+                <td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : MESSAGERIE &#9552;&#9552; -->
+
+    <div class="db-section" id="s-messagerie">
+
+      <div class="db-two-col">
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#128236; Messages re&#231;us</h3></div>
+
+          <div style="display:flex;flex-direction:column;">
+
+            <div style="padding:.9rem 1.25rem;border-bottom:1px solid var(--gray-100);cursor:pointer;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background=''">
+
+              <div style="display:flex;justify-content:space-between;"><strong style="font-size:.9rem;">Marie Dupont</strong><span style="font-size:.76rem;color:var(--gray-400);">Il y a 12 min</span></div>
+
+              <p style="font-size:.83rem;color:var(--gray-600);margin-top:.2rem;">Demande d'informations sur l'adh&#233;sion familiale&#8230;</p>
+
+            </div>
+
+            <div style="padding:.9rem 1.25rem;border-bottom:1px solid var(--gray-100);cursor:pointer;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background=''">
+
+              <div style="display:flex;justify-content:space-between;"><strong style="font-size:.9rem;">Ali Traor&#233;</strong><span style="font-size:.76rem;color:var(--gray-400);">Il y a 2h</span></div>
+
+              <p style="font-size:.83rem;color:var(--gray-600);margin-top:.2rem;">Question concernant le gala du 28 juin&#8230;</p>
+
+            </div>
+
+            <div style="padding:.9rem 1.25rem;cursor:pointer;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background=''">
+
+              <div style="display:flex;justify-content:space-between;"><strong style="font-size:.9rem;">Mairie de Toulouse</strong><span style="font-size:.76rem;color:var(--gray-400);">Hier</span></div>
+
+              <p style="font-size:.83rem;color:var(--gray-600);margin-top:.2rem;">R&#233;ponse &#224; votre demande de mise &#224; disposition de salle&#8230;</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#9993;&#65039; Nouveau message</h3></div>
+
+          <div class="db-card-body">
+
+            <form data-form="message" style="display:flex;flex-direction:column;gap:1rem;">
+
+              <div class="form-group"><label>Destinataire</label>
+
+                <select><option>Tous les membres</option><option>Bureau uniquement</option><option>Membres actifs</option><option>Message individuel</option></select>
+
+              </div>
+
+              <div class="form-group"><label>Objet</label><input type="text" placeholder="Sujet du message"></div>
+
+              <div class="form-group"><label>Message</label><textarea style="min-height:120px;width:100%;padding:.75rem;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-family:inherit;font-size:.93rem;" placeholder="Votre message..."></textarea></div>
+
+              <button type="submit" class="btn btn-primary">Envoyer</button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : PV & COMPTES-RENDUS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-pv">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128221; PV & Comptes-rendus</h3>
+
+          <button class="btn btn-primary" style="padding:.45rem 1rem;font-size:.85rem;" onclick="toggleForm('formPV')">+ R&#233;diger un CR</button>
+
+        </div>
+
+        <div class="db-card-body" id="formPV" style="display:none;border-bottom:1px solid var(--gray-200);padding-bottom:1.5rem;margin-bottom:1.5rem;">
+
+          <form data-form="pvcreate" style="display:flex;flex-direction:column;gap:1rem;">
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Type de r&#233;union</label>
+
+                <select><option>Assembl&#233;e G&#233;n&#233;rale</option><option>R&#233;union de bureau</option><option>Commission</option><option>Autre</option></select>
+
+              </div>
+
+              <div class="form-group"><label>Date de la r&#233;union</label><input type="date"></div>
+
+            </div>
+
+            <div class="form-group"><label>Participants</label><input type="text" placeholder="Noms s&#233;par&#233;s par des virgules"></div>
+
+            <div class="form-group">
+
+              <label>Contenu du PV / CR *</label>
+
+              <div class="editor-toolbar"><button type="button">G</button><button type="button"><em>I</em></button><button type="button">H2</button><button type="button">&#128203; Liste</button></div>
+
+              <textarea class="editor-area" required placeholder="Ordre du jour, discussions, d&#233;cisions prises, votes&#8230;"></textarea>
+
+            </div>
+
+            <div class="form-row">
+
+              <div class="form-group"><label>Acc&#232;s</label>
+
+                <select><option>Bureau uniquement</option><option>Tous les membres</option></select>
+
+              </div>
+
+              <div class="form-group"><label>Statut</label>
+
+                <select><option>Brouillon</option><option>Valid&#233; et publi&#233;</option></select>
+
+              </div>
+
+            </div>
+
+            <div style="display:flex;gap:.75rem;">
+
+              <button type="submit" class="btn btn-primary">Publier le CR</button>
+
+              <button type="button" class="btn btn-dark" onclick="toggleForm('formPV')">Annuler</button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Type</th><th>Date r&#233;union</th><th>R&#233;dig&#233; par</th><th>Acc&#232;s</th><th>Statut</th><th>Action</th></tr></thead>
+
+            <tbody>
+
+              <tr><td>Assembl&#233;e G&#233;n&#233;rale</td><td>15 juin 2024</td><td>Secr&#233;taire</td><td>Membres</td><td><span class="status status-ok">Publi&#233;</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#11015;&#65039; PDF</button></td></tr>
+
+              <tr><td>R&#233;union de bureau</td><td>3 mars 2025</td><td>Secr&#233;taire</td><td>Bureau</td><td><span class="status status-ok">Publi&#233;</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#11015;&#65039; PDF</button></td></tr>
+
+              <tr><td>Commission sociale</td><td>10 avr. 2025</td><td>VP</td><td>Bureau</td><td><span class="status status-warn">Brouillon</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : COLLECTIVIT&#201;S &#9552;&#9552; -->
+
+    <div class="db-section" id="s-collectivites">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#127963;&#65039; Suivi des demandes collectivit&#233;s</h3><button class="btn btn-primary" style="padding:.45rem 1rem;font-size:.85rem;">+ Nouvelle demande</button></div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Type</th><th>Institution</th><th>Objet</th><th>D&#233;pos&#233;</th><th>Statut</th><th>R&#233;ponse</th></tr></thead>
+
+            <tbody>
+
+              <tr><td>Subvention</td><td>Mairie Toulouse</td><td>Soutien gala 2025</td><td>10 mars 2025</td><td><span class="status status-warn">En attente</span></td><td>&#8212;</td></tr>
+
+              <tr><td>Mise &#224; dispo salle</td><td>Mairie Toulouse</td><td>Salle conseil &#8212; AG</td><td>5 avr. 2025</td><td><span class="status status-ok">Accord&#233;</span></td><td><button class="btn btn-dark" style="padding:.25rem .7rem;font-size:.75rem;">&#128196; Voir</button></td></tr>
+
+              <tr><td>Autorisation</td><td>Pr&#233;fecture H&#233;rault</td><td>Manifestation sportive</td><td>20 avr. 2025</td><td><span class="status status-warn">En cours</span></td><td>&#8212;</td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : COMMISSIONS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-commissions">
+
+      <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+
+        <div class="db-card"><div class="db-card-header"><h3>&#128101; Commission Sociale</h3><span class="badge badge-green">Active</span></div><div class="db-card-body"><p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1rem;">Solidarit&#233;, aide aux membres en difficult&#233;, actions humanitaires.</p><p style="font-size:.82rem;"><strong>Responsable :</strong> Fatou Traor&#233;</p><p style="font-size:.82rem;"><strong>Membres :</strong> 6 b&#233;n&#233;voles</p><p style="font-size:.82rem;"><strong>Prochaine r&#233;union :</strong> 10 mai 2025</p><a href="#" class="card-link" style="margin-top:.75rem;">G&#233;rer &#8594;</a></div></div>
+
+        <div class="db-card"><div class="db-card-header"><h3>&#128188; Commission &#201;conomique</h3><span class="badge badge-green">Active</span></div><div class="db-card-body"><p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1rem;">Projets &#233;conomiques, mise en relation avec investisseurs.</p><p style="font-size:.82rem;"><strong>Responsable :</strong> Moussa Kon&#233;</p><p style="font-size:.82rem;"><strong>Membres :</strong> 4 b&#233;n&#233;voles</p><p style="font-size:.82rem;"><strong>Prochaine r&#233;union :</strong> 15 mai 2025</p><a href="#" class="card-link" style="margin-top:.75rem;">G&#233;rer &#8594;</a></div></div>
+
+        <div class="db-card"><div class="db-card-header"><h3>&#127917; Commission Culturelle</h3><span class="badge badge-accent">En pause</span></div><div class="db-card-body"><p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1rem;">&#201;v&#233;nements culturels, promotion des arts et traditions.</p><p style="font-size:.82rem;"><strong>Responsable :</strong> Aminata Diallo</p><p style="font-size:.82rem;"><strong>Membres :</strong> 3 b&#233;n&#233;voles</p><p style="font-size:.82rem;"><strong>Prochaine r&#233;union :</strong> Non planifi&#233;e</p><a href="#" class="card-link" style="margin-top:.75rem;">G&#233;rer &#8594;</a></div></div>
+
+        <div class="db-card"><div class="db-card-header"><h3>&#9917; Commission Sport</h3><span class="badge badge-green">Active</span></div><div class="db-card-body"><p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1rem;">Tournois, animations sportives et bien-&#234;tre.</p><p style="font-size:.82rem;"><strong>Responsable :</strong> Ibrahim Sanogo</p><p style="font-size:.82rem;"><strong>Membres :</strong> 5 b&#233;n&#233;voles</p><p style="font-size:.82rem;"><strong>Prochaine r&#233;union :</strong> 8 mai 2025</p><a href="#" class="card-link" style="margin-top:.75rem;">G&#233;rer &#8594;</a></div></div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : PROJETS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-projets">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128188; Projets &#233;conomiques soumis</h3></div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Projet</th><th>Porteur</th><th>Secteur</th><th>Recherche</th><th>Statut</th><th>Actions</th></tr></thead>
+
+            <tbody>
+
+              <tr><td><strong>&#201;picerie communautaire en ligne</strong></td><td>A. Diallo</td><td>Commerce</td><td>15 000&#8364;</td><td><span class="status status-warn">En &#233;valuation</span></td>
+
+                <td><button class="btn btn-primary" style="padding:.3rem .7rem;font-size:.76rem;">&#9989; Valider</button> <button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039;</button></td>
+
+              </tr>
+
+              <tr><td><strong>Centre soutien scolaire</strong></td><td>F. Traor&#233;</td><td>&#201;ducation</td><td>Partenaires</td><td><span class="status status-ok">Publi&#233;</span></td>
+
+                <td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#9999;&#65039; Modifier</button></td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : DONS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-dons">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#127873; Dons & Re&#231;us fiscaux</h3><button class="btn btn-dark" style="font-size:.82rem;padding:.45rem 1rem;">&#128229; Exporter</button></div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Donateur</th><th>Montant</th><th>Date</th><th>Re&#231;u fiscal</th><th>Action</th></tr></thead>
+
+            <tbody>
+
+              <tr><td>Club Diaspora Toulouse</td><td><strong>200&#8364;</strong></td><td>20 f&#233;v. 2025</td><td><span class="status status-ok">&#201;mis</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#128196; T&#233;l&#233;charger</button></td></tr>
+
+              <tr><td>Anonyme</td><td><strong>50&#8364;</strong></td><td>5 mars 2025</td><td><span class="status status-ok">&#201;mis</span></td><td><button class="btn btn-dark" style="padding:.3rem .7rem;font-size:.76rem;">&#128196; T&#233;l&#233;charger</button></td></tr>
+
+              <tr><td>Ibrahim Sanogo</td><td><strong>100&#8364;</strong></td><td>1 avr. 2025</td><td><span class="status status-warn">&#192; &#233;mettre</span></td><td><button class="btn btn-primary" style="padding:.3rem .7rem;font-size:.76rem;">G&#233;n&#233;rer</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+  </main>
+
+</div>
+
+
+
+<!-- Bouton sidebar mobile -->
+
+<button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()">&#9776;</button>
+
+
+
+<script src="js/main.js"></script>
+
+<script>
+
+// &#9472;&#9472; Donn&#233;es par r&#244;le &#9472;&#9472;
+
+const roles = {
+
+  president: {
+
+    label: '&#128081; Pr&#233;sident',
+
+    cls: 'role-president',
+
+    name: 'Jean-Baptiste Kon&#233;',
+
+    email: 'president@aito34.fr',
+
+    subtitle: 'Pr&#233;sident &#8212; Vue d\'ensemble et supervision',
+
+    kpis: [
+
+      { icon: '&#128101;', color: 'rgba(0,112,60,.12)', label: 'Adh&#233;rents actifs', value: '115', delta: '&#8593; +8 ce mois' },
+
+      { icon: '&#128182;', color: 'rgba(247,127,0,.12)', label: 'Cotisations per&#231;ues', value: '3 450&#8364;', delta: '&#8593; +12% vs 2024' },
+
+      { icon: '&#128197;', color: 'rgba(59,130,246,.12)', label: '&#201;v&#233;nements &#224; venir', value: '4', delta: 'Prochains 60 jours' },
+
+      { icon: '&#128227;', color: 'rgba(139,92,246,.12)', label: 'Actualit&#233;s publi&#233;es', value: '7', delta: 'Ce trimestre' },
+
+    ],
+
+    actions: [
+
+      { icon: '&#9989;', label: 'Valider une adh&#233;sion', section: 'adherents' },
+
+      { icon: '&#128240;', label: 'Publier une actualit&#233;', section: 'actualites' },
+
+      { icon: '&#127963;&#65039;', label: 'Suivi collectivit&#233;s', section: 'collectivites' },
+
+      { icon: '&#128221;', label: 'R&#233;diger un CR', section: 'pv' },
+
+    ]
+
+  },
+
+  vice: {
+
+    label: '&#129309; Vice-Pr&#233;sident',
+
+    cls: 'role-vice',
+
+    name: 'Aminata Coulibaly',
+
+    email: 'vice@aito34.fr',
+
+    subtitle: 'Vice-Pr&#233;sident &#8212; Coordination et commissions',
+
+    kpis: [
+
+      { icon: '&#128450;&#65039;', color: 'rgba(0,112,60,.12)', label: 'Commissions actives', value: '3 / 4', delta: '1 en pause' },
+
+      { icon: '&#128197;', color: 'rgba(247,127,0,.12)', label: '&#201;v&#233;nements &#224; valider', value: '2', delta: 'Action requise' },
+
+      { icon: '&#128188;', color: 'rgba(59,130,246,.12)', label: 'Projets en cours', value: '3', delta: 'Volet &#233;conomique' },
+
+      { icon: '&#128172;', color: 'rgba(139,92,246,.12)', label: 'Messages non lus', value: '5', delta: '&#192; traiter' },
+
+    ],
+
+    actions: [
+
+      { icon: '&#128450;&#65039;', label: 'G&#233;rer les commissions', section: 'commissions' },
+
+      { icon: '&#128197;', label: 'Planifier un &#233;v&#233;nement', section: 'evenements' },
+
+      { icon: '&#128188;', label: 'Valider un projet', section: 'projets' },
+
+      { icon: '&#128240;', label: 'Publier une actualit&#233;', section: 'actualites' },
+
+    ]
+
+  },
+
+  secretaire: {
+
+    label: '&#9997;&#65039; Secr&#233;taire',
+
+    cls: 'role-secretaire',
+
+    name: 'Boubacar Traor&#233;',
+
+    email: 'secretaire@aito34.fr',
+
+    subtitle: 'Secr&#233;taire &#8212; Gestion administrative et membres',
+
+    kpis: [
+
+      { icon: '&#128100;', color: 'rgba(0,112,60,.12)', label: 'Adh&#233;sions en attente', value: '3', delta: '&#192; valider' },
+
+      { icon: '&#128172;', color: 'rgba(247,127,0,.12)', label: 'Messages non lus', value: '5', delta: 'Dont 2 urgents' },
+
+      { icon: '&#128221;', color: 'rgba(59,130,246,.12)', label: 'PV en brouillon', value: '1', delta: '&#192; finaliser' },
+
+      { icon: '&#128193;', color: 'rgba(139,92,246,.12)', label: 'Documents partag&#233;s', value: '12', delta: 'Espace membres' },
+
+    ],
+
+    actions: [
+
+      { icon: '&#128101;', label: 'Gestion des adh&#233;rents', section: 'adherents' },
+
+      { icon: '&#128172;', label: 'Messagerie', section: 'messagerie' },
+
+      { icon: '&#128221;', label: 'R&#233;diger un PV', section: 'pv' },
+
+      { icon: '&#128193;', label: 'G&#233;rer documents', section: 'documents' },
+
+    ]
+
+  },
+
+  tresorier: {
+
+    label: '&#128176; Tr&#233;sorier',
+
+    cls: 'role-tresorier',
+
+    name: 'Mariam Kon&#233;',
+
+    email: 'tresorier@aito34.fr',
+
+    subtitle: 'Tr&#233;sorier &#8212; Finances et cotisations',
+
+    kpis: [
+
+      { icon: '&#128176;', color: 'rgba(0,112,60,.12)', label: 'Tr&#233;sorerie', value: '8 240&#8364;', delta: 'Solde disponible' },
+
+      { icon: '&#9203;', color: 'rgba(247,127,0,.12)', label: 'Cotisations impay&#233;es', value: '3', delta: 'Relances &#224; envoyer' },
+
+      { icon: '&#127873;', color: 'rgba(59,130,246,.12)', label: 'Re&#231;us fiscaux dus', value: '1', delta: '&#192; g&#233;n&#233;rer' },
+
+      { icon: '&#128202;', color: 'rgba(139,92,246,.12)', label: 'R&#233;sultat 2025', value: '+3 470&#8364;', delta: 'Exc&#233;dent' },
+
+    ],
+
+    actions: [
+
+      { icon: '&#128182;', label: 'Cotisations', section: 'cotisations' },
+
+      { icon: '&#128202;', label: 'Budget & D&#233;penses', section: 'budget' },
+
+      { icon: '&#127873;', label: 'Dons & Re&#231;us fiscaux', section: 'dons' },
+
+      { icon: '&#128229;', label: 'Exporter rapport', section: 'budget' },
+
+    ]
+
+  }
+
+};
+
+
+
+let currentRole = 'president';
+
+
+
+function switchRole(role) {
+
+  currentRole = role;
+
+  const r = roles[role];
+
+
+
+  // Sidebar
+
+  document.getElementById('sideRoleBadge').className = 'db-role-badge ' + r.cls;
+
+  document.getElementById('sideRoleBadge').textContent = r.label;
+
+  document.getElementById('sideUserName').textContent = r.name;
+
+  document.getElementById('sideUserEmail').textContent = r.email;
+
+
+
+  // Subtitle
+
+  document.getElementById('dbUserShort').textContent = r.label;
+
+  document.getElementById('dbSubtitle').innerHTML = 'Bienvenue, <strong>' + r.label + '</strong>. ' + r.subtitle + '.';
+
+
+
+  // Boutons r&#244;le
+
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+
+  const clsMap = { president:'p', vice:'vp', secretaire:'s', tresorier:'t' };
+
+  const btn = document.querySelector('.role-btn.' + clsMap[role]);
+
+  if (btn) btn.classList.add('active');
+
+
+
+  // KPI
+
+  const kpiGrid = document.getElementById('kpiGrid');
+
+  kpiGrid.innerHTML = r.kpis.map(k => `
+
+    <div class="kpi-card">
+
+      <div class="kpi-icon" style="background:${k.color}">${k.icon}</div>
+
+      <div>
+
+        <h4>${k.label}</h4>
+
+        <div class="kpi-value">${k.value}</div>
+
+        <div class="kpi-delta">${k.delta}</div>
+
+      </div>
+
+    </div>
+
+  `).join('');
+
+
+
+  // Actions rapides
+
+  document.getElementById('quickActions').innerHTML = r.actions.map(a => `
+
+    <button onclick="showSection('${a.section}',null)" style="width:100%;display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);font-size:.9rem;font-weight:600;color:var(--primary-dark);cursor:pointer;margin-bottom:.6rem;transition:background .2s;" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='var(--gray-50)'">
+
+      <span style="font-size:1.2rem;">${a.icon}</span> ${a.label}
+
+    </button>
+
+  `).join('');
+
+
+
+  showSection('accueil', null);
+
+}
+
+
+
+function showSection(id, link) {
+
+  document.querySelectorAll('.db-section').forEach(s => s.classList.remove('active'));
+
+  const el = document.getElementById('s-' + id);
+
+  if (el) el.classList.add('active');
+
+
+
+  // Labels titres
+
+  const titles = {
+    accueil:'Vue d\'ensemble', actualites:'Actualités', evenements:'Événements',
+    partenaires:'Partenaires', projets:'Projets économiques', documents:'Documents internes',
+    adherents:'Adhérents', cotisations:'Cotisations', messagerie:'Messagerie',
+    budget:'Budget & Dépenses', dons:'Dons & Reçus fiscaux',
+    collectivites:'Collectivités', commissions:'Commissions', pv:'PV & Comptes-rendus'
+  };
+
+  document.getElementById('dbTitle').textContent = titles[id] || id;
+
+
+
+  document.querySelectorAll('.db-nav a').forEach(a => {
+
+    a.classList.toggle('active', a.dataset.section === id);
+
+  });
+
+}
+
+
+
+function toggleForm(id) {
+
+  const el = document.getElementById(id);
+
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+
+}
+
+
+
+function confirmDelete(btn) {
+
+  if (confirm('Supprimer cet &#233;l&#233;ment ? Cette action est irr&#233;versible.')) {
+
+    btn.closest('tr') ? btn.closest('tr').remove() : btn.closest('div').remove();
+
+    showToast('&#201;l&#233;ment supprim&#233;.', 'success');
+
+  }
+
+}
+
+
+
+function toggleSidebar() {
+
+  document.getElementById('dbSidebar').classList.toggle('open');
+
+}
+
+
+
+// Init
+
+switchRole('president');
+
+</script>
+
+<script>
+
+function setMiaTheme(t) {
+
+  if (t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('mia-theme', t); }
+
+  else { document.documentElement.removeAttribute('data-theme'); localStorage.removeItem('mia-theme'); }
+
+}
+
+// Restaurer th&#232;me
+
+const _t = localStorage.getItem('mia-theme');
+
+if (_t) document.documentElement.setAttribute('data-theme', _t);
+
+</script>
+
+</body>
+
+</html>
+
+

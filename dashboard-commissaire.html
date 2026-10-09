@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de Bord Commissaire — AITO</title>
+  <script src="js/maintenance.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root { --comm: #00703C; --comm-l: rgba(0,112,60,.08); }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #f1f5f9; font-family: inherit; }
+
+    /* ── Layout ── */
+    .db-sidebar {
+      position: fixed; top: 0; left: 0; width: 260px; height: 100vh;
+      background: #1e293b; display: flex; flex-direction: column;
+      overflow-y: auto; z-index: 100;
+    }
+    .db-main { margin-left: 260px; min-height: 100vh; padding: 2rem; }
+    @media(max-width:768px) { .db-sidebar { width: 100%; height: auto; position: relative; } .db-main { margin-left: 0; } }
+
+    /* ── Sidebar ── */
+    .sb-brand { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sb-comm-badge { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; }
+    .sb-comm-emoji { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--comm-l); border: 2px solid var(--comm); flex-shrink: 0; }
+    .sb-comm-name { font-size: .82rem; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sb-comm-role { font-size: .68rem; color: rgba(255,255,255,.45); }
+    .sb-user { font-size: .75rem; color: rgba(255,255,255,.5); padding: .5rem 0 0; }
+    .sb-nav { padding: .75rem 0; flex: 1; }
+    .sb-nav a { display: flex; align-items: center; gap: .65rem; padding: .7rem 1.25rem; font-size: .875rem; color: rgba(255,255,255,.65); text-decoration: none; cursor: pointer; transition: all .2s; border-left: 3px solid transparent; }
+    .sb-nav a:hover { background: rgba(255,255,255,.05); color: #fff; }
+    .sb-nav a.active { background: rgba(255,255,255,.08); color: #fff; border-left-color: var(--comm); }
+    .sb-nav a.external { color: rgba(255,255,255,.4); font-size: .82rem; }
+    .sb-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
+    .sb-footer button { width: 100%; padding: .6rem; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; color: rgba(255,255,255,.6); font-size: .83rem; cursor: pointer; transition: background .2s; }
+    .sb-footer button:hover { background: rgba(255,0,0,.15); color: #f87171; }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Cards ── */
+    .db-card { background: #fff; border-radius: 16px; padding: 1.75rem; box-shadow: 0 1px 8px rgba(0,0,0,.07); margin-bottom: 1.5rem; border: 1px solid #e2e8f0; }
+    .db-card h2 { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 0 0 .25rem; }
+    .db-card .sub { font-size: .83rem; color: #94a3b8; margin-bottom: 1.5rem; }
+
+    /* ── Page header ── */
+    .db-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .db-header h1 { font-size: 1.4rem; font-weight: 900; color: #1e293b; margin: 0; }
+    .db-header .db-badge { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: .35rem .9rem; border-radius: 50px; background: var(--comm-l); color: var(--comm); }
+
+    /* ── Welcome card ── */
+    .welcome-card { border-radius: 20px; padding: 2rem; color: #fff; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .welcome-card h2 { font-size: 1.4rem; font-weight: 900; margin: 0 0 .35rem; }
+    .welcome-card p { margin: 0; opacity: .85; font-size: .9rem; }
+    .welcome-emoji { font-size: 4rem; line-height: 1; }
+
+    /* ── Quick stats ── */
+    .qs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .qs-card { background: #fff; border-radius: 14px; padding: 1.25rem; border: 1px solid #e2e8f0; text-align: center; }
+    .qs-icon { font-size: 1.6rem; margin-bottom: .4rem; }
+    .qs-val { font-size: 1.8rem; font-weight: 900; color: var(--comm); line-height: 1; }
+    .qs-label { font-size: .75rem; color: #94a3b8; margin-top: .3rem; }
+
+    /* ── Form elements ── */
+    .fg { margin-bottom: 1.1rem; }
+    .fg label { display: block; font-size: .82rem; font-weight: 700; color: #475569; margin-bottom: .35rem; }
+    .fg input, .fg select, .fg textarea { width: 100%; padding: .7rem .9rem; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: .9rem; color: #1e293b; background: #f8fafc; font-family: inherit; transition: border-color .2s, box-shadow .2s; }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { outline: none; border-color: var(--comm); box-shadow: 0 0 0 3px var(--comm-l); background: #fff; }
+    .fg textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* ── Announcement cards in dashboard ── */
+    .ann-list { display: flex; flex-direction: column; gap: 1.25rem; }
+    .ann-item { border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 1.25rem; background: #f8fafc; transition: border-color .2s; }
+    .ann-item:hover { border-color: var(--comm); }
+    .ann-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .ann-num { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--comm); background: var(--comm-l); padding: .25rem .65rem; border-radius: 50px; }
+
+    /* ── Image grid for gallery ── */
+    .img-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    @media(max-width:600px) { .img-grid { grid-template-columns: 1fr; } }
+    .img-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; border: 1.5px solid #e2e8f0; background: #f1f5f9; display: block; }
+    .img-placeholder { width: 100%; height: 120px; border-radius: 10px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #94a3b8; background: #f8fafc; }
+
+    /* ── Buttons ── */
+    .btn-save { background: var(--comm); color: #fff; border: none; padding: .75rem 1.75rem; border-radius: 10px; font-size: .9rem; font-weight: 700; cursor: pointer; transition: opacity .2s; font-family: inherit; }
+    .btn-save:hover { opacity: .88; }
+    .btn-preview { background: #f1f5f9; color: #475569; border: 1.5px solid #e2e8f0; padding: .6rem 1.25rem; border-radius: 10px; font-size: .85rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; font-family: inherit; }
+    .btn-preview:hover { border-color: var(--comm); color: var(--comm); }
+
+    /* ── Status select colors ── */
+    .status-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: .2rem .6rem; border-radius: 50px; }
+    .status-open { background: rgba(5,150,105,.1); color: #059669; }
+    .status-soon { background: rgba(245,158,11,.1); color: #b45309; }
+    .status-prep { background: rgba(107,114,128,.1); color: #6b7280; }
+
+    /* ── Last save info ── */
+    .last-save { font-size: .75rem; color: #94a3b8; margin-top: .75rem; }
+
+    /* ── Separator ── */
+    .section-sep { border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+
+<script>
+/* ── Auth guard — commissaire uniquement ── */
+let CURRENT_USER = null;
+let COMM_SLUG = null;
+let COMM_CONFIG = null;
+
+const COMM_CONFIGS = {
+  culture:    { nom: 'à la Culture',           emoji: '🎭', couleur: '#7C3AED', page: 'commissariat-culture.html',    label1: 'Participants', label2: 'Budget mobilisé', label3: 'Partenaires' },
+  relations:  { nom: 'aux Relations Extérieures', emoji: '🤝', couleur: '#1d4ed8', page: 'commissariat-relations.html',  label1: 'Institutions', label2: 'Subventions', label3: 'Conventions' },
+  solidarite: { nom: 'à la Solidarité',        emoji: '🤲', couleur: '#059669', page: 'commissariat-solidarite.html', label1: 'Membres aidés', label2: 'Fonds mobilisé', label3: 'Actions' },
+  etudiants:  { nom: 'aux Étudiants',          emoji: '🎓', couleur: '#F77F00', page: 'commissariat-etudiants.html',  label1: 'Étudiants accompagnés', label2: 'Insertions', label3: 'Mentors' },
+  loisirs:    { nom: 'aux Loisirs & Détente',  emoji: '🎉', couleur: '#0891b2', page: 'commissariat-loisirs.html',    label1: 'Participants', label2: 'Événements', label3: 'Prestataires' },
+  projets:    { nom: 'aux Projets',            emoji: '📊', couleur: '#b45309', page: 'commissariat-projets.html',    label1: 'Projets actifs', label2: 'Financements', label3: 'Partenaires' },
+};
+
+(async function() {
+  const { data: { user } } = await db.auth.getUser();
+  if (!user || user.user_metadata?.role !== 'commissaire') {
+    window.location.href = 'connexion.html'; return;
+  }
+  CURRENT_USER = user;
+  COMM_SLUG = user.user_metadata?.commissariat;
+  COMM_CONFIG = COMM_CONFIGS[COMM_SLUG];
+  if (!COMM_CONFIG) { window.location.href = 'connexion.html'; return; }
+
+  // Apply color
+  document.documentElement.style.setProperty('--comm', COMM_CONFIG.couleur);
+  const rgb = hexToRgb(COMM_CONFIG.couleur);
+  document.documentElement.style.setProperty('--comm-l', `rgba(${rgb},0.1)`);
+
+  // Set sidebar info
+  document.getElementById('sb-emoji').textContent = COMM_CONFIG.emoji;
+  document.getElementById('sb-comm-name').textContent = 'Commissariat ' + COMM_CONFIG.nom;
+  document.getElementById('sb-user-email').textContent = user.email;
+  document.getElementById('header-title').textContent = 'Commissariat ' + COMM_CONFIG.nom;
+  document.getElementById('welcome-title').textContent = 'Bienvenue ' + (user.user_metadata?.prenom || 'Commissaire') + ' !';
+  document.getElementById('welcome-sub').textContent = 'Gérez ici les activités de votre commissariat.';
+  document.getElementById('welcome-emoji').textContent = COMM_CONFIG.emoji;
+  document.getElementById('btn-public-page').href = COMM_CONFIG.page;
+
+  // Load saved data
+  loadAll();
+})();
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+function storageKey() { return 'aito_comm_' + COMM_SLUG; }
+
+function getData() {
+  try { return JSON.parse(localStorage.getItem(storageKey())) || {}; } catch { return {}; }
+}
+
+function setData(obj) {
+  const cur = getData();
+  localStorage.setItem(storageKey(), JSON.stringify(Object.assign(cur, obj)));
+  localStorage.setItem(storageKey() + '_updated', new Date().toISOString());
+}
+
+/* ── Navigation tabs ── */
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-nav a[data-tab]').forEach(a => a.classList.remove('active'));
+  const panel = document.getElementById('tab-' + id);
+  if (panel) panel.classList.add('active');
+  const link = document.querySelector('.sb-nav a[data-tab="' + id + '"]');
+  if (link) link.classList.add('active');
+  // Update quick stats display on home
+  if (id === 'home') refreshHomeStats();
+}
+
+function refreshHomeStats() {
+  const d = getData();
+  const ind = (d.indicateurs || [{valeur:'—'},{valeur:'—'},{valeur:'—'}]);
+  document.getElementById('qs-val-1').textContent = ind[0]?.valeur || '—';
+  document.getElementById('qs-val-2').textContent = ind[1]?.valeur || '—';
+  document.getElementById('qs-val-3').textContent = ind[2]?.valeur || '—';
+  const cfg = COMM_CONFIG;
+  document.getElementById('qs-label-1').textContent = cfg.label1;
+  document.getElementById('qs-label-2').textContent = cfg.label2;
+  document.getElementById('qs-label-3').textContent = cfg.label3;
+  const updated = localStorage.getItem(storageKey() + '_updated');
+  if (updated) {
+    const d2 = new Date(updated);
+    document.getElementById('last-updated').textContent = 'Dernière mise à jour : ' + d2.toLocaleDateString('fr-FR') + ' à ' + d2.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+/* ── Load all data into forms ── */
+function loadAll() {
+  const d = getData();
+
+  // Profil
+  const p = d.profil || {};
+  document.getElementById('p-nom').value = p.nom || '';
+  document.getElementById('p-titre').value = p.titre || '';
+  document.getElementById('p-bio1').value = p.bio1 || '';
+  document.getElementById('p-bio2').value = p.bio2 || '';
+  document.getElementById('p-mission1').value = p.mission1 || '';
+  document.getElementById('p-mission2').value = p.mission2 || '';
+  document.getElementById('p-mission3').value = p.mission3 || '';
+
+  // Annonces
+  const ann = d.annonces || [{},{},{}];
+  for (let i = 0; i < 3; i++) {
+    const a = ann[i] || {};
+    document.getElementById('a'+i+'-titre').value = a.titre || '';
+    document.getElementById('a'+i+'-statut').value = a.statut || 'open';
+    document.getElementById('a'+i+'-desc').value = a.desc || '';
+    document.getElementById('a'+i+'-lien').value = a.lien || '';
+    document.getElementById('a'+i+'-lien-texte').value = a.lien_texte || '';
+  }
+
+  // Indicateurs
+  const ind = d.indicateurs || [];
+  const cfg = COMM_CONFIG;
+  const defaults = [
+    { icone:'📊', valeur:'—', label: cfg.label1 },
+    { icone:'💰', valeur:'—', label: cfg.label2 },
+    { icone:'🤝', valeur:'—', label: cfg.label3 },
+  ];
+  for (let i = 0; i < 3; i++) {
+    const stat = ind[i] || defaults[i];
+    document.getElementById('s'+i+'-valeur').value = stat.valeur || '—';
+    document.getElementById('s'+i+'-label').value = stat.label || defaults[i].label;
+    document.getElementById('s'+i+'-icone').value = stat.icone || defaults[i].icone;
+  }
+
+  // Galerie
+  const g = d.galerie || {};
+  const imgs = g.images || [{},{},{}];
+  for (let i = 0; i < 3; i++) {
+    const img = imgs[i] || {};
+    document.getElementById('g'+i+'-url').value = img.url || '';
+    document.getElementById('g'+i+'-alt').value = img.alt || '';
+    updateImgPreview(i);
+  }
+  document.getElementById('g-citation').value = g.citation || '';
+  document.getElementById('g-auteur').value = g.auteur || '';
+
+  refreshHomeStats();
+}
+
+/* ── Save functions ── */
+function saveProfil() {
+  setData({ profil: {
+    nom: document.getElementById('p-nom').value,
+    titre: document.getElementById('p-titre').value,
+    bio1: document.getElementById('p-bio1').value,
+    bio2: document.getElementById('p-bio2').value,
+    mission1: document.getElementById('p-mission1').value,
+    mission2: document.getElementById('p-mission2').value,
+    mission3: document.getElementById('p-mission3').value,
+  }});
+  showToast('Profil enregistré ✓');
+}
+
+function saveAnnonces() {
+  const ann = [];
+  for (let i = 0; i < 3; i++) {
+    ann.push({
+      titre: document.getElementById('a'+i+'-titre').value,
+      statut: document.getElementById('a'+i+'-statut').value,
+      desc: document.getElementById('a'+i+'-desc').value,
+      lien: document.getElementById('a'+i+'-lien').value,
+      lien_texte: document.getElementById('a'+i+'-lien-texte').value,
+    });
+  }
+  setData({ annonces: ann });
+  showToast('Annonces enregistrées ✓');
+}
+
+function saveIndicateurs() {
+  const ind = [];
+  const icones = ['📊','💰','🤝'];
+  for (let i = 0; i < 3; i++) {
+    ind.push({
+      icone: document.getElementById('s'+i+'-icone').value || icones[i],
+      valeur: document.getElementById('s'+i+'-valeur').value,
+      label: document.getElementById('s'+i+'-label').value,
+    });
+  }
+  setData({ indicateurs: ind });
+  showToast('Indicateurs enregistrés ✓');
+  refreshHomeStats();
+}
+
+function saveGalerie() {
+  const imgs = [];
+  for (let i = 0; i < 3; i++) {
+    imgs.push({
+      url: document.getElementById('g'+i+'-url').value,
+      alt: document.getElementById('g'+i+'-alt').value,
+    });
+  }
+  setData({ galerie: {
+    images: imgs,
+    citation: document.getElementById('g-citation').value,
+    auteur: document.getElementById('g-auteur').value,
+  }});
+  showToast('Galerie enregistrée ✓');
+}
+
+function updateImgPreview(i) {
+  const url = document.getElementById('g'+i+'-url').value.trim();
+  const cont = document.getElementById('g'+i+'-preview');
+  if (!cont) return;
+  if (url) {
+    cont.innerHTML = '<img class="img-preview" src="'+url+'" alt="Aperçu" onerror="this.style.display=\'none\';">';
+  } else {
+    cont.innerHTML = '<div class="img-placeholder">🖼️</div>';
+  }
+}
+</script>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- SIDEBAR -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="db-sidebar">
+  <div class="sb-brand">
+    <div class="sb-comm-badge">
+      <div class="sb-comm-emoji" id="sb-emoji">⬤</div>
+      <div>
+        <div class="sb-comm-name" id="sb-comm-name">Commissariat</div>
+        <div class="sb-comm-role">Tableau de bord</div>
+      </div>
+    </div>
+    <div class="sb-user" id="sb-user-email">—</div>
+  </div>
+
+  <div class="sb-nav">
+    <a data-tab="home" onclick="showTab('home')" class="active">🏠 Tableau de bord</a>
+    <a data-tab="annonces" onclick="showTab('annonces')">📢 Mes Annonces</a>
+    <a data-tab="indicateurs" onclick="showTab('indicateurs')">📊 Mes Indicateurs</a>
+    <a data-tab="galerie" onclick="showTab('galerie')">🖼️ Ma Galerie</a>
+    <a data-tab="profil" onclick="showTab('profil')">👤 Mon Profil</a>
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:.5rem 0;">
+    <a id="btn-public-page" href="#" target="_blank" class="external">🌐 Voir ma page publique ↗</a>
+    <a href="index.html" class="external">← Retour au site</a>
+  </div>
+
+  <div class="sb-footer">
+    <button onclick="logout()">🚪 Déconnexion</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="db-main">
+
+  <div class="db-header">
+    <h1 id="header-title">Commissariat</h1>
+    <div style="display:flex;gap:.75rem;align-items:center;">
+      <a id="btn-pub-header" href="#" target="_blank" class="btn-preview">🌐 Page publique ↗</a>
+    </div>
+  </div>
+
+  <!-- ── TAB : ACCUEIL ── -->
+  <div class="tab-panel active" id="tab-home">
+    <div class="welcome-card" style="background:linear-gradient(135deg, var(--comm), color-mix(in srgb, var(--comm) 70%, #000));">
+      <div>
+        <h2 id="welcome-title">Bienvenue !</h2>
+        <p id="welcome-sub">Gérez ici les activités de votre commissariat.</p>
+        <p id="last-updated" class="last-save" style="color:rgba(255,255,255,.6);margin-top:.5rem;">Aucune modification enregistrée</p>
+      </div>
+      <div class="welcome-emoji" id="welcome-emoji">⬤</div>
+    </div>
+
+    <div class="qs-grid">
+      <div class="qs-card">
+        <div class="qs-icon">📊</div>
+        <div class="qs-val" id="qs-val-1">—</div>
+        <div class="qs-label" id="qs-label-1">Indicateur 1</div>
+      </div>
+      <div class="qs-card">
+        <div class="qs-icon">💰</div>
+        <div class="qs-val" id="qs-val-2">—</div>
+        <div class="qs-label" id="qs-label-2">Indicateur 2</div>
+      </div>
+      <div class="qs-card">
+        <div class="qs-icon">🤝</div>
+        <div class="qs-val" id="qs-val-3">—</div>
+        <div class="qs-label" id="qs-label-3">Indicateur 3</div>
+      </div>
+    </div>
+
+    <div class="db-card">
+      <h2>Guide d'utilisation</h2>
+      <p class="sub">Comment mettre à jour votre page publique</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+        <div style="background:#f8fafc;border-radius:12px;padding:1.1rem;border:1px solid #e2e8f0;">
+          <div style="font-size:1.4rem;margin-bottom:.4rem;">📢</div>
+          <strong style="font-size:.88rem;color:#1e293b;">Mes Annonces</strong>
+          <p style="font-size:.8rem;color:#94a3b8;margin:.25rem 0 0;line-height:1.5;">Gérez les 3 actualités affichées sur votre page. Titre, statut, description, lien.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:1.1rem;border:1px solid #e2e8f0;">
+          <div style="font-size:1.4rem;margin-bottom:.4rem;">📊</div>
+          <strong style="font-size:.88rem;color:#1e293b;">Mes Indicateurs</strong>
+          <p style="font-size:.8rem;color:#94a3b8;margin:.25rem 0 0;line-height:1.5;">Mettez à jour vos chiffres clés (participants, budget, partenaires).</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:1.1rem;border:1px solid #e2e8f0;">
+          <div style="font-size:1.4rem;margin-bottom:.4rem;">🖼️</div>
+          <strong style="font-size:.88rem;color:#1e293b;">Ma Galerie</strong>
+          <p style="font-size:.8rem;color:#94a3b8;margin:.25rem 0 0;line-height:1.5;">Renseignez les URLs de vos 3 photos et la citation partenaire.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:1.1rem;border:1px solid #e2e8f0;">
+          <div style="font-size:1.4rem;margin-bottom:.4rem;">👤</div>
+          <strong style="font-size:.88rem;color:#1e293b;">Mon Profil</strong>
+          <p style="font-size:.8rem;color:#94a3b8;margin:.25rem 0 0;line-height:1.5;">Renseignez votre nom, titre et biographie pour votre page commissariat.</p>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem;padding:1rem;background:rgba(245,158,11,.08);border-radius:10px;border:1px solid rgba(245,158,11,.2);font-size:.83rem;color:#92400e;">
+        ⚠️ <strong>Important :</strong> Les données sont sauvegardées sur votre navigateur. Sur Netlify, elles sont visibles uniquement sur votre appareil jusqu'à la mise en place d'une base de données en ligne.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB : ANNONCES ── -->
+  <div class="tab-panel" id="tab-annonces">
+    <div class="db-card">
+      <h2>📢 Mes Annonces</h2>
+      <p class="sub">Ces 3 annonces s'affichent dans la section "Activités en cours" de votre page publique.</p>
+
+      <div class="ann-list">
+        <!-- Annonce 1 -->
+        <div class="ann-item">
+          <div class="ann-item-header">
+            <span class="ann-num">Annonce 1</span>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Titre *</label><input id="a0-titre" type="text" placeholder="Ex : Soirée Culturelle 2026"></div>
+            <div class="fg">
+              <label>Statut *</label>
+              <select id="a0-statut">
+                <option value="open">● Inscriptions ouvertes</option>
+                <option value="soon">◉ Prochainement</option>
+                <option value="prep">◎ En préparation</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="a0-desc" placeholder="Décrivez l'événement ou l'activité…"></textarea></div>
+          <div class="form-row">
+            <div class="fg"><label>Lien URL</label><input id="a0-lien" type="url" placeholder="evenements.html ou https://…"></div>
+            <div class="fg"><label>Texte du lien</label><input id="a0-lien-texte" type="text" placeholder="Ex : Voir les détails →"></div>
+          </div>
+        </div>
+
+        <!-- Annonce 2 -->
+        <div class="ann-item">
+          <div class="ann-item-header">
+            <span class="ann-num">Annonce 2</span>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Titre *</label><input id="a1-titre" type="text" placeholder="Ex : Appel à candidatures"></div>
+            <div class="fg">
+              <label>Statut *</label>
+              <select id="a1-statut">
+                <option value="open">● Inscriptions ouvertes</option>
+                <option value="soon" selected>◉ Prochainement</option>
+                <option value="prep">◎ En préparation</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="a1-desc" placeholder="Décrivez l'événement ou l'activité…"></textarea></div>
+          <div class="form-row">
+            <div class="fg"><label>Lien URL</label><input id="a1-lien" type="url" placeholder="evenements.html ou https://…"></div>
+            <div class="fg"><label>Texte du lien</label><input id="a1-lien-texte" type="text" placeholder="Ex : S'inscrire →"></div>
+          </div>
+        </div>
+
+        <!-- Annonce 3 -->
+        <div class="ann-item">
+          <div class="ann-item-header">
+            <span class="ann-num">Annonce 3</span>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Titre *</label><input id="a2-titre" type="text" placeholder="Ex : Atelier en préparation"></div>
+            <div class="fg">
+              <label>Statut *</label>
+              <select id="a2-statut">
+                <option value="open">● Inscriptions ouvertes</option>
+                <option value="soon">◉ Prochainement</option>
+                <option value="prep" selected>◎ En préparation</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="a2-desc" placeholder="Décrivez l'événement ou l'activité…"></textarea></div>
+          <div class="form-row">
+            <div class="fg"><label>Lien URL</label><input id="a2-lien" type="url" placeholder="contact.html ou https://…"></div>
+            <div class="fg"><label>Texte du lien</label><input id="a2-lien-texte" type="text" placeholder="Ex : Être informé →"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end;">
+        <button class="btn-save" onclick="saveAnnonces()">💾 Enregistrer les annonces</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB : INDICATEURS ── -->
+  <div class="tab-panel" id="tab-indicateurs">
+    <div class="db-card">
+      <h2>📊 Mes Indicateurs</h2>
+      <p class="sub">Ces 3 chiffres s'affichent dans la section "Indicateurs de succès" de votre page publique. Utilisez "—" si la donnée n'est pas encore disponible.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;">
+        <!-- Stat 1 -->
+        <div style="background:#f8fafc;border-radius:14px;padding:1.25rem;border:1.5px solid #e2e8f0;">
+          <div style="font-size:1.3rem;text-align:center;margin-bottom:.75rem;" id="s0-icone-preview">📊</div>
+          <div class="fg"><label>Icône (emoji)</label><input id="s0-icone" type="text" placeholder="📊" oninput="document.getElementById('s0-icone-preview').textContent=this.value||'📊'"></div>
+          <div class="fg"><label>Valeur</label><input id="s0-valeur" type="text" placeholder="Ex : 120 ou —"></div>
+          <div class="fg"><label>Libellé</label><input id="s0-label" type="text" placeholder="Ex : Participants cette année"></div>
+        </div>
+        <!-- Stat 2 -->
+        <div style="background:#f8fafc;border-radius:14px;padding:1.25rem;border:1.5px solid #e2e8f0;">
+          <div style="font-size:1.3rem;text-align:center;margin-bottom:.75rem;" id="s1-icone-preview">💰</div>
+          <div class="fg"><label>Icône (emoji)</label><input id="s1-icone" type="text" placeholder="💰" oninput="document.getElementById('s1-icone-preview').textContent=this.value||'💰'"></div>
+          <div class="fg"><label>Valeur</label><input id="s1-valeur" type="text" placeholder="Ex : 2 500 € ou —"></div>
+          <div class="fg"><label>Libellé</label><input id="s1-label" type="text" placeholder="Ex : Budget mobilisé"></div>
+        </div>
+        <!-- Stat 3 -->
+        <div style="background:#f8fafc;border-radius:14px;padding:1.25rem;border:1.5px solid #e2e8f0;">
+          <div style="font-size:1.3rem;text-align:center;margin-bottom:.75rem;" id="s2-icone-preview">🤝</div>
+          <div class="fg"><label>Icône (emoji)</label><input id="s2-icone" type="text" placeholder="🤝" oninput="document.getElementById('s2-icone-preview').textContent=this.value||'🤝'"></div>
+          <div class="fg"><label>Valeur</label><input id="s2-valeur" type="text" placeholder="Ex : 5 ou —"></div>
+          <div class="fg"><label>Libellé</label><input id="s2-label" type="text" placeholder="Ex : Partenaires engagés"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end;">
+        <button class="btn-save" onclick="saveIndicateurs()">💾 Enregistrer les indicateurs</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB : GALERIE ── -->
+  <div class="tab-panel" id="tab-galerie">
+    <div class="db-card">
+      <h2>🖼️ Ma Galerie</h2>
+      <p class="sub">Renseignez les URLs des 3 photos du carrousel et la citation d'un partenaire ou bénéficiaire.</p>
+
+      <div class="img-grid">
+        <div id="g0-preview"><div class="img-placeholder">🖼️</div></div>
+        <div id="g1-preview"><div class="img-placeholder">🖼️</div></div>
+        <div id="g2-preview"><div class="img-placeholder">🖼️</div></div>
+      </div>
+
+      <!-- Photo 1 -->
+      <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:1.1rem;margin-bottom:1rem;">
+        <div style="font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Photo 1</div>
+        <div class="form-row">
+          <div class="fg"><label>URL de l'image</label><input id="g0-url" type="url" placeholder="https://images.unsplash.com/…" oninput="updateImgPreview(0)"></div>
+          <div class="fg"><label>Description (alt)</label><input id="g0-alt" type="text" placeholder="Ex : Soirée culturelle 2025"></div>
+        </div>
+      </div>
+      <!-- Photo 2 -->
+      <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:1.1rem;margin-bottom:1rem;">
+        <div style="font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Photo 2</div>
+        <div class="form-row">
+          <div class="fg"><label>URL de l'image</label><input id="g1-url" type="url" placeholder="https://…" oninput="updateImgPreview(1)"></div>
+          <div class="fg"><label>Description (alt)</label><input id="g1-alt" type="text" placeholder="Ex : Atelier étudiants"></div>
+        </div>
+      </div>
+      <!-- Photo 3 -->
+      <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:1.1rem;margin-bottom:1rem;">
+        <div style="font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Photo 3</div>
+        <div class="form-row">
+          <div class="fg"><label>URL de l'image</label><input id="g2-url" type="url" placeholder="https://…" oninput="updateImgPreview(2)"></div>
+          <div class="fg"><label>Description (alt)</label><input id="g2-alt" type="text" placeholder="Ex : Forum partenaires"></div>
+        </div>
+      </div>
+
+      <hr class="section-sep">
+      <h3 style="font-size:1rem;font-weight:700;color:#1e293b;margin-bottom:1rem;">💬 Citation partenaire / bénéficiaire</h3>
+      <div class="fg"><label>Citation (entre guillemets)</label><textarea id="g-citation" placeholder="« Votre témoignage ici… »" style="min-height:80px;"></textarea></div>
+      <div class="fg"><label>Auteur</label><input id="g-auteur" type="text" placeholder="Ex : — Un partenaire institutionnel"></div>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end;">
+        <button class="btn-save" onclick="saveGalerie()">💾 Enregistrer la galerie</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB : PROFIL ── -->
+  <div class="tab-panel" id="tab-profil">
+    <div class="db-card">
+      <h2>👤 Mon Profil de Commissaire</h2>
+      <p class="sub">Ces informations s'affichent dans la section "Bio & Vision" de votre page publique.</p>
+
+      <div class="form-row">
+        <div class="fg"><label>Nom complet *</label><input id="p-nom" type="text" placeholder="Prénom Nom"></div>
+        <div class="fg"><label>Titre du poste *</label><input id="p-titre" type="text" placeholder="Ex : Commissaire à la Culture"></div>
+      </div>
+
+      <hr class="section-sep">
+      <h3 style="font-size:.95rem;font-weight:700;color:#1e293b;margin-bottom:1rem;">Biographie</h3>
+      <div class="fg">
+        <label>Paragraphe 1 *</label>
+        <textarea id="p-bio1" placeholder="Décrivez votre rôle et votre vision pour ce commissariat…" style="min-height:100px;"></textarea>
+      </div>
+      <div class="fg">
+        <label>Paragraphe 2 (optionnel)</label>
+        <textarea id="p-bio2" placeholder="Contexte supplémentaire, approche, valeurs…" style="min-height:80px;"></textarea>
+      </div>
+
+      <hr class="section-sep">
+      <h3 style="font-size:.95rem;font-weight:700;color:#1e293b;margin-bottom:1rem;">📋 Ordre de Mission (3 priorités annuelles)</h3>
+      <div class="fg"><label>Priorité 1 *</label><input id="p-mission1" type="text" placeholder="Ex : Organiser au minimum 2 événements culturels majeurs par an"></div>
+      <div class="fg"><label>Priorité 2 *</label><input id="p-mission2" type="text" placeholder="Ex : Valoriser le patrimoine auprès des institutions locales"></div>
+      <div class="fg"><label>Priorité 3 *</label><input id="p-mission3" type="text" placeholder="Ex : Développer un réseau de partenariats durables"></div>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end;">
+        <button class="btn-save" onclick="saveProfil()">💾 Enregistrer le profil</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /db-main -->
+
+<script>
+// Fix public page link in header
+document.addEventListener('DOMContentLoaded', function() {
+  const hBtn = document.getElementById('btn-pub-header');
+  if (hBtn && COMM_CONFIG) hBtn.href = COMM_CONFIG.page;
+  showTab('home');
+});
+</script>
+</body>
+</html>

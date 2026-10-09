@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commissariat aux Loisirs &amp; Détente — AITO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root{--comm:#0891b2;--comm-l:rgba(8,145,178,.08);--comm-m:rgba(8,145,178,.2);}
+    .nav-logo{display:flex !important;align-items:center !important;gap:10px !important;margin-right:1.5rem;flex-shrink:0;text-decoration:none;}
+    .nav-logo-flag{flex-shrink:0;display:flex;align-items:center;}
+    .nav-logo-flag svg{height:36px;width:auto;border-radius:4px;box-shadow:0 1px 5px rgba(0,0,0,.4);display:block;}
+    .nav-logo img{height:80px !important;width:auto !important;border-radius:8px !important;display:block !important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));}
+    .nav-logo-texts{display:flex;flex-direction:column;line-height:1.25;}
+    .nav-logo-acronym{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:1.5px;}
+    .nav-logo-name{font-size:.65rem;color:rgba(255,255,255,.6);letter-spacing:.4px;line-height:1.3;}
+    @media(max-width:768px){.nav-logo img{height:52px !important;}.nav-logo-name{display:none;}.nav-logo-acronym{font-size:1.1rem;}}
+    .c-hero{position:relative;min-height:420px;display:flex;align-items:flex-end;padding:4rem 2rem 3rem;overflow:hidden;}
+    .c-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+    .c-hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.3) 70%);}
+    .c-hero-content{position:relative;z-index:1;max-width:900px;margin:0 auto;width:100%;}
+    .c-hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--comm);color:#fff;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:50px;margin-bottom:1rem;}
+    .c-hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:.75rem;}
+    .c-hero-slogan{font-size:1.05rem;color:rgba(255,255,255,.85);font-style:italic;}
+    .c-section{padding:4rem 2rem;} .c-container{max-width:960px;margin:0 auto;} .c-alt{background:#f9fafb;}
+    .c-label{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--comm);background:var(--comm-l);padding:.3rem .85rem;border-radius:50px;margin-bottom:.75rem;}
+    .c-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:900;color:#111827;margin-bottom:.75rem;}
+    .c-subtitle{font-size:.95rem;color:#6b7280;line-height:1.75;max-width:640px;}
+    .c-bio{display:grid;grid-template-columns:260px 1fr;gap:3rem;align-items:start;} @media(max-width:768px){.c-bio{grid-template-columns:1fr;}}
+    .c-avatar-card{background:#fff;border-radius:20px;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.07);border:1px solid #f3f4f6;}
+    .c-avatar{width:120px;height:120px;border-radius:50%;background:var(--comm-m);border:4px solid var(--comm);display:flex;align-items:center;justify-content:center;font-size:3.2rem;margin:0 auto 1rem;}
+    .c-avatar-name{font-size:1rem;font-weight:800;color:#111;} .c-avatar-title{font-size:.75rem;color:var(--comm);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:.3rem;}
+    .c-bio-text{font-size:.95rem;color:#374151;line-height:1.8;}
+    .c-mission-box{background:var(--comm-l);border-left:4px solid var(--comm);border-radius:0 12px 12px 0;padding:1.5rem 1.75rem;margin-top:1.75rem;}
+    .c-mission-box h4{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--comm);margin-bottom:.85rem;}
+    .c-mission-box ul{list-style:none;padding:0;margin:0;}
+    .c-mission-box li{padding:.4rem 0;font-size:.9rem;color:#1f2937;display:flex;gap:.65rem;align-items:flex-start;border-bottom:1px solid var(--comm-l);}
+    .c-mission-box li:last-child{border-bottom:none;} .c-mission-box li::before{content:'✓';color:var(--comm);font-weight:900;flex-shrink:0;}
+    .c-feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:2rem;}
+    .c-feed-card{background:#fff;border-radius:16px;padding:1.5rem;border:1px solid #f3f4f6;box-shadow:0 2px 10px rgba(0,0,0,.05);border-top:3px solid var(--comm);}
+    .c-status{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.2rem .65rem;border-radius:50px;margin-bottom:.85rem;}
+    .s-open{background:rgba(5,150,105,.1);color:#059669;} .s-soon{background:rgba(245,158,11,.1);color:#b45309;} .s-prep{background:rgba(107,114,128,.1);color:#6b7280;}
+    .c-feed-card h4{font-size:.98rem;font-weight:800;color:#111827;margin-bottom:.4rem;} .c-feed-card p{font-size:.85rem;color:#6b7280;line-height:1.6;}
+    .c-cta{display:inline-flex;align-items:center;gap:.4rem;margin-top:1rem;font-size:.83rem;font-weight:700;color:var(--comm);text-decoration:none;transition:gap .2s;} .c-cta:hover{gap:.7rem;}
+    .c-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:2rem;}
+    .c-stat{background:#fff;border-radius:16px;padding:1.75rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f3f4f6;}
+    .c-stat-icon{font-size:2rem;margin-bottom:.5rem;} .c-stat-val{font-size:2.4rem;font-weight:900;color:var(--comm);line-height:1;} .c-stat-label{font-size:.82rem;color:#6b7280;margin-top:.4rem;}
+    .c-gallery{position:relative;overflow:hidden;border-radius:20px;margin-top:2rem;}
+    .c-slides{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);} .c-slide{min-width:100%;height:380px;object-fit:cover;display:block;}
+    .c-gallery-nav{display:flex;justify-content:center;gap:.5rem;margin-top:1rem;}
+    .c-dot{width:8px;height:8px;border-radius:50%;background:#d1d5db;border:none;cursor:pointer;transition:all .25s;padding:0;} .c-dot.on{background:var(--comm);width:24px;border-radius:4px;}
+    .c-gbtn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.92);border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;font-size:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.2);z-index:2;line-height:1;}
+    .c-gbtn.prev{left:1rem;} .c-gbtn.next{right:1rem;}
+    .c-quote{background:var(--comm-l);border-left:4px solid var(--comm);border-radius:0 12px 12px 0;padding:1.25rem 1.5rem;margin-top:1.5rem;font-style:italic;color:#374151;font-size:.95rem;line-height:1.7;}
+    .c-quote cite{font-style:normal;font-size:.8rem;font-weight:700;color:var(--comm);display:block;margin-top:.5rem;}
+    .c-form-wrap{background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 4px 24px rgba(0,0,0,.07);border:1px solid #f3f4f6;}
+    .c-form-wrap .fg{margin-bottom:1.2rem;} .c-form-wrap label{display:block;font-size:.85rem;font-weight:700;color:#374151;margin-bottom:.4rem;}
+    .c-form-wrap input,.c-form-wrap select,.c-form-wrap textarea{width:100%;padding:.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:.9rem;color:#111827;background:#fafafa;transition:border-color .2s,box-shadow .2s;box-sizing:border-box;font-family:inherit;}
+    .c-form-wrap input:focus,.c-form-wrap select:focus,.c-form-wrap textarea:focus{outline:none;border-color:var(--comm);box-shadow:0 0 0 3px var(--comm-l);}
+    .c-form-wrap textarea{resize:vertical;min-height:120px;}
+    .c-form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;} @media(max-width:600px){.c-form-row{grid-template-columns:1fr;}}
+    .c-submit{background:var(--comm);color:#fff;border:none;padding:.85rem 2rem;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;transition:opacity .2s;font-family:inherit;} .c-submit:hover{opacity:.88;}
+    .c-success{display:none;text-align:center;padding:2rem;background:#f0fdf4;border-radius:12px;border:1px solid #bbf7d0;}
+    .c-gov{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.25rem 1.5rem;font-size:.82rem;color:#64748b;line-height:1.7;text-align:center;margin-top:2.5rem;}
+  </style>
+</head>
+<body>
+<div class="flag-bar" aria-hidden="true"></div>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+    <div class="nav-occitanie"><img src="images/occitanie.svg" alt="Région Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html">Accueil</a><a href="presentation.html">Présentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualités</a><a href="evenements.html">Événements</a>
+      <a href="galerie.html">Galerie</a>
+      <div class="dropdown"><a href="#">Services ▾</a><div class="dropdown-menu"><a href="adhesion.html">Adhésion &amp; Cotisations</a><a href="collectivites.html">Collectivités</a><a href="projets-economiques.html">Projets économiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances décès</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme Côte d'Ivoire</a></div></div>
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+    </div>
+  </div>
+</nav>
+<div class="page-content">
+
+<section class="c-hero">
+  <div class="c-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1571019613914-85f342c6a11e?w=1400&h=500&fit=crop&q=80');"></div>
+  <div class="c-hero-content">
+    <div class="c-hero-badge">🎉 AITO · Commissariat</div>
+    <h1>Commissariat aux Loisirs &amp; Détente</h1>
+    <p class="c-hero-slogan">« L'expertise au service de la joie, du sport et de la cohésion communautaire »</p>
+  </div>
+</section>
+
+<section class="c-section">
+  <div class="c-container">
+    <div class="c-bio">
+      <div>
+        <div class="c-avatar-card">
+          <div class="c-avatar">🎉</div>
+          <div class="c-avatar-name">Poste à pourvoir</div>
+          <div class="c-avatar-title">Commissaire aux Loisirs</div>
+          <p style="font-size:.8rem;color:#9ca3af;margin:.75rem 0;">Candidatures ouvertes aux membres qualifiés</p>
+          <a href="contact.html" style="display:inline-block;font-size:.83rem;font-weight:700;color:var(--comm);text-decoration:none;">✉ Postuler au bureau</a>
+        </div>
+      </div>
+      <div>
+        <div class="c-label">Bio &amp; Vision</div>
+        <h2 class="c-title">La joie comme lien social</h2>
+        <p class="c-bio-text">Le Commissariat aux Loisirs &amp; Détente est l'architecte du bonheur partagé au sein de l'AITO. Il conçoit et organise les activités récréatives, sportives et festives qui renforcent les liens entre les membres et créent des souvenirs durables.</p>
+        <p class="c-bio-text" style="margin-top:.85rem;">De la randonnée en garrigue aux soirées festives en passant par les tournois sportifs, ce commissariat veille à ce que la vie associative soit synonyme de plaisir, de vitalité et d'appartenance. Parce qu'une communauté soudée se construit aussi autour du rire et de la fête.</p>
+        <div class="c-mission-box">
+          <h4>📋 Ordre de Mission — Priorités annuelles</h4>
+          <ul>
+            <li>Planifier et organiser au moins 4 sorties, excursions et activités sportives régulières (randonnées, sports collectifs, visites culturelles)</li>
+            <li>Organiser des soirées festives et événements de célébration (fête nationale ivoirienne, Noël, Jour de l'An, anniversaires)</li>
+            <li>Développer des activités inter-générations pour toute la famille, accessibles à tous les membres</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="c-section c-alt">
+  <div class="c-container">
+    <div class="c-label">Tableau de bord</div>
+    <h2 class="c-title">Activités &amp; Sorties en cours</h2>
+    <p class="c-subtitle">Programme des prochaines activités récréatives et sportives organisées par le commissariat.</p>
+    <div class="c-feed-grid">
+      <div class="c-feed-card">
+        <span class="c-status s-open">● Inscriptions ouvertes</span>
+        <h4>Tournoi de Football AITO 2026</h4>
+        <p>Tournoi annuel de football amical inter-membres. Équipes mixtes, esprit fair-play et barbecue de clôture. Inscription par équipes de 7 joueurs.</p>
+        <a href="contact.html" class="c-cta">Inscrire mon équipe →</a>
+      </div>
+      <div class="c-feed-card">
+        <span class="c-status s-soon">◉ Prochainement</span>
+        <h4>Sortie Découverte Camargue</h4>
+        <p>Excursion d'une journée en Camargue : chevaux sauvages, flamants roses, baignade et pique-nique. Transport collectif depuis Toulouse.</p>
+        <a href="contact.html" class="c-cta">Réserver ma place →</a>
+      </div>
+      <div class="c-feed-card">
+        <span class="c-status s-prep">◎ En préparation</span>
+        <h4>Soirée Fête Nationale Ivoirienne</h4>
+        <p>Grande soirée de célébration du 7 août, fête nationale de la Côte d'Ivoire. Musique, danse, gastronomie ivoirienne et ambiance festive garantie.</p>
+        <a href="evenements.html" class="c-cta">Voir l'agenda →</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="evenements.html" class="btn btn-primary">Voir tout le programme</a>
+      <a href="contact.html" class="btn btn-outline">Proposer une activité</a>
+    </div>
+  </div>
+</section>
+
+<section class="c-section">
+  <div class="c-container">
+    <div class="c-label">Résultats</div>
+    <h2 class="c-title">Indicateurs d'animation</h2>
+    <div class="c-stats">
+      <div class="c-stat"><div class="c-stat-icon">📊</div><div class="c-stat-val">—</div><div class="c-stat-label">Participants aux activités</div></div>
+      <div class="c-stat"><div class="c-stat-icon">🗓️</div><div class="c-stat-val">—</div><div class="c-stat-label">Événements organisés</div></div>
+      <div class="c-stat"><div class="c-stat-icon">🤝</div><div class="c-stat-val">—</div><div class="c-stat-label">Prestataires partenaires</div></div>
+    </div>
+    <p style="text-align:center;font-size:.82rem;color:#9ca3af;margin-top:1.25rem;">Les indicateurs seront mis à jour après chaque activité organisée.</p>
+  </div>
+</section>
+
+<section class="c-section c-alt">
+  <div class="c-container">
+    <div class="c-label">Portfolio</div>
+    <h2 class="c-title">Galerie des activités</h2>
+    <div class="c-gallery">
+      <div class="c-slides" id="slides">
+        <img class="c-slide" src="https://images.unsplash.com/photo-1540747913346-19212a4f6d52?w=960&h=380&fit=crop&q=80" alt="Activité sportive">
+        <img class="c-slide" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=960&h=380&fit=crop&q=80" alt="Sortie collective">
+        <img class="c-slide" src="https://images.unsplash.com/photo-1502904550040-7534597429ae?w=960&h=380&fit=crop&q=80" alt="Soirée festive">
+      </div>
+      <button class="c-gbtn prev" onclick="slide(-1)">&#8249;</button>
+      <button class="c-gbtn next" onclick="slide(1)">&#8250;</button>
+    </div>
+    <div class="c-gallery-nav" id="dots"></div>
+    <div class="c-quote">
+      « Les sorties organisées par l'AITO sont toujours impeccables. On s'amuse, on se retrouve, et on repart avec le sourire. C'est ça la vraie famille ! »
+      <cite>— Un membre fidèle du commissariat Loisirs</cite>
+    </div>
+  </div>
+</section>
+
+<section class="c-section">
+  <div class="c-container" style="max-width:720px;">
+    <div class="c-label">Collaboration</div>
+    <h2 class="c-title">Proposer une activité ou un partenariat</h2>
+    <p class="c-subtitle" style="margin-bottom:2rem;">Vous avez une idée d'activité, une prestation sportive ou de loisir à proposer ? Partagez-la avec le Commissariat aux Loisirs &amp; Détente.</p>
+    <div class="c-form-wrap">
+      <div class="c-success" id="c-success"><div style="font-size:2.5rem;">✅</div><h3 style="color:#166534;margin:.5rem 0;">Message envoyé !</h3><p style="color:#166534;font-size:.88rem;">Le commissariat vous répondra dans les meilleurs délais.</p></div>
+      <form id="c-form" onsubmit="submitForm(event)">
+        <div class="c-form-row">
+          <div class="fg"><label>Prénom *</label><input type="text" required placeholder="Votre prénom"></div>
+          <div class="fg"><label>Nom *</label><input type="text" required placeholder="Votre nom"></div>
+        </div>
+        <div class="fg"><label>E-mail *</label><input type="email" required placeholder="votre@email.com"></div>
+        <div class="fg">
+          <label>Type de proposition *</label>
+          <select required>
+            <option value="">Sélectionnez…</option>
+            <option>Idée de sortie ou excursion</option>
+            <option>Proposition d'activité sportive</option>
+            <option>Organisation d'une soirée festive</option>
+            <option>Prestation de service (traiteur, DJ, animateur)</option>
+            <option>Partenariat avec un prestataire loisirs</option>
+            <option>Autre idée</option>
+          </select>
+        </div>
+        <div class="fg"><label>Votre message *</label><textarea required placeholder="Décrivez votre idée, votre prestation ou votre proposition…"></textarea></div>
+        <button type="submit" class="c-submit">Envoyer au Commissariat Loisirs &amp; Détente 🎉</button>
+      </form>
+    </div>
+    <div class="c-gov">ℹ️ <strong>Note de gouvernance :</strong> Ce pôle fonctionne sur un modèle de gestion par projet. Les activités sont organisées par des prestataires sélectionnés sur convention ponctuelle. Toute dépense est soumise à approbation du bureau et validée par le Commissaire aux Comptes de l'AITO.</div>
+  </div>
+</section>
+
+</div>
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &mdash; Amicale des Ivoiriens de Toulouse H&eacute;rault</strong><p>Association loi 1901 au service de ses membres et de la communaut&eacute;.</p></div>
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&eacute;s</a></li><li><a href="evenements.html">&Eacute;v&eacute;nements</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Commissariats</h4><ul>
+      <li><a href="commissariat-culture.html">🎭 Culture</a></li><li><a href="commissariat-relations.html">🤝 Relations Ext.</a></li>
+      <li><a href="commissariat-solidarite.html">🤲 Solidarit&eacute;</a></li><li><a href="commissariat-etudiants.html">🎓 &Eacute;tudiants</a></li>
+      <li><a href="commissariat-loisirs.html">🎉 Loisirs &amp; D&eacute;tente</a></li><li><a href="commissariat-projets.html">📊 Projets</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>L&eacute;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&eacute;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&eacute;</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 AITO &mdash; Amicale des Ivoiriens de Toulouse H&eacute;rault</span></div>
+</footer>
+<script src="js/nav.js"></script>
+<script>
+  let cur=0;const sl=document.getElementById('slides');const n=sl.children.length;const dotsEl=document.getElementById('dots');
+  for(let i=0;i<n;i++){const d=document.createElement('button');d.className='c-dot'+(i===0?' on':'');d.onclick=()=>go(i);dotsEl.appendChild(d);}
+  function go(i){cur=i;sl.style.transform=`translateX(-${cur*100}%)`;document.querySelectorAll('.c-dot').forEach((d,j)=>d.classList.toggle('on',j===cur));}
+  function slide(dir){go((cur+dir+n)%n);}setInterval(()=>slide(1),5000);
+<script>
+/* ── Chargement dynamique depuis le dashboard commissaire ── */
+(function(){
+  const slug='loisirs';
+  const d=JSON.parse(localStorage.getItem('aito_comm_'+slug)||'{}');
+  const sm={open:{cls:'s-open',txt:'● Inscriptions ouvertes'},soon:{cls:'s-soon',txt:'◉ Prochainement'},prep:{cls:'s-prep',txt:'◎ En préparation'}};
+  if(d.profil){
+    const p=d.profil;
+    if(p.nom){const e=document.querySelector('.c-avatar-name');if(e)e.textContent=p.nom;}
+    if(p.titre){const e=document.querySelector('.c-avatar-title');if(e)e.textContent=p.titre;}
+    const bios=document.querySelectorAll('.c-bio-text');
+    if(p.bio1&&bios[0])bios[0].textContent=p.bio1;
+    if(p.bio2&&bios[1])bios[1].textContent=p.bio2;
+    const mis=document.querySelectorAll('.c-mission-box li');
+    [p.mission1,p.mission2,p.mission3].forEach((m,i)=>{if(m&&mis[i])mis[i].textContent=m;});
+  }
+  if(d.annonces&&d.annonces.length){
+    const cards=document.querySelectorAll('.c-feed-card');
+    d.annonces.forEach((a,i)=>{
+      if(!cards[i]||!a.titre)return;
+      const st=sm[a.statut]||sm.open;
+      cards[i].innerHTML=`<span class="c-status ${st.cls}">${st.txt}</span><h4>${a.titre}</h4><p>${a.desc||''}</p>${a.lien?`<a href="${a.lien}" class="c-cta">${a.lien_texte||'Voir →'}</a>`:''}`;
+    });
+  }
+  if(d.indicateurs&&d.indicateurs.length){
+    const vals=document.querySelectorAll('.c-stat-val');
+    const labs=document.querySelectorAll('.c-stat-label');
+    const ics=document.querySelectorAll('.c-stat-icon');
+    d.indicateurs.forEach((s,i)=>{
+      if(s.valeur&&vals[i])vals[i].textContent=s.valeur;
+      if(s.label&&labs[i])labs[i].textContent=s.label;
+      if(s.icone&&ics[i])ics[i].textContent=s.icone;
+    });
+  }
+  if(d.galerie){
+    const g=d.galerie;
+    if(g.images){const sls=document.querySelectorAll('.c-slides .c-slide');g.images.forEach((im,i)=>{if(im.url&&sls[i]){sls[i].src=im.url;sls[i].alt=im.alt||'';}});}
+    if(g.citation){const q=document.querySelector('.c-quote');if(q)q.innerHTML=`« ${g.citation} »<cite>— ${g.auteur||''}</cite>`;}
+  }
+})();
+</script>
+</body>
+</html>

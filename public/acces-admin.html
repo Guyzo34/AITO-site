@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion Bureau &mdash; AITO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#00703C 0%,#004d2a 60%,#1a1a2e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.card{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.logo-wrap{text-align:center;margin-bottom:1.75rem}
+.logo-wrap img{height:64px;margin-bottom:.75rem}
+.logo-wrap h1{font-size:1.25rem;font-weight:800;color:#00703C}
+.logo-wrap p{font-size:.83rem;color:#6b7280;margin-top:.25rem}
+.form-group{margin-bottom:1rem}
+label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:.4rem}
+input{width:100%;padding:.7rem 1rem;border:1.5px solid #d1d5db;border-radius:10px;font-size:.93rem;color:#111;transition:border-color .2s}
+input:focus{outline:none;border-color:#00703C}
+.btn-login{width:100%;padding:.8rem;background:#00703C;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:.5rem}
+.btn-login:hover{background:#004d2a}
+.divider{text-align:center;margin:1.25rem 0;font-size:.8rem;color:#9ca3af;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e5e7eb}
+.divider::before{left:0}.divider::after{right:0}
+.btn-google{width:100%;padding:.75rem;background:#fff;color:#374151;border:1.5px solid #d1d5db;border-radius:10px;font-size:.93rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:background .2s}
+.btn-google:hover{background:#f9fafb}
+.btn-google svg{width:20px;height:20px}
+.error-msg{background:#fee2e2;color:#dc2626;border-radius:8px;padding:.65rem 1rem;font-size:.83rem;margin-top:.75rem;display:none}
+.info-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:1rem;margin-top:1.25rem;font-size:.8rem;color:#166534}
+.info-box strong{display:block;margin-bottom:.4rem}
+.back-link{text-align:center;margin-top:1.25rem}
+.back-link a{color:#6b7280;font-size:.82rem;text-decoration:none}
+.back-link a:hover{color:#00703C}
+.spinner{display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+  <!-- ══ MAINTENANCE TOGGLE ══ -->
+  <div id="maintenance-panel" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#1A1208;border-bottom:3px solid #E8650A;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,.5);">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="font-size:1.1rem;">🔧</span>
+      <div>
+        <div style="color:#fff;font-weight:700;font-size:.95rem;line-height:1.2;">Mode maintenance</div>
+        <div id="maint-status-text" style="font-size:.78rem;color:#8A8070;">Chargement...</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span id="maint-status-badge" style="font-size:.8rem;font-weight:700;padding:.3rem .9rem;border-radius:50px;"></span>
+      <label style="position:relative;display:inline-block;width:52px;height:28px;cursor:pointer;">
+        <input type="checkbox" id="maint-toggle" style="opacity:0;width:0;height:0;" onchange="toggleMaintenance(this.checked)">
+        <span id="maint-slider" style="position:absolute;top:0;left:0;right:0;bottom:0;border-radius:34px;background:#2A2418;border:2px solid rgba(255,255,255,.15);transition:all .3s;">
+          <span id="maint-knob" style="position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#5A5040;transition:all .3s;"></span>
+        </span>
+      </label>
+    </div>
+  </div>
+  <div style="height:60px;"></div>
+
+  <script>
+  function updateMaintenanceUI(isOn) {
+    var badge = document.getElementById('maint-status-badge');
+    var text = document.getElementById('maint-status-text');
+    var slider = document.getElementById('maint-slider');
+    var knob = document.getElementById('maint-knob');
+    var toggle = document.getElementById('maint-toggle');
+    toggle.checked = isOn;
+    if(isOn) {
+      badge.textContent = 'ACTIF';
+      badge.style.cssText = 'font-size:.8rem;font-weight:700;padding:.3rem .9rem;border-radius:50px;background:rgba(220,50,50,.2);color:#FF6B6B;border:1px solid rgba(220,50,50,.4);';
+      text.textContent = 'Visiteurs redirigés vers la page de maintenance';
+      slider.style.background = 'rgba(220,50,50,.3)';
+      slider.style.borderColor = 'rgba(220,50,50,.5)';
+      knob.style.background = '#FF6B6B';
+      knob.style.transform = 'translateX(24px)';
+    } else {
+      badge.textContent = 'INACTIF';
+      badge.style.cssText = 'font-size:.8rem;font-weight:700;padding:.3rem .9rem;border-radius:50px;background:rgba(26,122,60,.2);color:#3fb950;border:1px solid rgba(26,122,60,.4);';
+      text.textContent = 'Site accessible normalement à tous les visiteurs';
+      slider.style.background = 'rgba(26,122,60,.2)';
+      slider.style.borderColor = 'rgba(26,122,60,.4)';
+      knob.style.background = '#3fb950';
+      knob.style.transform = 'translateX(0)';
+    }
+  }
+
+  function toggleMaintenance(isOn) {
+    if(isOn) {
+      if(confirm('⚠️ Activer le mode maintenance ?\nTous les visiteurs verront la page de maintenance.')) {
+        localStorage.setItem('aito_maintenance', 'on');
+        updateMaintenanceUI(true);
+        showNotif('🔧 Mode maintenance activé', '#FF6B6B');
+      } else {
+        document.getElementById('maint-toggle').checked = false;
+      }
+    } else {
+      if(confirm('✅ Désactiver le mode maintenance ?\nLe site redeviendra accessible à tous.')) {
+        localStorage.removeItem('aito_maintenance');
+        updateMaintenanceUI(false);
+        showNotif('✅ Site remis en ligne', '#3fb950');
+      } else {
+        document.getElementById('maint-toggle').checked = true;
+      }
+    }
+  }
+
+  function showNotif(msg, color) {
+    var n = document.createElement('div');
+    n.textContent = msg;
+    n.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1A1208;color:'+color+';border:1px solid '+color+';border-radius:50px;padding:.6rem 1.4rem;font-weight:700;font-size:.9rem;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.5);';
+    document.body.appendChild(n);
+    setTimeout(function(){ n.remove(); }, 3000);
+  }
+
+  // Init
+  var current = localStorage.getItem('aito_maintenance') === 'on';
+  updateMaintenanceUI(current);
+  </script>
+
+<div class="card">
+  <div class="logo-wrap">
+    <img src="images/logo.png" alt="AITO Logo" onerror="this.style.display='none'">
+    <h1>Espace Bureau</h1>
+    <p>Amicale des Ivoiriens de Toulouse et de l'Occitanie</p>
+  </div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <label for="email">Adresse e-mail</label>
+      <input type="email" id="email" placeholder="votre@email.com" required autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label for="pwd">Mot de passe</label>
+      <input type="password" id="pwd" placeholder="••••••••" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn-login" id="btnLogin">
+      <span class="spinner" id="spinner"></span>
+      Se connecter
+    </button>
+    <div class="error-msg" id="errMsg">Identifiants incorrects. V&eacute;rifiez votre e-mail et mot de passe.</div>
+  </form>
+
+  <div class="divider">ou</div>
+
+  <button class="btn-google" id="btnGoogle">
+    <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    Connexion avec Google
+  </button>
+
+  <div class="info-box">
+    <strong>&#128274; Acc&egrave;s r&eacute;serv&eacute; au bureau</strong>
+    Pr&eacute;sident &bull; Vice-Pr&eacute;sident &bull; Secr&eacute;taire &bull; Tr&eacute;sorier &bull; Admin
+  </div>
+
+  <div class="back-link"><a href="index.html">&larr; Retour au site</a></div>
+</div>
+
+<script>
+// V&eacute;rifier si d&eacute;j&agrave; connect&eacute;
+(async () => {
+  const { data: { user } } = await db.auth.getUser();
+  if (user) redirectByRole(user);
+})();
+
+function redirectByRole(user) {
+  const role = user.user_metadata?.role || 'admin';
+  window.location.href = ROLE_REDIRECTS[role] || 'dashboard-admin.html';
+}
+
+// Connexion email/mot de passe
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const pwd   = document.getElementById('pwd').value;
+  const err   = document.getElementById('errMsg');
+  const btn   = document.getElementById('btnLogin');
+  const spin  = document.getElementById('spinner');
+
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+  err.style.display = 'none';
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pwd });
+
+  if (error) {
+    err.style.display = 'block';
+    btn.disabled = false;
+    spin.style.display = 'none';
+    return;
+  }
+  redirectByRole(data.user);
+});
+
+// Connexion Google OAuth
+document.getElementById('btnGoogle').addEventListener('click', async () => {
+  await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/acces-admin.html' }
+  });
+});
+</script>
+</body>
+</html>

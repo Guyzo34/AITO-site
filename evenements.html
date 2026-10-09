@@ -1,0 +1,731 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>&#201;v&#233;nements &#8212; AITO · Amicale des Ivoiriens de Toulouse et de l'Occitanie</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+
+    <div class="nav-menu" id="navMenu">
+
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+
+      <div class="dropdown"><a href="#">Services ?</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion & Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+
+      <a href="dashboard-bureau.html" style="color:rgba(255,255,255,.55);font-size:.8rem;padding:.4rem .7rem;border-radius:6px;display:none;" id="navBureau">Bureau</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<div class="page-content">
+
+
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.65),rgba(0,70,30,.55)),url('https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+
+  <div class="label">Agenda</div>
+
+  <h1>&#201;v&#233;nements</h1>
+
+  <p>Consultez notre calendrier, inscrivez-vous et r&#233;glez votre participation en ligne.</p>
+
+</div>
+
+
+
+<!-- &#201;v&#233;nement phare -->
+
+<section class="section" style="background:linear-gradient(135deg,rgba(0,112,60,.06),rgba(247,127,0,.08));">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">&#201;v&#233;nement phare 2025</div>
+
+      <h2>F&#234;te de l'Ind&#233;pendance &#8212; 7 Ao&#251;t</h2>
+
+      <p>L'&#233;v&#233;nement majeur de l'ann&#233;e, ouvert &#224; tous. Un moment de c&#233;l&#233;bration et de rayonnement de la communaut&#233; ivoirienne de Toulouse.</p>
+
+    </div>
+
+    <div class="event-hero-grid" style="background:linear-gradient(135deg,#00703C,#F77F00);border-radius:20px;padding:2.5rem;color:#fff;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;">
+
+      <div>
+
+        <div style="font-size:4rem;margin-bottom:1rem;">&#127464;&#127470;</div>
+
+        <h3 style="font-size:1.6rem;font-weight:800;margin-bottom:1rem;">F&#234;te de l'Ind&#233;pendance</h3>
+
+        <p style="opacity:.9;line-height:1.7;margin-bottom:1.5rem;">Musique live, gastronomie ivoirienne, tenues traditionnelles, animations enfants, discours et moments de partage. Ouvert &#224; toute la diaspora africaine et aux Montpelli&#233;rains.</p>
+
+        <div style="display:flex;flex-direction:column;gap:.5rem;font-size:.95rem;opacity:.9;">
+
+          <span>&#128197; Jeudi 7 Ao&#251;t 2025</span>
+
+          <span>&#128205; Maison des Relations Internationales / Salle &#224; confirmer</span>
+
+          <span>&#128336; &#192; partir de 18h00</span>
+
+          <span>&#127903;&#65039; Entr&#233;e payante + partenaires institutionnels</span>
+
+        </div>
+
+      </div>
+
+      <div style="background:rgba(255,255,255,.15);border-radius:16px;padding:1.5rem;backdrop-filter:blur(8px);">
+
+        <h4 style="font-size:1rem;margin-bottom:1rem;font-weight:700;">Objectifs</h4>
+
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.6rem;font-size:.9rem;">
+
+          <li>&#9989; 100+ participants attendus</li>
+
+          <li>&#9989; Vitrine de l'association aupr&#232;s du grand public</li>
+
+          <li>&#9989; Pr&#233;sence des partenaires institutionnels</li>
+
+          <li>&#9989; Communication 4 semaines minimum &#224; l'avance</li>
+
+          <li>&#9989; Responsable d&#233;sign&#233; 6 mois avant</li>
+
+        </ul>
+
+        <div style="margin-top:1.5rem;">
+
+          <a href="#inscription" class="btn btn-primary" style="background:#fff;color:#00703C;width:100%;justify-content:center;">Pr&#233;-inscription</a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Calendrier annuel complet -->
+
+<section class="section">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Programme 2025</div>
+
+      <h2>Les 12 rendez-vous de l'ann&#233;e</h2>
+
+      <p>Un programme r&#233;gulier, pens&#233; pour renforcer les liens et valoriser la communaut&#233; tout au long de l'ann&#233;e.</p>
+
+    </div>
+
+
+
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Jan</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Assembl&#233;e G&#233;n&#233;rale & V&#339;ux de l'ann&#233;e</h4>
+
+          <p>Bilan de l'ann&#233;e pr&#233;c&#233;dente, vote du budget, pr&#233;sentation du programme, &#233;lections si n&#233;cessaire. Suivi d'un repas convivial.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Salle associative</span>
+
+            <span>&#128101; Membres uniquement</span>
+
+            <span class="badge badge-primary">&#201;v&#233;nement pilier</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">F&#233;v</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Conf&#233;rence th&#233;matique #1 &#8212; Culture & Identit&#233;</h4>
+
+          <p>Salle avec invit&#233; expert. Th&#232;me choisi par vote des membres lors de l'AG de janvier. Focus sur la culture et l'identit&#233; ivoirienne.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Salle de conf&#233;rence</span>
+
+            <span>&#127908; Invit&#233; expert</span>
+
+            <span class="badge badge-accent">Th&#233;matique</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">S'inscrire</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Mar</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Brunch des membres</h4>
+
+          <p>Moment convivial informel. Rotation chez les membres volontaires. Coh&#233;sion et &#233;change dans un cadre d&#233;tendu.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Chez les membres (tournant)</span>
+
+            <span>&#127869;&#65039; Brunch partag&#233;</span>
+
+            <span class="badge badge-green">5&#8211;10 &#8364;/pers.</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">S'inscrire</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Avr</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Sortie nature &#8212; H&#233;rault</h4>
+
+          <p>Randonn&#233;e dans les gorges de l'H&#233;rault, suivi d'un pique-nique. Convivialit&#233;, d&#233;tente et d&#233;couverte de la r&#233;gion.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Gorges de l'H&#233;rault</span>
+
+            <span>&#129406; Randonn&#233;e + pique-nique</span>
+
+            <span class="badge badge-green">Participation libre</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">S'inscrire</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Mai</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Tournoi sportif inter-associations</h4>
+
+          <p>Football, p&#233;tanque, awal&#233; et jeux africains. Invitation d'autres associations africaines de Toulouse. Rayonnement et r&#233;seau inter-associatif.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Stade municipal</span>
+
+            <span>&#9917; 10h00 &#8212; 18h00</span>
+
+            <span class="badge badge-green">Gratuit &#8212; Inscription requise</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">S'inscrire</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Juin</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Concours de cuisine ivoirienne</h4>
+
+          <p>Atelier culinaire, d&#233;gustation et jury compos&#233; de membres. C&#233;l&#233;bration de la gastronomie ivoirienne sous toutes ses formes.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Local associatif / salle &#233;quip&#233;e</span>
+
+            <span>&#127858; Atelier + d&#233;gustation</span>
+
+            <span class="badge badge-accent">Ouvert &#224; tous &#8212; participation libre</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">S'inscrire</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;background:linear-gradient(135deg,rgba(0,112,60,.05),rgba(247,127,0,.08));border:2px solid var(--primary);">
+
+        <div class="event-date" style="background:var(--primary);"><div class="day">7</div><div class="month">Ao&#251;t</div></div>
+
+        <div class="event-info">
+
+          <h4>&#127464;&#127470; F&#202;TE DE L'IND&#201;PENDANCE &#8212; &#201;v&#233;nement phare</h4>
+
+          <p>&#201;v&#233;nement public ouvert &#224; tous. Musique live, gastronomie, tenues traditionnelles, animations enfants. Vitrine annuelle de l'association aupr&#232;s du grand public et des partenaires institutionnels.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Maison des Relations Internationales</span>
+
+            <span>&#128336; &#192; partir de 18h00</span>
+
+            <span class="badge badge-accent">100+ participants attendus</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-primary" style="padding:.55rem 1.2rem;font-size:.88rem;">Pr&#233;-inscription</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Sept</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Rentr&#233;e associative &#8212; Portes ouvertes</h4>
+
+          <p>Accueil des nouveaux membres, pr&#233;sentation des activit&#233;s, inscription pour l'ann&#233;e. Id&#233;al pour les nouveaux arrivants ivoiriens &#224; Toulouse.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Local associatif</span>
+
+            <span>&#128101; Recrutement nouveaux membres</span>
+
+            <span class="badge badge-green">Entr&#233;e libre</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="adhesion.html" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">Adh&#233;rer</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Oct</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Conf&#233;rence th&#233;matique #2 &#8212; Culture & D&#233;bat</h4>
+
+          <p>Deuxi&#232;me conf&#233;rence de l'ann&#233;e avec un invit&#233; expert. Th&#232;me soumis au vote des membres. D&#233;bat ouvert et &#233;changes constructifs.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Salle de conf&#233;rence</span>
+
+            <span>&#127908; Invit&#233; expert</span>
+
+            <span class="badge badge-accent">Th&#233;matique</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">S'inscrire</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">Nov</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>Soir&#233;e Talents des membres</h4>
+
+          <p>Sc&#232;ne ouverte : musique, sketch, slam, th&#233;&#226;tre, danse. Valorisation des ressources et talents internes de l'association. Inscriptions des participants 3 semaines avant.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Salle avec sono</span>
+
+            <span>&#128266; Sc&#232;ne ouverte</span>
+
+            <span class="badge badge-primary">Membres + familles</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-dark" style="padding:.55rem 1.2rem;font-size:.88rem;">Participer</a></div>
+
+      </div>
+
+
+
+      <div class="event-card" style="gap:1.5rem;align-items:center;">
+
+        <div class="event-date"><div class="day">D&#233;c</div><div class="month">2025</div></div>
+
+        <div class="event-info">
+
+          <h4>F&#234;te de fin d'ann&#233;e &#8212; Cl&#244;ture festive</h4>
+
+          <p>Grande soir&#233;e membres et familles. Bilan de l'ann&#233;e, remise de distinctions, animations. Cl&#244;ture festive en beaut&#233; pour terminer l'ann&#233;e ensemble.</p>
+
+          <div class="event-meta">
+
+            <span>&#128205; Salle des f&#234;tes</span>
+
+            <span>&#128336; 19h00 &#8212; Minuit</span>
+
+            <span class="badge badge-accent">Membres & familles</span>
+
+          </div>
+
+        </div>
+
+        <div style="flex-shrink:0;"><a href="#inscription" class="btn btn-primary" style="padding:.55rem 1.2rem;font-size:.88rem;">R&#233;server</a></div>
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Programme estival -->
+
+<section class="section section-alt">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">&#201;t&#233; 2025</div>
+
+      <h2>Programme estival &#8212; Juillet & Ao&#251;t</h2>
+
+      <p>L'&#233;t&#233; &#224; Toulouse et la M&#233;diterran&#233;e : sorties conviviales &#224; faible co&#251;t, tr&#232;s f&#233;d&#233;ratrices.</p>
+
+    </div>
+
+    <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr));">
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#127958;&#65039;</div>
+
+        <h3>Sorties plage</h3>
+
+        <p>Grande-Motte, Palavas-les-Flots, S&#232;te, Cap d'Agde. Co-voiturage entre membres, beach soccer, volley, barbecue.</p>
+
+        <small style="color:var(--gray-500);">2 &#224; 3 sorties juillet-ao&#251;t</small>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#127807;</div>
+
+        <h3>Sorties parcs</h3>
+
+        <p>Parc Montcalm, Domaine de Grammont, Promenade du Peyrou, Pic Saint-Loup. Pique-nique partag&#233; et jeux en plein air.</p>
+
+        <small style="color:var(--gray-500);">1 &#224; 2 sorties par mois</small>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#127963;&#65039;</div>
+
+        <h3>D&#233;couverte de la r&#233;gion</h3>
+
+        <p>Gorges de l'H&#233;rault, Lac du Salagou, Pont du Gard, Cit&#233; de Carcassonne. Sorties culturelles en groupe.</p>
+
+        <small style="color:var(--gray-500);">1 sortie d&#233;couverte par saison</small>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#127749;</div>
+
+        <h3>Soir&#233;es coucher de soleil</h3>
+
+        <p>Ap&#233;ritif partag&#233; face &#224; la mer ou dans un parc au cr&#233;puscule. Co&#251;t quasi nul, moments inoubliables.</p>
+
+        <small style="color:var(--gray-500);">1 &#224; 2 soir&#233;es en juillet-ao&#251;t</small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Galerie photos &#233;v&#233;nements -->
+
+<section class="section section-alt" style="padding:2.5rem 0;">
+
+  <div class="container">
+
+    <div class="section-header" style="margin-bottom:1.5rem;">
+
+      <div class="label">En images</div>
+
+      <h2>Nos &#233;v&#233;nements en photos</h2>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;">
+
+      <div style="border-radius:var(--radius-lg);overflow:hidden;height:200px;">
+
+        <img src="https://images.unsplash.com/photo-1504279577054-98edf2fce498?w=500&h=300&auto=format&fit=crop&q=80" alt="F&#234;te de la communaut&#233;" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+
+      </div>
+
+      <div style="border-radius:var(--radius-lg);overflow:hidden;height:200px;">
+
+        <img src="https://images.unsplash.com/photo-1540575467537-2600f6b34e1e?w=500&h=300&auto=format&fit=crop&q=80" alt="Conf&#233;rence et forum" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+
+      </div>
+
+      <div style="border-radius:var(--radius-lg);overflow:hidden;height:200px;">
+
+        <img src="https://images.unsplash.com/photo-1471295253337-3ceaaedca167?w=500&h=300&auto=format&fit=crop&q=80" alt="Tournoi sportif" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+
+      </div>
+
+      <div style="border-radius:var(--radius-lg);overflow:hidden;height:200px;">
+
+        <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&h=300&auto=format&fit=crop&q=80" alt="Soir&#233;e gala" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Formulaire d'inscription -->
+
+<section class="section section-alt" id="inscription">
+
+  <div class="container" style="max-width:620px;">
+
+    <div class="section-header">
+
+      <div class="label">Inscription</div>
+
+      <h2>S'inscrire &#224; un &#233;v&#233;nement</h2>
+
+      <p>Remplissez le formulaire ci-dessous. Un r&#233;capitulatif et les modalit&#233;s de paiement vous seront envoy&#233;s par e-mail.</p>
+
+    </div>
+
+    <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:2.5rem;border:1px solid var(--gray-200);">
+
+      <form data-form="evenement">
+
+        <div class="form-group"><label>&#201;v&#233;nement *</label>
+
+          <select required>
+
+            <option value="">S&#233;lectionnez un &#233;v&#233;nement</option>
+
+            <option>AG & V&#339;ux &#8212; Janvier (gratuit, membres)</option>
+
+            <option>Conf&#233;rence #1 Culture & Identit&#233; &#8212; F&#233;vrier</option>
+
+            <option>Brunch des membres &#8212; Mars (5-10&#8364;)</option>
+
+            <option>Sortie nature H&#233;rault &#8212; Avril (participation libre)</option>
+
+            <option>Tournoi sportif inter-asso &#8212; Mai (gratuit)</option>
+
+            <option>Concours cuisine ivoirienne &#8212; Juin (gratuit)</option>
+
+            <option>F&#234;te Ind&#233;pendance 7 Ao&#251;t (entr&#233;e payante)</option>
+
+            <option>Rentr&#233;e associative &#8212; Septembre (entr&#233;e libre)</option>
+
+            <option>Conf&#233;rence #2 Culture & D&#233;bat &#8212; Octobre</option>
+
+            <option>Soir&#233;e Talents &#8212; Novembre (membres)</option>
+
+            <option>F&#234;te de fin d'ann&#233;e &#8212; D&#233;cembre (membres & familles)</option>
+
+            <option>Sorties &#233;t&#233; &#8212; Plage / Parc (participation libre)</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group"><label>Pr&#233;nom *</label><input type="text" required placeholder="Votre pr&#233;nom"></div>
+
+          <div class="form-group"><label>Nom *</label><input type="text" required placeholder="Votre nom"></div>
+
+        </div>
+
+        <div class="form-group"><label>E-mail *</label><input type="email" required placeholder="votre@email.com"></div>
+
+        <div class="form-group"><label>T&#233;l&#233;phone</label><input type="tel" placeholder="06 XX XX XX XX"></div>
+
+        <div class="form-group"><label>Nombre de participants</label><input type="number" min="1" max="10" value="1"></div>
+
+        <div class="form-group"><label>Remarques / r&#233;gimes alimentaires</label><textarea placeholder="Allergies, mobilit&#233; r&#233;duite..."></textarea></div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Envoyer ma demande d'inscription</button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&#233;</a></li></ul></div>
+
+  </div>
+
+  <div class="footer-bottom"><span>&#169; 2026 AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</span><div style="display:flex;gap:.6rem;align-items:center;"><a href="[LIEN_FACEBOOK_ICI]" target="_blank" style="width:28px;height:28px;background:#1877F2;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a><a href="[LIEN_WHATSAPP_ICI]" target="_blank" style="width:28px;height:28px;background:#25D366;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a><a href="mentions-legales.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Mentions l&#233;gales</a><a href="contact.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Contact</a></div></div>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+<style>
+  .event-card{grid-template-columns:90px 1fr auto!important}
+  @media(max-width:640px){.event-card{grid-template-columns:1fr!important}.event-card>div:last-child{margin-top:.5rem}}
+  @media(max-width:768px){.event-hero-grid{grid-template-columns:1fr !important;gap:1.5rem !important;padding:1.75rem !important}}
+</style>
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adhésion &amp; Cotisations — AITO · Amicale des Ivoiriens de Toulouse et de l'Occitanie</title>
+  <link rel="stylesheet" href="css/style.css">
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+<body>
+<div class="flag-bar" aria-hidden="true"></div>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+    <div class="nav-occitanie" title="Région Occitanie"><img src="images/occitanie.svg" alt="Région Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html">Accueil</a><a href="presentation.html">Présentation</a><a href="actualites.html">Actualités</a><a href="evenements.html">Événements</a>
+      <div class="dropdown"><a href="#">Services ▾</a><div class="dropdown-menu"><a href="adhesion.html">Adhésion &amp; Cotisations</a><a href="collectivites.html">Collectivités</a><a href="projets-economiques.html">Projets économiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances décès</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme Côte d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a>
+      <a href="connexion.html" class="btn-nav">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-content">
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.65),rgba(0,70,30,.55)),url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+  <div class="label">Rejoignez-nous</div>
+  <h1>Adhésion &amp; Cotisations</h1>
+  <p>Devenez membre de l'association et accédez à l'ensemble des services réservés aux adhérents.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">Tarifs</div>
+      <h2>Choisissez votre formule</h2>
+      <p>Toutes les formules incluent l'accès à l'espace membre et la participation aux événements.</p>
+    </div>
+    <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));max-width:1100px;margin:0 auto;">
+
+      <div class="pricing-card">
+        <div style="font-size:2rem;margin-bottom:.75rem;">&#128100;</div>
+        <h3 style="font-weight:700;color:var(--primary);">Membre actif</h3>
+        <div class="pricing-price">30€<span>/an</span></div>
+        <p style="color:var(--gray-600);font-size:.88rem;margin-bottom:1.5rem;">Pour les adultes souhaitant participer activement à la vie de l'association.</p>
+        <ul class="pricing-perks"><li>Espace membre sécurisé</li><li>Accès aux événements</li><li>Messagerie interne</li><li>Documents réservés</li><li>Newsletter mensuelle</li></ul>
+        <a href="adhesion-formule.html" class="btn btn-dark" style="width:100%;justify-content:center;">Choisir cette formule</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-featured-badge">Recommandé</div>
+        <div style="font-size:2rem;margin-bottom:.75rem;">&#128106;</div>
+        <h3 style="font-weight:700;color:var(--primary);">Famille</h3>
+        <div class="pricing-price">50€<span>/an</span></div>
+        <p style="color:var(--gray-600);font-size:.88rem;margin-bottom:1.5rem;">Pour les couples et familles (jusqu'à 4 membres du foyer).</p>
+        <ul class="pricing-perks"><li>Tout inclus formule Actif</li><li>Jusqu'à 4 membres du foyer</li><li>Tarifs réduits événements</li><li>Accompagnement personnalisé</li><li>Priorité d'inscription AG</li></ul>
+        <a href="adhesion-formule.html" class="btn btn-primary" style="width:100%;justify-content:center;">Choisir cette formule</a>
+      </div>
+
+      <div class="pricing-card">
+        <div style="font-size:2rem;margin-bottom:.75rem;">&#127891;</div>
+        <h3 style="font-weight:700;color:var(--primary);">Étudiant / Solidaire</h3>
+        <div class="pricing-price">15€<span>/an</span></div>
+        <p style="color:var(--gray-600);font-size:.88rem;margin-bottom:1.5rem;">Pour les étudiants et personnes en situation de précarité (sur justificatif).</p>
+        <ul class="pricing-perks"><li>Espace membre sécurisé</li><li>Accès aux événements</li><li>Messagerie interne</li><li>Documents réservés</li></ul>
+        <a href="adhesion-formule.html" class="btn btn-dark" style="width:100%;justify-content:center;">Choisir cette formule</a>
+      </div>
+
+      <div class="pricing-card" style="border:2px solid #0ea5e9;background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(56,189,248,.03));">
+        <div style="font-size:2rem;margin-bottom:.75rem;">&#127785;</div>
+        <h3 style="font-weight:700;color:#0369a1;">Sympathisant</h3>
+        <div class="pricing-price" style="color:#0369a1;">20€<span>/an</span></div>
+        <p style="color:var(--gray-600);font-size:.88rem;margin-bottom:1.5rem;">Pour toute personne souhaitant soutenir l'association et participer à ses activités.</p>
+        <ul class="pricing-perks"><li>Participation aux événements</li><li>Espace membre sécurisé</li><li>Newsletter &amp; actualités</li><li>Accès aux activités culturelles</li></ul>
+        <a href="adhesion-formule.html" class="btn btn-dark" style="width:100%;justify-content:center;background:#0369a1;border-color:#0369a1;">Choisir cette formule</a>
+      </div>
+      </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="formulaire">
+  <div class="container" style="max-width:900px;">
+    <div class="section-header">
+      <div class="label">Inscription</div>
+      <h2>Formulaire d'adhésion</h2>
+      <p>Remplissez le formulaire ci-dessous pour rejoindre l'AITO. Votre dossier sera examiné par le bureau.</p>
+    </div>
+
+    <div id="form-success" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:16px;padding:2rem;text-align:center;">
+      <div style="font-size:3rem;">&#9989;</div>
+      <h3 style="color:#166534;margin:.75rem 0;">Demande envoyée !</h3>
+      <p style="color:#166534;font-size:.9rem;">Votre dossier a été reçu. Le bureau l'examinera et vous contactera par email.</p>
+    </div>
+
+    <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:2.5rem;border:1px solid var(--gray-200);" id="form-container">
+      <form id="formAdhesion">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-prenom">Prénom *</label>
+            <input type="text" id="f-prenom" placeholder="Votre prénom" required>
+          </div>
+          <div class="form-group">
+            <label for="f-nom">Nom *</label>
+            <input type="text" id="f-nom" placeholder="Votre nom" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-ddn">Date de naissance</label>
+            <input type="date" id="f-ddn">
+          </div>
+          <div class="form-group">
+            <label for="f-nat">Nationalité</label>
+            <input type="text" id="f-nat" placeholder="Française">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="f-email">Adresse e-mail *</label>
+          <input type="email" id="f-email" placeholder="votre@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="f-tel">Téléphone</label>
+          <input type="tel" id="f-tel" placeholder="06 XX XX XX XX">
+        </div>
+        <div class="form-group">
+          <label for="f-adr">Adresse postale</label>
+          <input type="text" id="f-adr" placeholder="Numéro, rue, ville">
+        </div>
+        <div class="form-group">
+          <label for="f-formule">Formule d'adhésion *</label>
+          <select id="f-formule" required>
+            <option value="">Sélectionnez une formule</option>
+            <option value="Etudiant">Étudiant / Solidaire — 15€/an</option>
+            <option value="Adherent">Membre actif — 30€/an</option>
+            <option value="Famille">Famille — 50€/an</option>
+            <option value="Sympathisant">Sympathisant — 20€/an</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-source">Comment avez-vous connu l'association ?</label>
+          <select id="f-source">
+            <option value="Bouche à oreille">Bouche à oreille</option>
+            <option value="Réseaux sociaux">Réseaux sociaux</option>
+            <option value="Événement">Événement</option>
+            <option value="Internet">Recherche internet</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:flex-start;gap:.75rem;font-weight:400;cursor:pointer;">
+            <input type="checkbox" id="f-cgu" required style="width:auto;margin-top:.15rem;">
+            <span style="font-size:.88rem;color:var(--gray-600);">J'accepte les <a href="mentions-legales.html" style="color:var(--primary);">statuts de l'association</a> et la <a href="mentions-legales.html#confidentialite" style="color:var(--primary);">politique de confidentialité</a>. *</span>
+          </label>
+        </div>
+        <div id="f-err" style="display:none;background:#fee2e2;color:#dc2626;padding:.75rem 1rem;border-radius:8px;margin-bottom:1rem;font-size:.88rem;"></div>
+        <button type="submit" id="f-btn" class="btn btn-primary" style="width:100%;justify-content:center;padding:.85rem;">Envoyer ma demande d'adhésion</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO — Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;"><img src="images/occitanie.svg" alt="Région Occitanie" style="height:32px;width:auto;"><span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de<br>Toulouse et de l'Occitanie</span></div>
+      <p>Association loi 1901 au service de ses membres et de la communauté.</p>
+    </div>
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Présentation</a></li><li><a href="actualites.html">Actualités</a></li><li><a href="evenements.html">Événements</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adhésion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="financement.html">Financement</a></li><li><a href="tourisme.html">Tourisme Côte d'Ivoire</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+    <div class="footer-col"><h4>Légal</h4><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialité</a></li><li><a href="mentions-legales.html#rgpd">RGPD</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 AITO — Amicale des Ivoiriens de Toulouse et de l'Occitanie</span><a href="mentions-legales.html">Mentions légales</a></div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+// ===== FORMULAIRE ADHÉSION =====
+document.getElementById('formAdhesion').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const prenom  = document.getElementById('f-prenom').value.trim();
+  const nom     = document.getElementById('f-nom').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const tel     = document.getElementById('f-tel').value.trim();
+  const adresse = document.getElementById('f-adr').value.trim();
+  const formule = document.getElementById('f-formule').value;
+  const source  = document.getElementById('f-source').value;
+  const errEl   = document.getElementById('f-err');
+  const btn     = document.getElementById('f-btn');
+
+  errEl.style.display = 'none';
+
+  if (!prenom || !nom || !email || !formule) {
+    errEl.textContent = 'Veuillez remplir tous les champs obligatoires (Prénom, Nom, Email, Formule).';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  const today = new Date().toISOString().split('T')[0];
+  const { error } = await db.from('membres').insert({
+    prenom, nom, email,
+    telephone: tel || null,
+    adresse: adresse || null,
+    formule,
+    statut: 'en_attente',
+    statut_cotisation: 'en_attente',
+    date_adhesion: today,
+    notes: source || null
+  });
+
+  if (error) {
+    errEl.textContent = error.message.includes('duplicate') || error.message.includes('unique')
+      ? 'Cet email est déjà enregistré.'
+      : 'Erreur : ' + error.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = "Envoyer ma demande d'adhésion";
+    return;
+  }
+
+  document.getElementById('form-container').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+});
+
+// ===== FORMULAIRE HONNEUR =====
+document.getElementById('formHonneur').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const prenom  = document.getElementById('h-prenom').value.trim();
+  const nom     = document.getElementById('h-nom').value.trim();
+  const email   = document.getElementById('h-email').value.trim();
+  const tel     = document.getElementById('h-tel').value.trim();
+  const motif   = document.getElementById('h-motif').value;
+  const detail  = document.getElementById('h-detail').value.trim();
+  const parrain = document.getElementById('h-parrain').value.trim();
+  const errEl   = document.getElementById('h-err');
+  const btn     = document.getElementById('h-btn');
+
+  errEl.style.display = 'none';
+
+  if (!prenom || !nom || !email || !motif || !detail) {
+    errEl.textContent = 'Veuillez remplir tous les champs obligatoires.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  const today = new Date().toISOString().split('T')[0];
+  const { error } = await db.from('membres').insert({
+    prenom, nom, email,
+    telephone: tel || null,
+    formule: 'Honneur',
+    statut: 'en_attente',
+    statut_cotisation: 'en_attente',
+    date_adhesion: today,
+    notes: motif + (detail ? ' — ' + detail : '') + (parrain ? ' — Parrain: ' + parrain : '')
+  });
+
+  if (error) {
+    errEl.textContent = error.message.includes('duplicate') || error.message.includes('unique')
+      ? 'Cet email est déjà enregistré.'
+      : 'Erreur : ' + error.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Soumettre ma demande';
+    return;
+  }
+
+});
+</script>
+</body>
+</html>

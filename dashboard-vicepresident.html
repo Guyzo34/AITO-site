@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Vice-Pr&#233;sident &#8211; AITO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4faf6;color:#1a2e20}
+.db-wrapper{display:block;min-height:100vh}
+.db-sidebar{background:#b85e00;color:#fff;width:260px;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:100}
+.db-sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.db-logo{height:44px;margin-bottom:.75rem}
+.role-badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:50px;padding:.3rem .9rem;font-size:.75rem;font-weight:700;text-transform:uppercase;margin-bottom:.5rem}
+.db-username{font-size:.85rem;opacity:.7}
+.db-nav{flex:1;padding:1rem 0}
+.db-nav-section{padding:.4rem 1.25rem .2rem;font-size:.68rem;font-weight:700;text-transform:uppercase;opacity:.45;letter-spacing:.08em;margin-top:.5rem}
+.db-nav a{display:flex;align-items:center;gap:.65rem;padding:.65rem 1.25rem;color:rgba(255,255,255,.75);text-decoration:none;font-size:.88rem;cursor:pointer;transition:background .15s}
+.db-nav a:hover,.db-nav a.active{background:rgba(255,255,255,.12);color:#fff}
+.db-nav .icon{font-size:1rem;width:20px;text-align:center}
+.db-sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1)}
+.db-sidebar-footer a{color:rgba(255,255,255,.55);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.db-main{margin-left:260px;padding:2rem;min-height:100vh}
+.db-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:2px solid #ffe0b2}
+.db-header h1{font-size:1.4rem;font-weight:800;color:#1a2e20}
+.db-header .date{font-size:.85rem;color:#4a6652}
+.section-card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:1.5rem;margin-bottom:1.5rem}
+.section-card h2{font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;color:#1a2e20;display:flex;align-items:center;gap:.5rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;padding:.6rem .75rem;background:#fff8f0;color:#7a5c00;font-weight:600;font-size:.8rem}
+td{padding:.65rem .75rem;border-bottom:1px solid #ffe0b2;color:#1a2e20}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-orange{background:#ffedd5;color:#9a3412}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-gray{background:#f3f4f6;color:#374151}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-phare{background:#dc2626;color:#fff;font-size:.72rem;letter-spacing:.03em}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:#F77F00;color:#fff}
+.btn-outline{background:#fff;color:#F77F00;border:2px solid #F77F00}
+.btn-sm{padding:.35rem .75rem;font-size:.78rem}
+.btn-success{background:#dcfce7;color:#166534;border:none}
+.btn-danger{background:#fee2e2;color:#991b1b;border:none}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.83rem;font-weight:600;color:#4a6652;margin-bottom:.35rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:.65rem .9rem;border:1px solid #ffe0b2;border-radius:8px;font-size:.9rem;color:#1a2e20;background:#fff8f0}
+.form-group textarea{min-height:80px;resize:vertical}
+.warning-box{background:#fff3cd;border-left:4px solid #F77F00;border-radius:8px;padding:1rem 1.25rem;font-size:.88rem;color:#7a3e00;margin-bottom:1.25rem}
+.suppleance-btn{display:flex;align-items:center;justify-content:center;gap:.75rem;background:#F77F00;color:#fff;border:none;border-radius:12px;padding:1.25rem 2rem;font-size:1.05rem;font-weight:800;cursor:pointer;width:100%;margin-bottom:1.5rem;transition:background .15s}
+.suppleance-btn:hover{background:#d96f00}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+.kpi-card{background:#fff;border-radius:12px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #F77F00}
+.kpi-card .kpi-value{font-size:1.6rem;font-weight:800;color:#F77F00}
+.kpi-card .kpi-label{font-size:.82rem;color:#4a6652;margin-top:.25rem}
+.db-section{display:none}
+@media(max-width:768px){.db-wrapper{grid-template-columns:1fr}.db-sidebar{transform:translateX(-100%)}.db-sidebar.open{transform:translateX(0)}.db-main{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="db-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="db-sidebar" id="sidebar">
+    <div class="db-sidebar-header">
+      <img src="images/logo.png" class="db-logo" alt="AITO Logo" onerror="this.style.display='none'">
+      <div class="role-badge">Vice-Pr&#233;sident</div>
+      <div class="db-username">Gestion &#233;v&#233;nementielle & partenariats</div>
+    </div>
+    <nav class="db-nav">
+      <a href="#" class="active" onclick="showSection('s-evenements',this);return false;"><span class="icon">&#128197;</span> &#201;v&#233;nements</a>
+      <a href="#" onclick="showSection('s-commissions',this);return false;"><span class="icon">&#128101;</span> Commissions & B&#233;n&#233;voles</a>
+      <a href="#" onclick="showSection('s-partenariats',this);return false;"><span class="icon">&#129309;</span> Partenariats</a>
+      <a href="#" onclick="showSection('s-suppleance',this);return false;"><span class="icon">&#128260;</span> Suppl&#233;ance Pr&#233;sident</a>
+      <div class="db-nav-section">Navigation</div>
+      <a href="index.html"><span class="icon">&#127968;</span> Retour au site public</a>
+      <a href="#" onclick="logout();return false;"><span class="icon">&#128275;</span> Se d&#233;connecter</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="db-main">
+    <div class="db-header">
+      <h1>&#127464;&#127470; AITO &#8212; Espace Vice-Pr&#233;sident</h1>
+      <span class="date" id="dateHeader"></span>
+    </div>
+
+    <!-- ===== SECTION : &#201;V&#201;NEMENTS ===== -->
+    <div class="db-section" id="s-evenements">
+      <div class="section-card">
+        <h2>&#128197; Calendrier des 12 &#233;v&#233;nements annuels 2026</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr><th>Mois</th><th>&#201;v&#233;nement</th><th>Statut</th><th>Responsable</th><th>Budget allou&#233;</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Janvier</td><td>Assembl&#233;e G&#233;n&#233;rale</td><td><span class="badge badge-green">Termin&#233;</span></td><td>Bureau complet</td><td>190 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>F&#233;vrier</td><td>Conf&#233;rence Toulouse-Ivoire</td><td><span class="badge badge-green">Termin&#233;</span></td><td>VP & Commission Culture</td><td>150 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Mars</td><td>Brunch de printemps</td><td><span class="badge badge-green">Termin&#233;</span></td><td>Commission Accueil</td><td>120 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Avril</td><td>Sortie nature & randonn&#233;e</td><td><span class="badge badge-orange">En cours</span></td><td>Vice-Pr&#233;sident</td><td>80 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Mai</td><td>Tournoi sportif AITO</td><td><span class="badge badge-orange">En cours</span></td><td>Commission Sport</td><td>200 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Juin</td><td>Soir&#233;e Cuisine Ivoirienne</td><td><span class="badge badge-gray">Planifi&#233;</span></td><td>&#192; d&#233;signer</td><td>180 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Ao&#251;t</td><td>&#127881; F&#234;te de l'Ind&#233;pendance CI</td><td><span class="badge badge-phare">PHARE</span></td><td>Bureau complet</td><td>2 150 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Septembre</td><td>Rentr&#233;e des membres</td><td><span class="badge badge-gray">Planifi&#233;</span></td><td>Secr&#233;taire</td><td>100 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Octobre</td><td>Conf&#233;rence partenaires</td><td><span class="badge badge-gray">Planifi&#233;</span></td><td>&#192; d&#233;signer</td><td>150 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>Novembre</td><td>Soir&#233;e des Talents AITO</td><td><span class="badge badge-gray">Planifi&#233;</span></td><td>Commission Culture</td><td>220 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+              <tr><td>D&#233;cembre</td><td>F&#234;te de fin d'ann&#233;e</td><td><span class="badge badge-gray">Planifi&#233;</span></td><td>&#192; d&#233;signer</td><td>300 &#8364;</td><td><button class="btn btn-outline btn-sm" onclick="ajouterResp(this)">+ Responsable</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : COMMISSIONS ===== -->
+    <div class="db-section" id="s-commissions">
+      <div class="section-card">
+        <h2>&#128450;&#65039; Commissions actives</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Commission</th><th>Membres assign&#233;s</th><th>&#201;v&#233;nement li&#233;</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Commission 7 Ao&#251;t</td><td>8 membres</td><td>F&#234;te de l'Ind&#233;pendance</td><td><span class="badge badge-orange">En cours</span></td></tr>
+              <tr><td>Commission Sport</td><td>5 membres</td><td>Tournoi sportif Mai</td><td><span class="badge badge-orange">En cours</span></td></tr>
+              <tr><td>Commission Culture</td><td>4 membres</td><td>Soir&#233;e Talents Novembre</td><td><span class="badge badge-gray">Planifi&#233;</span></td></tr>
+              <tr><td>Commission Accueil nouveaux</td><td>3 membres</td><td>Rentr&#233;e Septembre</td><td><span class="badge badge-gray">Planifi&#233;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#10133; Ajouter un b&#233;n&#233;vole</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label>Nom</label><input type="text" id="benv-nom" placeholder="Nom de famille"></div>
+          <div class="form-group"><label>Pr&#233;nom</label><input type="text" id="benv-prenom" placeholder="Pr&#233;nom"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group">
+            <label>Commission</label>
+            <select id="benv-commission">
+              <option>Commission 7 Ao&#251;t</option>
+              <option>Commission Sport</option>
+              <option>Commission Culture</option>
+              <option>Commission Accueil nouveaux</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Contact</label><input type="text" id="benv-contact" placeholder="Email ou t&#233;l&#233;phone"></div>
+        </div>
+        <button class="btn btn-primary" onclick="ajouterBenevole()">&#10010; Ajouter le b&#233;n&#233;vole</button>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128203; B&#233;n&#233;voles enregistr&#233;s</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Nom</th><th>Pr&#233;nom</th><th>Commission</th><th>Contact</th></tr></thead>
+            <tbody id="benevoles-tbody"><tr><td colspan="4" style="text-align:center;color:#888;padding:1rem">Aucun b&#233;n&#233;vole enregistr&#233;</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : PARTENARIATS ===== -->
+    <div class="db-section" id="s-partenariats">
+      <div class="section-card">
+        <h2>&#129309; Partenaires de l'association</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Partenaire</th><th>Type</th><th>Statut convention</th><th>Contact</th><th>Action</th></tr></thead>
+            <tbody id="partners-tbody">
+              <tr>
+                <td>Orange Money Europe</td><td>Sponsor</td>
+                <td><span class="badge badge-green" id="p-status-0">Sign&#233;</span></td>
+                <td>partenariat@orange.com</td>
+                <td><button class="btn btn-success btn-sm" onclick="marquerSigne(0)" id="p-btn-0" disabled>&#10004; Sign&#233;</button></td>
+              </tr>
+              <tr>
+                <td>Waabeme</td><td>Partenaire</td>
+                <td><span class="badge badge-orange" id="p-status-1">&#192; signer</span></td>
+                <td>contact@waabeme.fr</td>
+                <td><button class="btn btn-outline btn-sm" onclick="marquerSigne(1)" id="p-btn-1">Marquer sign&#233;</button></td>
+              </tr>
+              <tr>
+                <td>Le Maquis</td><td>Partenaire</td>
+                <td><span class="badge badge-orange" id="p-status-2">&#192; signer</span></td>
+                <td>lemaquis.mtp@gmail.com</td>
+                <td><button class="btn btn-outline btn-sm" onclick="marquerSigne(2)" id="p-btn-2">Marquer sign&#233;</button></td>
+              </tr>
+              <tr>
+                <td>Maison des Francophones</td><td>Institutionnel</td>
+                <td><span class="badge badge-green" id="p-status-3">Sign&#233;</span></td>
+                <td>mdf@toulouse.fr</td>
+                <td><button class="btn btn-success btn-sm" onclick="marquerSigne(3)" id="p-btn-3" disabled>&#10004; Sign&#233;</button></td>
+              </tr>
+              <tr>
+                <td>Ambassade de C&#244;te d'Ivoire</td><td>Institutionnel</td>
+                <td><span class="badge badge-blue" id="p-status-4">En cours</span></td>
+                <td>ambassade.ci@diplomatie.fr</td>
+                <td><button class="btn btn-outline btn-sm" onclick="marquerSigne(4)" id="p-btn-4">Marquer sign&#233;</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : SUPPL&#201;ANCE ===== -->
+    <div class="db-section" id="s-suppleance">
+      <div class="section-card">
+        <h2>&#128260; Suppl&#233;ance du Pr&#233;sident</h2>
+        <div class="warning-box">
+          &#9888;&#65039; <strong>Avertissement :</strong> Cette action vous donne temporairement acc&#232;s au tableau de bord Pr&#233;sident. Utilisez uniquement en cas d'absence du Pr&#233;sident et avec son accord explicite. L'action est enregistr&#233;e.
+        </div>
+        <button class="suppleance-btn" onclick="suppleancePresident()">
+          &#128273; Acc&#233;der &#224; la vue Pr&#233;sident (suppl&#233;ance)
+        </button>
+        <p style="font-size:.82rem;color:#888;text-align:center">Vous serez redirig&#233; vers le tableau de bord Pr&#233;sident. Pour revenir, d&#233;connectez-vous et reconnectez-vous avec votre r&#244;le.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// Guard role Supabase
+(async () => {
+  const user = await guardRole(['vicepresident','admin']);
+  if (!user) return;
+  document.getElementById('dateHeader').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  showSection('s-evenements', document.querySelector('.db-nav a'));
+  await renderEvenements();
+  await renderBenevoles();
+  await renderPartenaires();
+})();
+
+// Navigation SPA
+function showSection(id, el) {
+  document.querySelectorAll('.db-section').forEach(s => s.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.db-nav a').forEach(a => a.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+// ---- EVENEMENTS ----
+async function renderEvenements() {
+  const { data, error } = await db.from('evenements').select('*').order('mois');
+  if (error) return;
+  const tbody = document.getElementById('evt-tbody');
+  if(!tbody) return;
+  const statusColors = { planifie:'badge-blue', en_cours:'badge-orange', termine:'badge-green' };
+  tbody.innerHTML = data.map(e => `<tr>
+    <td>${moisNom(e.mois)}</td>
+    <td>${e.titre}</td>
+    <td><span class="badge ${statusColors[e.statut]||'badge-gray'}">${e.statut}</span></td>
+    <td>${e.responsable||'&mdash;'}</td>
+    <td>${parseFloat(e.budget_alloue||0).toFixed(0)} &euro;</td>
+    <td><button class="btn btn-sm btn-outline" onclick="modifResp('${e.id}',this)">Modifier</button></td>
+  </tr>`).join('');
+}
+function moisNom(n) {
+  return ['Jan','F\u00e9v','Mar','Avr','Mai','Jun','Jul','Ao\u00fb','Sep','Oct','Nov','D\u00e9c'][n-1]||n;
+}
+async function modifResp(id, btn) {
+  const resp = prompt('Nouveau responsable :');
+  if(!resp || !resp.trim()) return;
+  const { error } = await db.from('evenements').update({ responsable: resp.trim() }).eq('id', id);
+  if (!error) { btn.closest('tr').cells[3].textContent = resp.trim(); showToast('Responsable mis \u00e0 jour !'); }
+}
+
+// ---- BENEVOLES ----
+async function ajouterBenevole() {
+  const nom        = document.getElementById('benv-nom').value.trim();
+  const prenom     = document.getElementById('benv-prenom').value.trim();
+  const commission = document.getElementById('benv-commission').value;
+  const contact    = document.getElementById('benv-contact').value.trim();
+  if(!nom || !prenom) { showToast('Nom et pr\u00e9nom obligatoires.','error'); return; }
+  const { error } = await db.from('membres').insert({ nom, prenom, email: contact||null, formule:'Soutien', notes:'B\u00e9n\u00e9vole '+commission });
+  if (error) { showToast('Erreur : ' + error.message,'error'); return; }
+  ['benv-nom','benv-prenom','benv-contact'].forEach(id => document.getElementById(id).value='');
+  showToast('B\u00e9n\u00e9vole ajout\u00e9 !');
+  await renderBenevoles();
+}
+async function renderBenevoles() {
+  const { data, error } = await db.from('membres').select('nom,prenom,notes,email').like('notes','B\u00e9n\u00e9vole%').order('nom');
+  if (error) return;
+  const tbody = document.getElementById('benevoles-tbody');
+  if(!tbody) return;
+  if(!data.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#888;padding:1rem">Aucun b\u00e9n\u00e9vole enregistr\u00e9</td></tr>'; return; }
+  tbody.innerHTML = data.map(b => `<tr><td>${b.nom}</td><td>${b.prenom}</td><td>${(b.notes||'').replace('B\u00e9n\u00e9vole ','')}</td><td>${b.email||'&mdash;'}</td></tr>`).join('');
+}
+
+// ---- PARTENAIRES ----
+async function renderPartenaires() {
+  const { data, error } = await db.from('partenaires').select('*').order('nom');
+  if (error) return;
+  const tbody = document.getElementById('part-tbody');
+  if(!tbody) return;
+  const statusColors = { a_signer:'badge-orange', signe:'badge-green', renouvele:'badge-blue' };
+  tbody.innerHTML = data.map(p => `<tr>
+    <td>${p.nom}</td>
+    <td>${p.type}</td>
+    <td id="ps-${p.id}"><span class="badge ${statusColors[p.statut_convention]||'badge-gray'}">${p.statut_convention.replace('_',' ')}</span></td>
+    <td><button id="pb-${p.id}" class="btn btn-sm btn-outline" onclick="marquerSigne('${p.id}')" ${p.statut_convention==='signe'?'disabled':''}>Marquer sign\u00e9</button></td>
+  </tr>`).join('');
+}
+async function marquerSigne(id) {
+  await db.from('partenaires').update({ statut_convention: 'signe' }).eq('id', id);
+  const el = document.getElementById('ps-'+id);
+  if(el) el.innerHTML = '<span class="badge badge-green">sign\u00e9</span>';
+  const btn = document.getElementById('pb-'+id);
+  if(btn) btn.disabled = true;
+  showToast('Convention marqu\u00e9e sign\u00e9e !');
+}
+
+// ---- SUPPLEANCE ----
+async function suppleancePresident() {
+  if(!confirm('Confirmer l\'acc\u00e8s en suppl\u00e9ance au tableau de bord Pr\u00e9sident ?')) return;
+  window.location.href = 'dashboard-president.html';
+}
+</script>
+</body>
+</html>
+
+
+

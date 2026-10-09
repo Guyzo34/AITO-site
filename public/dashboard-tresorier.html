@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Tr&#233;sorier &#8211; AITO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4faf6;color:#1a2e20}
+.db-wrapper{display:block;min-height:100vh}
+.db-sidebar{background:#7a5c00;color:#fff;width:260px;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:100}
+.db-sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.db-logo{height:44px;margin-bottom:.75rem}
+.role-badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:50px;padding:.3rem .9rem;font-size:.75rem;font-weight:700;text-transform:uppercase;margin-bottom:.5rem}
+.db-username{font-size:.85rem;opacity:.7}
+.db-nav{flex:1;padding:1rem 0}
+.db-nav-section{padding:.4rem 1.25rem .2rem;font-size:.68rem;font-weight:700;text-transform:uppercase;opacity:.45;letter-spacing:.08em;margin-top:.5rem}
+.db-nav a{display:flex;align-items:center;gap:.65rem;padding:.65rem 1.25rem;color:rgba(255,255,255,.75);text-decoration:none;font-size:.88rem;cursor:pointer;transition:background .15s}
+.db-nav a:hover,.db-nav a.active{background:rgba(255,255,255,.12);color:#fff}
+.db-nav .icon{font-size:1rem;width:20px;text-align:center}
+.db-sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1)}
+.db-main{margin-left:260px;padding:2rem;min-height:100vh}
+.db-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:2px solid #fde68a}
+.db-header h1{font-size:1.4rem;font-weight:800;color:#1a2e20}
+.db-header .date{font-size:.85rem;color:#4a6652}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem;margin-bottom:2rem}
+.kpi-card{background:#fff;border-radius:12px;padding:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #A67C00}
+.kpi-card .kpi-value{font-size:1.8rem;font-weight:800;color:#A67C00}
+.kpi-card .kpi-label{font-size:.82rem;color:#4a6652;margin-top:.25rem}
+.section-card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:1.5rem;margin-bottom:1.5rem}
+.section-card h2{font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;color:#1a2e20;display:flex;align-items:center;gap:.5rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;padding:.6rem .75rem;background:#fffbeb;color:#7a5c00;font-weight:600;font-size:.8rem}
+td{padding:.65rem .75rem;border-bottom:1px solid #fde68a;color:#1a2e20}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-orange{background:#ffedd5;color:#9a3412}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-gray{background:#f3f4f6;color:#374151}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-gold{background:#fef3c7;color:#92400e}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:#A67C00;color:#fff}
+.btn-outline{background:#fff;color:#A67C00;border:2px solid #A67C00}
+.btn-danger{background:#fee2e2;color:#991b1b;border:none}
+.btn-success{background:#dcfce7;color:#166534;border:none}
+.btn-sm{padding:.35rem .75rem;font-size:.78rem}
+.btn-print{background:#fffbeb;color:#7a5c00;border:2px solid #fde68a}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.83rem;font-weight:600;color:#4a6652;margin-bottom:.35rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:.65rem .9rem;border:1px solid #fde68a;border-radius:8px;font-size:.9rem;color:#1a2e20;background:#fffbeb}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.progress-bar-wrap{background:#fde68a;border-radius:50px;height:12px;overflow:hidden;margin-top:.4rem}
+.progress-fill{height:12px;border-radius:50px;background:#A67C00;transition:width .4s}
+.progress-label{display:flex;justify-content:space-between;font-size:.82rem;color:#4a6652;margin-bottom:.3rem}
+.db-section{display:none}
+
+/* Graphique barres CSS */
+.bar-chart{display:flex;align-items:flex-end;gap:1.5rem;height:160px;margin:1.5rem 0;padding:0 1rem}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:.5rem;flex:1}
+.bar-col .bar{width:100%;border-radius:8px 8px 0 0;transition:height .4s}
+.bar-col .bar-label{font-size:.78rem;font-weight:700;color:#4a6652;text-align:center}
+.bar-col .bar-value{font-size:.88rem;font-weight:800}
+
+/* Re&#231;u fiscal */
+.recu-zone{display:none;border:2px solid #A67C00;border-radius:12px;padding:2rem;margin-top:1.5rem;background:#fffbeb}
+.recu-header{text-align:center;margin-bottom:1.5rem}
+.recu-header h2{font-size:1.2rem;color:#7a5c00;font-weight:800}
+.recu-header p{font-size:.85rem;color:#4a6652}
+.recu-body{font-size:.9rem;line-height:1.8;color:#1a2e20}
+.recu-body strong{color:#7a5c00}
+.recu-footer{margin-top:1.5rem;display:flex;justify-content:space-between;font-size:.82rem;color:#4a6652;border-top:1px solid #fde68a;padding-top:1rem}
+
+/* 7 Ao&#251;t budget */
+.budget-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.budget-col{background:#fffbeb;border-radius:10px;padding:1.25rem}
+.budget-col h3{font-size:.92rem;font-weight:700;margin-bottom:.75rem;color:#7a5c00}
+.budget-line{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #fde68a;font-size:.88rem}
+.budget-line:last-child{border-bottom:none;font-weight:800;color:#A67C00;margin-top:.5rem;padding-top:.75rem;border-top:2px solid #A67C00}
+.solde-box{background:#A67C00;color:#fff;border-radius:10px;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;font-size:1rem;font-weight:800}
+
+/* Print styles */
+@media print {
+  .db-sidebar,.db-header,.btn,.form-group,.section-card:not(.print-target){display:none!important}
+  .db-main{margin-left:0!important;padding:0!important}
+  .recu-zone,.rapport-print{display:block!important}
+  body{background:#fff}
+}
+
+@media(max-width:768px){.db-wrapper{grid-template-columns:1fr}.db-sidebar{transform:translateX(-100%)}.db-sidebar.open{transform:translateX(0)}.db-main{margin-left:0}.form-2col,.form-3col,.budget-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="db-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="db-sidebar" id="sidebar">
+    <div class="db-sidebar-header">
+      <img src="images/logo.png" class="db-logo" alt="AITO Logo" onerror="this.style.display='none'">
+      <div class="role-badge">Tr&#233;sorier</div>
+      <div class="db-username">Gestion financi&#232;re</div>
+    </div>
+    <nav class="db-nav">
+      <a href="#" class="active" onclick="showSection('s-budget',this);return false;"><span class="icon">&#128202;</span> Budget & D&#233;penses</a>
+      <a href="#" onclick="showSection('s-cotisations',this);return false;"><span class="icon">&#128179;</span> Cotisations & Paiements</a>
+      <a href="#" onclick="showSection('s-recus',this);return false;"><span class="icon">&#129534;</span> Re&#231;us fiscaux</a>
+      <a href="#" onclick="showSection('s-rapport',this);return false;"><span class="icon">&#128200;</span> Rapport financier</a>
+      <a href="#" onclick="showSection('s-7aout',this);return false;"><span class="icon">&#127464;&#127470;</span> Suivi F&#234;te 7 Ao&#251;t</a>
+      <div class="db-nav-section">Navigation</div>
+      <a href="index.html"><span class="icon">&#127968;</span> Retour au site public</a>
+      <a href="#" onclick="logout();return false;"><span class="icon">&#128275;</span> Se d&#233;connecter</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="db-main">
+    <div class="db-header">
+      <h1>&#127464;&#127470; AITO &#8212; Espace Tr&#233;sorier</h1>
+      <span class="date" id="dateHeader"></span>
+    </div>
+
+    <!-- ===== SECTION : BUDGET & D&#201;PENSES ===== -->
+    <div class="db-section" id="s-budget">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-value">3 500 &#8364;</div><div class="kpi-label">Budget annuel</div></div>
+        <div class="kpi-card"><div class="kpi-value">1 240 &#8364;</div><div class="kpi-label">D&#233;penses engag&#233;es</div></div>
+        <div class="kpi-card"><div class="kpi-value">2 260 &#8364;</div><div class="kpi-label">Solde disponible</div></div>
+        <div class="kpi-card"><div class="kpi-value">1 260 &#8364;</div><div class="kpi-label">Cotisations encaiss&#233;es</div></div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128184; Tableau des d&#233;penses</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Date</th><th>Cat&#233;gorie</th><th>Description</th><th>Montant</th><th>Valid&#233; par</th><th>Statut</th></tr></thead>
+            <tbody id="depenses-tbody">
+              <tr><td>15/01/2026</td><td>Logistique</td><td>Sono r&#233;union janvier</td><td>80 &#8364;</td><td>Pr&#233;sident</td><td><span class="badge badge-green">Valid&#233;</span></td></tr>
+              <tr><td>12/02/2026</td><td>Location</td><td>Salle conf&#233;rence f&#233;vrier</td><td>150 &#8364;</td><td>Pr&#233;sident</td><td><span class="badge badge-green">Valid&#233;</span></td></tr>
+              <tr><td>10/05/2026</td><td>Logistique</td><td>Location barnum mai</td><td>220 &#8364;</td><td>En attente</td><td><span class="badge badge-orange">En attente</span></td></tr>
+              <tr><td>20/02/2026</td><td>Communication</td><td>Affiches communication</td><td>95 &#8364;</td><td>Pr&#233;sident</td><td><span class="badge badge-green">Valid&#233;</span></td></tr>
+              <tr><td>10/01/2026</td><td>Repas</td><td>Repas Assembl&#233;e G&#233;n&#233;rale</td><td>190 &#8364;</td><td>Pr&#233;sident</td><td><span class="badge badge-green">Valid&#233;</span></td></tr>
+              <tr><td>01/04/2026</td><td>&#201;v&#233;nement</td><td>Acompte salle 7 Ao&#251;t</td><td>500 &#8364;</td><td>En attente</td><td><span class="badge badge-orange">En attente</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#10133; Enregistrer une d&#233;pense</h2>
+        <div class="form-3col">
+          <div class="form-group"><label>Date</label><input type="date" id="dep-date"></div>
+          <div class="form-group">
+            <label>Cat&#233;gorie</label>
+            <select id="dep-cat">
+              <option>Logistique</option>
+              <option>Location</option>
+              <option>Communication</option>
+              <option>Repas</option>
+              <option>&#201;v&#233;nement</option>
+              <option>Mat&#233;riel</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Montant (&#8364;)</label><input type="number" id="dep-montant" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="form-group"><label>Description</label><input type="text" id="dep-desc" placeholder="Description de la d&#233;pense"></div>
+        <button class="btn btn-primary" onclick="ajouterDepense()">&#10010; Enregistrer la d&#233;pense</button>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : COTISATIONS ===== -->
+    <div class="db-section" id="s-cotisations">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-value">1 800 &#8364;</div><div class="kpi-label">Objectif annuel</div></div>
+        <div class="kpi-card"><div class="kpi-value">1 260 &#8364;</div><div class="kpi-label">Encaiss&#233;</div></div>
+        <div class="kpi-card"><div class="kpi-value">540 &#8364;</div><div class="kpi-label">En attente</div></div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128202; Progression des encaissements</h2>
+        <div class="progress-label"><span>Encaissement cotisations 2026</span><span>1 260 &#8364; / 1 800 &#8364; &#8212; 70%</span></div>
+        <div class="progress-bar-wrap"><div class="progress-fill" style="width:70%"></div></div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128179; Suivi des cotisations membres</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Membre</th><th>Formule</th><th>Montant</th><th>Date paiement</th><th>Statut</th><th>Action</th></tr></thead>
+            <tbody id="cotis-tbody">
+              <tr><td>Kon&#233; Amara</td><td>Adh&#233;rent</td><td>30 &#8364;</td><td>10/01/2026</td><td><span class="badge badge-green">Pay&#233;</span></td><td>&#8212;</td></tr>
+              <tr><td>Bamba Fatoumata</td><td>Adh&#233;rent</td><td>30 &#8364;</td><td>12/01/2026</td><td><span class="badge badge-green">Pay&#233;</span></td><td>&#8212;</td></tr>
+              <tr><td>Tour&#233; Ibrahim</td><td>Soutien</td><td>50 &#8364;</td><td>&#8212;</td><td><span class="badge badge-orange" id="cs-2">En attente</span></td><td><button class="btn btn-success btn-sm" id="csb-2" onclick="marquerPaye(2)">&#10004; Marquer pay&#233;</button></td></tr>
+              <tr><td>Coulibaly Mariam</td><td>Adh&#233;rent</td><td>30 &#8364;</td><td>20/01/2026</td><td><span class="badge badge-green">Pay&#233;</span></td><td>&#8212;</td></tr>
+              <tr><td>Ouattara S&#233;kou</td><td>Honneur</td><td>0 &#8364;</td><td>&#8212;</td><td><span class="badge badge-gray">Exon&#233;r&#233;</span></td><td>&#8212;</td></tr>
+              <tr><td>Diallo Aminata</td><td>Adh&#233;rent</td><td>30 &#8364;</td><td>22/01/2026</td><td><span class="badge badge-green">Pay&#233;</span></td><td>&#8212;</td></tr>
+              <tr><td>N'Guessan Paul</td><td>Soutien</td><td>50 &#8364;</td><td>&#8212;</td><td><span class="badge badge-orange" id="cs-6">En attente</span></td><td><button class="btn btn-success btn-sm" id="csb-6" onclick="marquerPaye(6)">&#10004; Marquer pay&#233;</button></td></tr>
+              <tr><td>Yao Christiane</td><td>Adh&#233;rent</td><td>30 &#8364;</td><td>02/02/2026</td><td><span class="badge badge-green">Pay&#233;</span></td><td>&#8212;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : RE&#199;US FISCAUX ===== -->
+    <div class="db-section" id="s-recus">
+      <div class="section-card">
+        <h2>&#129534; G&#233;n&#233;rateur de re&#231;u fiscal</h2>
+        <div class="form-2col">
+          <div class="form-group"><label>Nom & Pr&#233;nom du donateur</label><input type="text" id="r-nom" placeholder="Pr&#233;nom NOM"></div>
+          <div class="form-group"><label>Adresse</label><input type="text" id="r-adresse" placeholder="Adresse compl&#232;te"></div>
+        </div>
+        <div class="form-3col">
+          <div class="form-group"><label>Montant (&#8364;)</label><input type="number" id="r-montant" placeholder="0.00" min="0" step="0.01"></div>
+          <div class="form-group"><label>Date du don</label><input type="date" id="r-date"></div>
+          <div class="form-group"><label>Objet du don</label><input type="text" id="r-objet" placeholder="Ex: Soutien activit&#233;s AITO"></div>
+        </div>
+        <button class="btn btn-primary" onclick="genererRecu()">&#128424;&#65039; G&#233;n&#233;rer le re&#231;u</button>
+      </div>
+
+      <div class="recu-zone section-card print-target" id="recu-zone">
+        <div class="recu-header">
+          <img src="images/logo.png" alt="AITO Logo" style="height:50px;margin-bottom:.75rem" onerror="this.style.display='none'">
+          <h2>RE&#199;U FISCAL DE DON</h2>
+          <p>AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</p>
+          <p style="font-size:.8rem;margin-top:.25rem">Association loi 1901 &#8212; Si&#232;ge social : Toulouse (34)</p>
+        </div>
+        <div class="recu-body" id="recu-body"></div>
+        <div class="recu-footer">
+          <span>Signature du Tr&#233;sorier : ______________________</span>
+          <span>Cachet de l'association</span>
+        </div>
+        <div style="margin-top:1.25rem;text-align:right">
+          <button class="btn btn-print" onclick="window.print()">&#128424;&#65039; Imprimer / PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : RAPPORT FINANCIER ===== -->
+    <div class="db-section rapport-print" id="s-rapport">
+      <div class="section-card print-target">
+        <h2>&#128200; Bilan financier annuel 2026</h2>
+        <div class="form-2col" style="gap:2rem">
+          <div>
+            <h3 style="color:#166534;font-size:.92rem;margin-bottom:.75rem">&#9989; Recettes</h3>
+            <table>
+              <tr><td>Cotisations membres</td><td style="text-align:right;font-weight:700">1 260 &#8364;</td></tr>
+              <tr><td>Participations &#233;v&#233;nements</td><td style="text-align:right;font-weight:700">320 &#8364;</td></tr>
+              <tr><td>Dons</td><td style="text-align:right;font-weight:700">180 &#8364;</td></tr>
+              <tr style="border-top:2px solid #166534"><td style="font-weight:800;color:#166534">TOTAL RECETTES</td><td style="text-align:right;font-weight:800;color:#166534">1 760 &#8364;</td></tr>
+            </table>
+          </div>
+          <div>
+            <h3 style="color:#9a3412;font-size:.92rem;margin-bottom:.75rem">&#128228; D&#233;penses</h3>
+            <table>
+              <tr><td>&#201;v&#233;nements</td><td style="text-align:right;font-weight:700">890 &#8364;</td></tr>
+              <tr><td>Communication</td><td style="text-align:right;font-weight:700">215 &#8364;</td></tr>
+              <tr><td>Mat&#233;riel</td><td style="text-align:right;font-weight:700">135 &#8364;</td></tr>
+              <tr style="border-top:2px solid #9a3412"><td style="font-weight:800;color:#9a3412">TOTAL D&#201;PENSES</td><td style="text-align:right;font-weight:800;color:#9a3412">1 240 &#8364;</td></tr>
+            </table>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;background:#dcfce7;border-radius:10px;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;color:#166534">&#128176; Solde net</span>
+          <span style="font-size:1.4rem;font-weight:800;color:#166534">+520 &#8364;</span>
+        </div>
+
+        <h2 style="margin-top:2rem">&#128202; Visualisation graphique</h2>
+        <div class="bar-chart">
+          <div class="bar-col">
+            <div class="bar-value" style="color:#166534">1 760 &#8364;</div>
+            <div class="bar" style="background:#166534;height:140px"></div>
+            <div class="bar-label">Recettes</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value" style="color:#9a3412">1 240 &#8364;</div>
+            <div class="bar" style="background:#9a3412;height:99px"></div>
+            <div class="bar-label">D&#233;penses</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value" style="color:#A67C00">+ 520 &#8364;</div>
+            <div class="bar" style="background:#A67C00;height:42px"></div>
+            <div class="bar-label">Solde</div>
+          </div>
+        </div>
+
+        <div style="text-align:right;margin-top:.5rem">
+          <button class="btn btn-print" onclick="window.print()">&#128424;&#65039; Imprimer le rapport</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION : 7 AO&#219;T ===== -->
+    <div class="db-section" id="s-7aout">
+      <div class="section-card">
+        <h2>&#127881; F&#234;te de l'Ind&#233;pendance CI &#8212; Budget pr&#233;visionnel</h2>
+        <div class="budget-grid">
+          <div class="budget-col">
+            <h3>&#9989; Recettes pr&#233;visionnelles</h3>
+            <div class="budget-line"><span>Ventes de billets (entr&#233;es)</span><span>1 500 &#8364;</span></div>
+            <div class="budget-line"><span>Restauration / bar</span><span>800 &#8364;</span></div>
+            <div class="budget-line"><span>Stands & partenaires</span><span>300 &#8364;</span></div>
+            <div class="budget-line"><span>TOTAL RECETTES</span><span>2 600 &#8364;</span></div>
+          </div>
+          <div class="budget-col">
+            <h3>&#128228; D&#233;penses pr&#233;visionnelles</h3>
+            <div class="budget-line"><span>Location salle</span><span>800 &#8364;</span></div>
+            <div class="budget-line"><span>Sonorisation</span><span>400 &#8364;</span></div>
+            <div class="budget-line"><span>Catering / traiteur</span><span>600 &#8364;</span></div>
+            <div class="budget-line"><span>Communication</span><span>200 &#8364;</span></div>
+            <div class="budget-line"><span>Divers</span><span>150 &#8364;</span></div>
+            <div class="budget-line"><span>TOTAL D&#201;PENSES</span><span>2 150 &#8364;</span></div>
+          </div>
+        </div>
+        <div class="solde-box">
+          <span>&#128176; Solde pr&#233;visionnel 7 Ao&#251;t</span>
+          <span>+450 &#8364;</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#127903;&#65039; Ventes de billets</h2>
+        <div class="progress-label"><span>Billets vendus</span><span id="billets-label">0 / 100 &#8212; 0%</span></div>
+        <div class="progress-bar-wrap"><div class="progress-fill" id="billets-bar" style="width:0%"></div></div>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:.75rem">
+          <label style="font-size:.85rem;font-weight:600;color:#4a6652">Mettre &#224; jour :</label>
+          <input type="number" id="billets-input" min="0" max="100" value="0" style="width:80px;padding:.45rem .7rem;border:1px solid #fde68a;border-radius:8px;background:#fffbeb;font-size:.9rem">
+          <button class="btn btn-primary btn-sm" onclick="mettreAJourBillets()">Mettre &#224; jour</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>&#10133; Enregistrer une d&#233;pense 7 Ao&#251;t</h2>
+        <div class="form-3col">
+          <div class="form-group"><label>Date</label><input type="date" id="d7-date"></div>
+          <div class="form-group">
+            <label>Cat&#233;gorie</label>
+            <select id="d7-cat">
+              <option>Location salle</option>
+              <option>Sonorisation</option>
+              <option>Catering</option>
+              <option>Communication</option>
+              <option>Divers</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Montant (&#8364;)</label><input type="number" id="d7-montant" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="form-group"><label>Description</label><input type="text" id="d7-desc" placeholder="D&#233;tail de la d&#233;pense"></div>
+        <button class="btn btn-primary" onclick="ajouterDepense7Aout()">&#10010; Enregistrer</button>
+      </div>
+
+      <div class="section-card">
+        <h2>&#128203; D&#233;penses 7 Ao&#251;t enregistr&#233;es</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Date</th><th>Cat&#233;gorie</th><th>Description</th><th>Montant</th></tr></thead>
+            <tbody id="dep7-tbody"><tr><td colspan="4" style="text-align:center;color:#888;padding:1rem">Aucune d&#233;pense enregistr&#233;e</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// Guard role Supabase
+(async () => {
+  const user = await guardRole(['tresorier','admin','president']);
+  if (!user) return;
+  // Bannière retour si président
+  const role = user.user_metadata?.role;
+  if (role === 'president') {
+    const bar = document.createElement('div');
+    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#00703C;color:#fff;text-align:center;padding:.6rem 1rem;font-size:.88rem;font-weight:600;';
+    bar.innerHTML = '&#128274; Vue en lecture seule &mdash; <a href="dashboard-president.html" style="color:#fff;text-decoration:underline;">&#8592; Retour au tableau de bord Pr&#233;sident</a>';
+    document.body.prepend(bar);
+    document.body.style.paddingTop = '40px';
+  }
+  document.getElementById('dateHeader').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  showSection('s-budget', document.querySelector('.db-nav a'));
+  await renderDepenses();
+  await renderCotisations();
+  await renderDep7Aout();
+})();
+
+// Navigation SPA
+function showSection(id, el) {
+  document.querySelectorAll('.db-section').forEach(s => s.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.db-nav a').forEach(a => a.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+// ---- DEPENSES ----
+async function ajouterDepense() {
+  const date_op  = document.getElementById('dep-date').value;
+  const categorie = document.getElementById('dep-cat').value;
+  const montant  = parseFloat(document.getElementById('dep-montant').value);
+  const desc     = document.getElementById('dep-desc').value.trim();
+  if(!desc || !montant) { showToast('Description et montant obligatoires.','error'); return; }
+  const { error } = await db.from('finances').insert({ type:'depense', categorie, montant, date_operation: date_op || null, description: desc });
+  if (error) { showToast('Erreur : ' + error.message,'error'); return; }
+  ['dep-date','dep-montant','dep-desc'].forEach(id => document.getElementById(id).value='');
+  showToast('D\u00e9pense enregistr\u00e9e !');
+  await renderDepenses();
+}
+async function renderDepenses() {
+  const { data, error } = await db.from('finances').select('*').eq('type','depense').order('date_operation', { ascending: false });
+  if (error) return;
+  const tbody = document.getElementById('depenses-tbody');
+  if(!tbody) return;
+  if(!data.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:1rem">Aucune d\u00e9pense enregistr\u00e9e</td></tr>'; return; }
+  tbody.innerHTML = data.map(d => `<tr>
+    <td>${d.date_operation||'&mdash;'}</td>
+    <td>${d.categorie}</td>
+    <td>${d.description}</td>
+    <td>${parseFloat(d.montant).toFixed(2)} &euro;</td>
+    <td>&mdash;</td>
+    <td><span class="badge badge-green">Enregistr\u00e9</span></td>
+  </tr>`).join('');
+}
+
+// ---- COTISATIONS ----
+async function renderCotisations() {
+  const { data, error } = await db.from('membres').select('nom,prenom,formule,statut_cotisation,date_adhesion,montant').order('nom');
+  if (error) return;
+  const tbody = document.getElementById('cotis-tbody');
+  if(!tbody) return;
+  if(!data.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:1rem">Aucun membre</td></tr>'; return; }
+  tbody.innerHTML = data.map((m,i) => `<tr>
+    <td>${m.nom} ${m.prenom}</td>
+    <td>${m.formule}</td>
+    <td>${parseFloat(m.montant||0).toFixed(2)} &euro;</td>
+    <td>${m.date_adhesion||'&mdash;'}</td>
+    <td id="cs-${i}"><span class="badge ${m.statut_cotisation==='paye'?'badge-green':m.statut_cotisation==='exonere'?'badge-gray':'badge-orange'}">${m.statut_cotisation}</span></td>
+    <td>${m.statut_cotisation!=='paye'&&m.statut_cotisation!=='exonere' ? `<button class="btn btn-success btn-sm" id="csb-${i}" onclick="marquerPaye('${m.nom}','${m.prenom}','${i}')">Marquer pay\u00e9</button>` : ''}</td>
+  </tr>`).join('');
+}
+async function marquerPaye(nom, prenom, rowIdx) {
+  const today = new Date().toISOString().split('T')[0];
+  await db.from('membres').update({ statut_cotisation: 'paye', date_adhesion: today }).eq('nom', nom).eq('prenom', prenom);
+  const el = document.getElementById('cs-'+rowIdx);
+  if(el) el.innerHTML = '<span class="badge badge-green">pay\u00e9</span>';
+  const btn = document.getElementById('csb-'+rowIdx);
+  if(btn) btn.remove();
+  showToast('Cotisation marqu\u00e9e pay\u00e9e !');
+}
+
+// ---- RECU FISCAL ----
+function genererRecu() {
+  const nom     = document.getElementById('r-nom').value.trim();
+  const adresse = document.getElementById('r-adresse').value.trim();
+  const montant = document.getElementById('r-montant').value;
+  const date    = document.getElementById('r-date').value;
+  const objet   = document.getElementById('r-objet').value.trim();
+  if(!nom || !montant || !date) { showToast('Nom, montant et date obligatoires.','error'); return; }
+  const numRecu = 'AITO-2026-' + String(Date.now()).slice(-5);
+  const dateFormatee = new Date(date).toLocaleDateString('fr-FR', {year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('recu-body').innerHTML = `
+    <p><strong>N&deg; de re&ccedil;u :</strong> ${numRecu}</p><br>
+    <p>L'association <strong>AITO &mdash; Amicale Ivoire Association</strong> certifie avoir re&ccedil;u de :</p><br>
+    <p><strong>Donateur :</strong> ${nom}</p>
+    <p><strong>Adresse :</strong> ${adresse||'Non renseign\u00e9e'}</p><br>
+    <p><strong>La somme de :</strong> <span style="font-size:1.1rem;font-weight:800;color:#A67C00">${parseFloat(montant).toFixed(2)} &euro; (${montantEnLettres(parseFloat(montant))})</span></p>
+    <p><strong>En date du :</strong> ${dateFormatee}</p>
+    <p><strong>Objet :</strong> ${objet||"Don \u00e0 l'association"}</p><br>
+    <p style="font-size:.82rem;color:#7a5c00">Ce re\u00e7u est \u00e9tabli conform\u00e9ment \u00e0 l'article 200 du CGI.</p><br>
+    <p><strong>Fait \u00e0 Toulouse, le :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>`;
+  document.getElementById('recu-zone').style.display='block';
+  document.getElementById('recu-zone').scrollIntoView({behavior:'smooth'});
+}
+function montantEnLettres(n) {
+  if(n < 1) return Math.round(n*100) + ' centimes';
+  const euros = Math.floor(n); const cents = Math.round((n-euros)*100);
+  const units = ['','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+  const tens  = ['','','vingt','trente','quarante','cinquante','soixante','soixante','quatre-vingt','quatre-vingt'];
+  function toWords(num) {
+    if(!num) return ''; if(num<20) return units[num];
+    const t=Math.floor(num/10),u=num%10;
+    if(t===7||t===9) return tens[t]+(u>0?'-'+units[10+u]:'');
+    return tens[t]+(u>0?(t===8?'':'-')+units[u]:'');
+  }
+  let r='';
+  if(euros>=100){const h=Math.floor(euros/100);r+=(h>1?toWords(h)+' ':'')+'cent'+(euros%100>0?' ':'');}
+  r+=toWords(euros%100);
+  r=r.trim()+' euro'+(euros>1?'s':'');
+  if(cents>0) r+=' et '+toWords(cents)+' centime'+(cents>1?'s':'');
+  return r.charAt(0).toUpperCase()+r.slice(1);
+}
+
+// ---- DEPENSES 7 AOUT ----
+async function ajouterDepense7Aout() {
+  const date_op   = document.getElementById('d7-date').value;
+  const categorie = document.getElementById('d7-cat').value;
+  const montant   = parseFloat(document.getElementById('d7-montant').value);
+  const desc      = document.getElementById('d7-desc').value.trim();
+  if(!desc || !montant) { showToast('Description et montant obligatoires.','error'); return; }
+  const { error } = await db.from('finances').insert({ type:'depense', categorie: '7Aout-'+categorie, montant, date_operation: date_op || null, description: desc });
+  if (error) { showToast('Erreur : ' + error.message,'error'); return; }
+  ['d7-date','d7-montant','d7-desc'].forEach(id => document.getElementById(id).value='');
+  showToast('D\u00e9pense 7 ao\u00fbt enregistr\u00e9e !');
+  await renderDep7Aout();
+}
+async function renderDep7Aout() {
+  const { data, error } = await db.from('finances').select('*').like('categorie','7Aout%').order('date_operation', { ascending: false });
+  if (error) return;
+  const tbody = document.getElementById('dep7-tbody');
+  if(!tbody) return;
+  if(!data.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#888;padding:1rem">Aucune d\u00e9pense enregistr\u00e9e</td></tr>'; return; }
+  tbody.innerHTML = data.map(d => `<tr><td>${d.date_operation||'&mdash;'}</td><td>${d.categorie.replace('7Aout-','')}</td><td>${d.description}</td><td style="font-weight:700;color:#A67C00">${parseFloat(d.montant).toFixed(2)} &euro;</td></tr>`).join('');
+}
+
+// ---- BILLETS ----
+function mettreAJourBillets() {
+  const val = Math.min(100, Math.max(0, parseInt(document.getElementById('billets-input').value)||0));
+  document.getElementById('billets-bar').style.width = val+'%';
+  document.getElementById('billets-label').textContent = val+' / 100 \u2014 '+val+'%';
+}
+</script>
+</body>
+</html>
+
+

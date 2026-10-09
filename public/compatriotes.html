@@ -1,0 +1,805 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Infos Compatriotes &#8212; Vivre &#224; Toulouse &#8212; AITO</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+
+    <div class="nav-menu" id="navMenu">
+
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+
+      <div class="dropdown"><a href="#">Services ?</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion &amp; Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<div class="page-content">
+
+
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.65),rgba(0,70,30,.55)),url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+
+  <div class="label">Diaspora &amp; Compatriotes</div>
+
+  <h1>Vivre &#224; Toulouse &amp; en Occitanie</h1>
+
+  <p>Tout ce qu'il faut savoir pour s'installer, &#233;tudier, travailler et s'&#233;panouir &#224; Toulouse, capitale de l'Occitanie.</p>
+
+</div>
+
+
+
+<!-- Stats Toulouse -->
+
+<section class="section" style="padding:2rem 0;background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;">
+
+  <div class="container">
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;text-align:center;">
+
+      <div><div style="font-size:2rem;font-weight:800;">300 000+</div><div style="font-size:.85rem;opacity:.9;">habitants</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">85 000</div><div style="font-size:.85rem;opacity:.9;">&#233;tudiants</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">7&#232;me</div><div style="font-size:.85rem;opacity:.9;">ville de France</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">300 j/an</div><div style="font-size:.85rem;opacity:.9;">de soleil</div></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Galerie Toulouse / Occitanie -->
+
+<section style="padding:0;margin:0;background:#000;">
+
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);height:200px;gap:2px;">
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&auto=format&fit=crop&q=80" alt="Pont du Gard" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1549887552-cb1071d3e5ca?w=300&h=200&auto=format&fit=crop&q=80" alt="Architecture Toulouse" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1504279577054-98edf2fce498?w=300&h=200&auto=format&fit=crop&q=80" alt="Vignobles Occitanie" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=300&h=200&auto=format&fit=crop&q=80" alt="C&#244;te m&#233;diterran&#233;enne" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1533900298345-39d8c1d0c4ce?w=300&h=200&auto=format&fit=crop&q=80" alt="March&#233; proven&#231;al" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+    <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=200&auto=format&fit=crop&q=80" alt="Universit&#233; campus" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"></div>
+
+  </div>
+
+  <p style="text-align:center;font-size:.72rem;color:rgba(255,255,255,.5);padding:.4rem;margin:0;">Photos &#169; Unsplash &#8212; libres de droit</p>
+
+</section>
+
+
+
+<section class="section">
+
+  <div class="container">
+
+    <div data-tabs>
+
+      <div class="tabs">
+
+        <button class="tab-btn active" data-tab="tab-etudes">&#127891; &#201;tudes &amp; Grandes &#201;coles</button>
+
+        <button class="tab-btn" data-tab="tab-toulouse">&#127963;&#65039; D&#233;couvrir Toulouse</button>
+
+        <button class="tab-btn" data-tab="tab-occitanie">&#127757; Occitanie &amp; Environs</button>
+
+        <button class="tab-btn" data-tab="tab-gastro">&#127863; Gastronomie</button>
+
+        <button class="tab-btn" data-tab="tab-sinstaller">&#127968; S'installer</button>
+
+        <button class="tab-btn" data-tab="tab-diaspora">&#129309; Bons plans diaspora</button>
+
+      </div>
+
+
+
+      <!-- &#201;TUDES & GRANDES &#201;COLES -->
+
+      <div class="tab-panel active" id="tab-etudes">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>&#201;tudes &amp; Grandes &#201;coles &#224; Toulouse</h2>
+
+          <p>Toulouse accueille la plus ancienne facult&#233; de m&#233;decine du monde (1220) et figure parmi les meilleures villes &#233;tudiantes de France.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127963;&#65039;</div>
+
+            <h3>Universit&#233; de Toulouse</h3>
+
+            <p>Reconnue mondialement pour sa facult&#233; de M&#233;decine (fond&#233;e en 1220), elle excelle aussi en Droit, Sciences, Pharmacie et &#201;conomie. Class&#233;e dans le Top 300 mondial.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128188;</div>
+
+            <h3>Toulouse Business School</h3>
+
+            <p>Grande &#233;cole de commerce habilit&#233;e AACSB, EQUIS et AMBA (triple accr&#233;ditation). Masters sp&#233;cialis&#233;s, MBA International, forte ouverture &#224; l'international et r&#233;seau alumni actif.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127959;&#65039;</div>
+
+            <h3>Polytech Toulouse</h3>
+
+            <p>&#201;cole d'ing&#233;nieurs publique rattach&#233;e &#224; l'Universit&#233; de Toulouse. Formations en informatique, r&#233;seaux, g&#233;nie civil, eau et environnement. Dipl&#244;me reconnu par la CTI.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128300;</div>
+
+            <h3>ENSCM</h3>
+
+            <p>&#201;cole Nationale Sup&#233;rieure de Chimie de Toulouse. Ing&#233;nieurs chimistes de haut niveau, laboratoire de recherche d'excellence, partenariats industriels internationaux.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127793;</div>
+
+            <h3>Institut Agro Toulouse (SupAgro)</h3>
+
+            <p>L'une des meilleures &#233;coles d'agronomie de France. Sp&#233;cialis&#233;e dans l'agriculture tropicale et le d&#233;veloppement durable &#8212; id&#233;ale pour les &#233;tudiants ivoiriens en agrobusiness.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128218;</div>
+
+            <h3>CPGE &amp; IUT</h3>
+
+            <p>Classes pr&#233;paratoires aux Grandes &#201;coles : lyc&#233;es Joffre et Clemenceau (r&#233;f&#233;rence &#224; Toulouse). IUT de Toulouse : formations professionnalisantes en 2 ans dans de nombreux secteurs.</p>
+
+          </div>
+
+        </div>
+
+        <div style="background:rgba(0,112,60,.06);border:1px solid rgba(0,112,60,.2);border-radius:var(--radius-lg);padding:1.75rem;margin-top:2rem;">
+
+          <h3 style="color:var(--primary);margin-bottom:1rem;">&#9989; D&#233;marches pour &#233;tudier &#224; Toulouse</h3>
+
+          <div class="features-list">
+
+            <div class="feature-item"><div class="feature-icon">&#128205;</div><div><h4>Campus France C&#244;te d'Ivoire</h4><p>Inscrivez-vous sur <strong>campusfrance.org</strong> d&#232;s octobre pour une rentr&#233;e en septembre. Entretien obligatoire au Campus France d'Abidjan.</p></div></div>
+
+            <div class="feature-item"><div class="feature-icon">&#127968;</div><div><h4>Logement &#233;tudiant &#8212; CROUS</h4><p>D&#233;posez votre dossier sur <strong>trouverunlogement.lescrous.fr</strong>. R&#233;sidences CROUS &#224; partir de 200&#8364;/mois. Priorit&#233; aux boursiers.</p></div></div>
+
+            <div class="feature-item"><div class="feature-icon">&#128176;</div><div><h4>Bourses disponibles</h4><p>Bourse du gouvernement fran&#231;ais (BGF), bourse de l'Agence Universitaire de la Francophonie (AUF), aides de la R&#233;gion Occitanie pour les &#233;tudiants internationaux.</p></div></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- D&#201;COUVRIR MONTPELLIER -->
+
+      <div class="tab-panel" id="tab-toulouse">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>D&#233;couvrir Toulouse</h2>
+
+          <p>Ville jeune, dynamique et ensoleill&#233;e, Toulouse s&#233;duit par son art de vivre m&#233;diterran&#233;en, sa richesse culturelle et son architecture m&#234;lant Moyen &#194;ge et ultra-modernit&#233;.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127917;</div>
+
+            <h3>Place de la Com&#233;die</h3>
+
+            <p>Le c&#339;ur n&#233;vralgique de Toulouse, surnomm&#233;e "l'&#338;uf". Fontaine des Trois Gr&#226;ces, Op&#233;ra Com&#233;die, terrasses de caf&#233;s. Le lieu de rendez-vous incontournable des Montpelli&#233;rains.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127963;&#65039;</div>
+
+            <h3>L'&#201;cusson &#8212; Vieille ville</h3>
+
+            <p>Le centre historique m&#233;di&#233;val aux ruelles pav&#233;es, boutiques artisanales, march&#233;s, restaurants et bars branch&#233;s. La place Jean-Jaur&#232;s, la rue de la Loge, l'arc de Triomphe.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127749;</div>
+
+            <h3>Promenade du Peyrou</h3>
+
+            <p>Esplanade royale dominant la ville avec vue panoramique jusqu'&#224; la mer et les Pyr&#233;n&#233;es. L'Aqueduc de Saint-Cl&#233;ment et la statue &#233;questre de Louis XIV sont &#224; couper le souffle.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127912;</div>
+
+            <h3>Mus&#233;e Fabre</h3>
+
+            <p>L'un des plus importants mus&#233;es des Beaux-Arts de France hors Paris. Remarquable collection de peintures europ&#233;ennes du XVe au XXe si&#232;cle. Entr&#233;e gratuite le 1er dimanche du mois.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128643;</div>
+
+            <h3>Le Tramway design</h3>
+
+            <p>4 lignes de tramway aux rames d&#233;cor&#233;es par des artistes (dont Moebius). Le r&#233;seau TAM dessert toute la m&#233;tropole et relie la gare Saint-Roch, l'a&#233;roport et les plages de Palavas.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127750;</div>
+
+            <h3>Quartiers modernes</h3>
+
+            <p>Port-Marianne (Architecture Zaha Hadid &#8212; l'Arbre Blanc), Antigone (quartier n&#233;oclassique de Ricardo Bofill), Richter (campus &#233;conomique). Toulouse, ville d'architecture contemporaine.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- OCCITANIE & ENVIRONS -->
+
+      <div class="tab-panel" id="tab-occitanie">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Occitanie &amp; Environs</h2>
+
+          <p>La r&#233;gion Occitanie regorge de tr&#233;sors class&#233;s UNESCO, de paysages &#233;poustouflants et de villages perch&#233;s &#224; une heure de Toulouse.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127984;</div>
+
+            <h3>Cit&#233; de Carcassonne &#8212; UNESCO</h3>
+
+            <p>La plus grande cit&#233; m&#233;di&#233;vale fortifi&#233;e d'Europe, class&#233;e au patrimoine mondial. Remparts, tours, ch&#226;teau comtal&#8230; Un voyage dans le temps &#224; 1h30 de Toulouse en train.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127963;&#65039;</div>
+
+            <h3>Pont du Gard &#8212; UNESCO</h3>
+
+            <p>Chef-d'&#339;uvre de l'ing&#233;nierie romaine (Ier si&#232;cle), le plus haut aqueduc romain conserv&#233; au monde (49m). &#192; 45 min de Toulouse, baignade possible sous les arches en &#233;t&#233;.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128675;</div>
+
+            <h3>Canal du Midi &#8212; UNESCO</h3>
+
+            <p>360 km de voies navigables reliant S&#232;te &#224; Toulouse, bord&#233;es de platanes centenaires. Croisi&#232;res fluviales, v&#233;loroute, villages de charme. Class&#233; depuis 1996.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127807;</div>
+
+            <h3>Camargue</h3>
+
+            <p>Delta du Rh&#244;ne, r&#233;serve naturelle unique : flamants roses, chevaux blancs, taureaux sauvages, rizi&#232;res et salins. &#192; 1h de Toulouse. Paradis des amoureux de la nature.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127960;&#65039;</div>
+
+            <h3>Saint-Guilhem-le-D&#233;sert</h3>
+
+            <p>L'un des Plus Beaux Villages de France, &#224; 40 km de Toulouse. Village m&#233;di&#233;val au c&#339;ur des Gorges de l'H&#233;rault, abbaye de Gellone du IXe si&#232;cle, baignade dans l'H&#233;rault.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127956;&#65039;</div>
+
+            <h3>Pic Saint-Loup</h3>
+
+            <p>Montagne embl&#233;matique visible depuis Toulouse (658m). Randonn&#233;es avec vue mer et Pyr&#233;n&#233;es, vignoble r&#233;put&#233; (AOP Pic Saint-Loup), villages de caract&#232;re. &#192; 20 km au nord.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- GASTRONOMIE -->
+
+      <div class="tab-panel" id="tab-gastro">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Gastronomie &amp; Art de vivre en Occitanie</h2>
+
+          <p>La cuisine occitane est g&#233;n&#233;reuse, ensoleill&#233;e et ancr&#233;e dans les terroirs m&#233;diterran&#233;ens. Une v&#233;ritable invitation au voyage culinaire.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#127869;&#65039;</div>
+
+            <h3>Brandade de N&#238;mes</h3>
+
+            <p>Morue pil&#233;e &#224; l'huile d'olive, sp&#233;cialit&#233; embl&#233;matique de N&#238;mes, &#224; 50 km de Toulouse. Plat r&#233;confortant servi chaud sur des cro&#251;tons. Un classique de la cuisine occitane.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127858;</div>
+
+            <h3>Cassoulet Toulousain</h3>
+
+            <p>Haricots blancs mijot&#233;s avec confit de canard, saucisse de Toulouse et couenne. Plat embl&#233;matique de la r&#233;gion, partag&#233; entre Castelnaudary, Carcassonne et Toulouse.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127863;</div>
+
+            <h3>Vins du Languedoc</h3>
+
+            <p>La r&#233;gion produit 40% des vins fran&#231;ais. AOP Pic Saint-Loup, Faug&#232;res, Saint-Chinian, Muscadet&#8230; Les caves coop&#233;ratives proposent des visites et d&#233;gustations &#224; prix doux.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#129472;</div>
+
+            <h3>Fromages &amp; Charcuterie</h3>
+
+            <p>Roquefort (Aveyron), P&#233;lardon (ch&#232;vre des C&#233;vennes), saucisson de l'H&#233;rault. Les march&#233;s d'Occitanie regorgent de producteurs locaux aux saveurs authentiques.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128722;</div>
+
+            <h3>March&#233;s de Toulouse</h3>
+
+            <p><strong>Halles Laissac</strong> (couvert, quotidien), <strong>Plan Cabanes</strong> (grand march&#233; du samedi), <strong>March&#233; du Lez</strong> (cr&#233;ateurs, bio, streetfood le week-end). L'&#226;me de la gastronomie montpelli&#233;raine.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127754;</div>
+
+            <h3>Fruits de mer &amp; Poissons</h3>
+
+            <p>&#192; 15 min des plages : hu&#238;tres de Bouzigues (&#233;tang de Thau), moules de M&#233;diterran&#233;e, tielle s&#233;toise (tourte aux poulpes). Palavas-les-Flots et S&#232;te pour les meilleurs fruits de mer.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- S'INSTALLER -->
+
+      <div class="tab-panel" id="tab-sinstaller">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>S'installer &#224; Toulouse</h2>
+
+          <p>Informations pratiques pour votre arriv&#233;e et votre installation dans la m&#233;tropole montpelli&#233;raine.</p>
+
+        </div>
+
+        <div class="features-list">
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#127968;</div>
+
+            <div>
+
+              <h4>Logement</h4>
+
+              <p><strong>CROUS</strong> : r&#233;sidences &#233;tudiantes (trouverunlogement.lescrous.fr). <strong>PAP</strong> : location entre particuliers. <strong>LeBonCoin</strong> et <strong>SeLoger</strong> pour appartements. Loyers moyens : 500&#8211;700&#8364;/mois (studio), 750&#8211;1100&#8364; (T2). Quartiers abordables : Mosson, Celleneuve, Pas-du-Loup.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128642;</div>
+
+            <div>
+
+              <h4>Transports</h4>
+
+              <p><strong>TAM</strong> : r&#233;seau de tramways (4 lignes) et bus couvrant toute la m&#233;tropole. Abonnement mensuel : 39&#8364; (tarif r&#233;duit &#233;tudiant). <strong>V&#233;lomagg'</strong> : v&#233;los en libre-service. <strong>TGV</strong> : Paris en 3h20, Barcelone en 3h depuis la gare Saint-Roch.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#127973;</div>
+
+            <div>
+
+              <h4>Sant&#233;</h4>
+
+              <p>CHRU de Toulouse (CHU de r&#233;f&#233;rence). Affiliation &#224; la S&#233;curit&#233; sociale via l'AMELI. Compl&#233;mentaire sant&#233; : &#233;tudiants de moins de 25 ans couverts automatiquement via la CSS (ancienne CMU).</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128176;</div>
+
+            <div>
+
+              <h4>Aides financi&#232;res &#8212; CAF</h4>
+
+              <p>Aide Personnalis&#233;e au Logement (APL) : jusqu'&#224; 200&#8364;/mois selon revenus et loyer. Demande sur <strong>caf.fr</strong> d&#232;s la signature du bail. Aide &#224; la mobilit&#233;, prime d'activit&#233; pour les travailleurs.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#128203;</div>
+
+            <div>
+
+              <h4>Titre de s&#233;jour &#8212; Pr&#233;fecture</h4>
+
+              <p><strong>Pr&#233;fecture de l'H&#233;rault</strong> (34) : rendez-vous en ligne sur <strong>herault.gouv.fr</strong>. D&#233;lais souvent longs : anticipez vos d&#233;marches. L'AITO peut vous conseiller sur les documents &#224; pr&#233;parer.</p>
+
+            </div>
+
+          </div>
+
+          <div class="feature-item">
+
+            <div class="feature-icon">&#127760;</div>
+
+            <div>
+
+              <h4>Ressources num&#233;riques utiles</h4>
+
+              <p><strong>toulouse.fr</strong> (Mairie), <strong>herault.fr</strong> (Conseil D&#233;partemental), <strong>laregion.fr</strong> (R&#233;gion Occitanie), <strong>tam-voyages.fr</strong> (transports), <strong>crous-toulouse.fr</strong> (logement &amp; restauration &#233;tudiante).</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- BONS PLANS DIASPORA -->
+
+      <div class="tab-panel" id="tab-diaspora">
+
+        <div class="section-header" style="margin-bottom:2rem;">
+
+          <h2>Bons plans pour la diaspora ivoirienne</h2>
+
+          <p>Retrouvez votre communaut&#233;, vos saveurs et vos rep&#232;res &#224; Toulouse.</p>
+
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="card">
+
+            <div class="card-icon">&#128722;</div>
+
+            <h3>&#201;piceries africaines</h3>
+
+            <p>Plusieurs &#233;piceries proposent produits africains, atti&#233;k&#233;, gari, huile de palme, piment, gombo&#8230; Concentr&#233;es dans les quartiers <strong>Gambetta</strong> et <strong>Figuerolles</strong> (multiculturels et anim&#233;s).</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#9986;&#65039;</div>
+
+            <h3>Coiffeurs &amp; Beaut&#233; afro</h3>
+
+            <p>Nombreux salons sp&#233;cialis&#233;s en tresses africaines, nattes, tissages et soins capillaires afro dans les quartiers nord et centre de Toulouse. Demandez des recommandations &#224; l'association.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#128333;</div>
+
+            <h3>Lieux de culte</h3>
+
+            <p>Communaut&#233;s chr&#233;tiennes africaines (&#233;vang&#233;liques, catholiques, protestantes) actives &#224; Toulouse. Grande Mosqu&#233;e et plusieurs mosqu&#233;es de quartier. Renseignez-vous aupr&#232;s de l'AITO pour les contacts.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127881;</div>
+
+            <h3>&#201;v&#233;nements communautaires</h3>
+
+            <p>Soir&#233;es ivoiriennes, f&#234;tes nationales (F&#234;te de l'Ind&#233;pendance le 7 ao&#251;t), match de football CI en soir&#233;e, &#233;v&#233;nements culturels organis&#233;s par l'AITO et d'autres associations africaines locales.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#129309;</div>
+
+            <h3>Associations africaines partenaires</h3>
+
+            <p>L'AITO collabore avec d'autres associations de la diaspora africaine &#224; Toulouse : s&#233;n&#233;galaise, malienne, camerounaise, burkinab&#233;e&#8230; Ensemble pour une meilleure int&#233;gration et entraide.</p>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">&#127775;</div>
+
+            <h3>AITO &#8212; Votre premier contact</h3>
+
+            <p>&#192; votre arriv&#233;e &#224; Toulouse, contactez l'AITO ! Nos b&#233;n&#233;voles vous aideront &#224; trouver un logement, comprendre les d&#233;marches, rencontrer des compatriotes et vous sentir chez vous.</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Liens utiles -->
+
+<section class="section section-alt">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Ressources</div>
+
+      <h2>Liens utiles &#8212; Toulouse &amp; Occitanie</h2>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+
+      <a href="https://www.toulouse.fr" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--gray-800);font-weight:600;transition:all .2s;text-decoration:none;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)';this.style.color='var(--gray-800)'">&#127963;&#65039; Mairie de Toulouse</a>
+
+      <a href="https://www.herault.gouv.fr" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--gray-800);font-weight:600;transition:all .2s;text-decoration:none;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)';this.style.color='var(--gray-800)'">&#128203; Pr&#233;fecture de l'H&#233;rault</a>
+
+      <a href="https://www.crous-toulouse.fr" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--gray-800);font-weight:600;transition:all .2s;text-decoration:none;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)';this.style.color='var(--gray-800)'">&#127891; CROUS Toulouse</a>
+
+      <a href="https://www.utoulouse.fr" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--gray-800);font-weight:600;transition:all .2s;text-decoration:none;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)';this.style.color='var(--gray-800)'">&#127963;&#65039; Universit&#233; de Toulouse</a>
+
+      <a href="https://www.tam-voyages.com" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--gray-800);font-weight:600;transition:all .2s;text-decoration:none;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)';this.style.color='var(--gray-800)'">&#128643; TAM &#8212; Transports</a>
+
+      <a href="https://www.laregion.fr" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--gray-800);font-weight:600;transition:all .2s;text-decoration:none;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)';this.style.color='var(--gray-800)'">&#127757; R&#233;gion Occitanie</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Contact assistance -->
+
+<section class="section">
+
+  <div class="container" style="max-width:600px;">
+
+    <div class="section-header"><div class="label">Assistance</div><h2>Besoin d'aide personnalis&#233;e ?</h2><p>Notre r&#233;seau de b&#233;n&#233;voles peut vous accompagner dans vos d&#233;marches &#224; Toulouse.</p></div>
+
+    <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:2.5rem;border:1px solid var(--gray-200);">
+
+      <form data-form="compatriotes">
+
+        <div class="form-row">
+
+          <div class="form-group"><label>Pr&#233;nom *</label><input type="text" required></div>
+
+          <div class="form-group"><label>Nom *</label><input type="text" required></div>
+
+        </div>
+
+        <div class="form-group"><label>E-mail *</label><input type="email" required></div>
+
+        <div class="form-group"><label>Th&#233;matique</label>
+
+          <select>
+
+            <option>&#201;tudes &#224; Toulouse</option>
+
+            <option>Logement</option>
+
+            <option>Titre de s&#233;jour / Pr&#233;fecture</option>
+
+            <option>Emploi &amp; Reconnaissance dipl&#244;mes</option>
+
+            <option>Vie pratique (banque, sant&#233;&#8230;)</option>
+
+            <option>Communaut&#233; &amp; &#201;v&#233;nements</option>
+
+            <option>Autre</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group"><label>Votre situation et votre question *</label><textarea required style="min-height:130px;"></textarea></div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Envoyer ma demande d'assistance</button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&#233;</a></li></ul></div>
+
+  </div>
+
+  <div class="footer-bottom"><span>&#169; 2025 AITO &#8212; Amicale des Ivoiriens de l'H&#233;rault</span><a href="mentions-legales.html">Mentions l&#233;gales</a></div>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+</body>
+
+</html>
+
+

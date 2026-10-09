@@ -1,0 +1,431 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bourse d&#39;&#201;change entre Membres &#8212; AITO</title>
+  <link rel="stylesheet" href="css/style.css">
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+
+/* ── Listing Cards ── */
+.listing-card { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.08); transition:transform .3s,box-shadow .3s; display:flex; flex-direction:column; }
+.listing-card:hover { transform:translateY(-5px); box-shadow:0 16px 40px rgba(0,0,0,.14); }
+.listing-card-img { height:190px; overflow:hidden; position:relative; flex-shrink:0; }
+.listing-card-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s; }
+.listing-card:hover .listing-card-img img { transform:scale(1.06); }
+.listing-badges { position:absolute; top:.65rem; left:.65rem; display:flex; gap:.35rem; flex-wrap:wrap; }
+.badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+.badge-echange { background:rgba(0,154,68,.18); color:#006830; border:1px solid rgba(0,154,68,.35); }
+.badge-vente { background:rgba(247,127,0,.18); color:#b85e00; border:1px solid rgba(247,127,0,.35); }
+.badge-don { background:rgba(33,150,243,.18); color:#0d5fac; border:1px solid rgba(33,150,243,.35); }
+.badge-cat { background:rgba(255,255,255,.92); color:#333; border:1px solid rgba(0,0,0,.12); }
+.listing-card-body { padding:1rem 1.15rem 1.25rem; display:flex; flex-direction:column; flex:1; }
+.listing-card-title { font-size:.97rem; font-weight:800; color:var(--text); line-height:1.3; margin-bottom:.4rem; }
+.listing-card-desc { font-size:.83rem; color:var(--gray-600); line-height:1.55; flex:1; margin-bottom:.75rem; }
+.listing-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:.75rem; border-top:1px solid var(--gray-100); gap:.5rem; flex-wrap:wrap; }
+.listing-price { font-size:1.1rem; font-weight:900; color:var(--primary); }
+.listing-price.free { color:#0d5fac; }
+.listing-price.exchange { color:#006830; }
+.listing-member { font-size:.74rem; color:var(--gray-400); }
+.listing-btn { display:inline-block; background:var(--primary); color:#fff !important; font-size:.78rem; font-weight:700; padding:.4rem .9rem; border-radius:20px; text-decoration:none !important; transition:background .2s; white-space:nowrap; }
+.listing-btn:hover { background:var(--primary-dark); }
+.listings-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(275px,1fr)); gap:1.5rem; }
+@media(max-width:600px){ .listings-grid { grid-template-columns:1fr; } }
+
+/* ── Filter Pills ── */
+.filter-bar { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:2rem; align-items:center; }
+.filter-label { font-size:.82rem; font-weight:700; color:var(--gray-600); margin-right:.25rem; }
+.filter-pill { padding:.38rem 1rem; border-radius:20px; font-size:.82rem; font-weight:700; border:2px solid var(--gray-200); background:#fff; color:var(--gray-600); cursor:pointer; transition:all .2s; text-decoration:none; display:inline-block; }
+.filter-pill:hover, .filter-pill.active { border-color:var(--primary); background:var(--primary); color:#fff !important; }
+
+/* ── Membre Notice ── */
+.member-notice { display:flex; align-items:center; gap:1rem; background:linear-gradient(135deg,rgba(0,112,60,.07),rgba(247,127,0,.05)); border:1px solid rgba(0,112,60,.2); border-radius:14px; padding:1.1rem 1.5rem; margin-bottom:2.5rem; flex-wrap:wrap; }
+.member-notice-icon { font-size:2rem; flex-shrink:0; }
+.member-notice p { font-size:.88rem; color:var(--text); margin:0; line-height:1.55; flex:1; min-width:220px; }
+.member-notice a.btn-sm { display:inline-block; background:var(--primary); color:#fff; font-size:.82rem; font-weight:700; padding:.45rem 1.1rem; border-radius:20px; text-decoration:none; white-space:nowrap; }
+
+/* ── Stats bar ── */
+.stats-bar { display:flex; align-items:center; justify-content:center; gap:3rem; flex-wrap:wrap; text-align:center; padding:1.75rem 0; background:linear-gradient(90deg,var(--primary),var(--accent)); color:#fff; }
+.stats-bar-num { font-size:2rem; font-weight:800; display:block; line-height:1; }
+.stats-bar-lbl { font-size:.82rem; opacity:.9; }
+
+/* ── Form section ── */
+.announce-form-wrap { background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:2.5rem; border:1px solid var(--gray-200); max-width:700px; margin:0 auto; }
+.form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+@media(max-width:640px){ .form-row-3 { grid-template-columns:1fr; } }
+
+/* ── Empty state ── */
+.empty-cat { display:none; text-align:center; padding:3rem 1rem; color:var(--gray-400); font-size:1rem; }
+</style>
+</head>
+
+<body>
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+      <div class="dropdown"><a href="#">Services &#9662;</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion &amp; Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d&#39;Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-content">
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.7),rgba(0,70,30,.6)),url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+  <div class="label" style="background:rgba(255,255,255,.2);color:#fff;">Membres AITO</div>
+  <h1>Bourse d&#39;&#201;change</h1>
+  <p>Donnez une seconde vie &#224; vos objets. Proposez ce dont vous n&#39;avez plus besoin &#224; vos compatriotes membres de l&#39;AITO — vente, &#233;change ou don.</p>
+</div>
+
+<!-- Stats -->
+<section style="padding:0;margin:0;">
+  <div class="stats-bar">
+    <div><span class="stats-bar-num">24</span><span class="stats-bar-lbl">annonces actives</span></div>
+    <div><span class="stats-bar-num">R&#233;serv&#233;</span><span class="stats-bar-lbl">aux membres AITO</span></div>
+    <div><span class="stats-bar-num">Gratuit</span><span class="stats-bar-lbl">de publier une annonce</span></div>
+    <div><span class="stats-bar-num">6</span><span class="stats-bar-lbl">cat&#233;gories</span></div>
+  </div>
+</section>
+
+<!-- Annonces -->
+<section class="section">
+  <div class="container">
+
+    <!-- Notice membre -->
+    <div class="member-notice">
+      <div class="member-notice-icon">&#128274;</div>
+      <p>La bourse d&#39;&#233;change est r&#233;serv&#233;e aux <strong>membres &#224; jour de cotisation</strong>. Connectez-vous pour contacter un vendeur ou publier votre propre annonce. Pas encore membre ? <a href="adhesion.html" style="color:var(--primary);font-weight:700;">Adh&#233;rez &#224; l&#39;AITO</a> pour acc&#233;der &#224; ce service.</p>
+      <a href="connexion.html" class="btn-sm">Se connecter &#8594;</a>
+    </div>
+
+    <div class="section-header" style="margin-bottom:1.5rem;">
+      <h2>Annonces en cours</h2>
+      <p>Parcourez les offres de vos compatriotes. Cliquez sur &#171;&nbsp;Contacter&nbsp;&#187; pour &#233;changer avec le membre.</p>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filter-bar">
+      <span class="filter-label">Filtrer :</span>
+      <a href="#" class="filter-pill active" data-filter="all">Tout voir</a>
+      <a href="#" class="filter-pill" data-filter="informatique">&#128187; Informatique</a>
+      <a href="#" class="filter-pill" data-filter="mobilier">&#127968; Mobilier</a>
+      <a href="#" class="filter-pill" data-filter="vetements">&#128084; V&#234;tements</a>
+      <a href="#" class="filter-pill" data-filter="electromenager">&#128268; &#201;lectrom&#233;nager</a>
+      <a href="#" class="filter-pill" data-filter="services">&#129309; Services</a>
+      <a href="#" class="filter-pill" data-filter="autres">&#128218; Autres</a>
+    </div>
+
+    <!-- Grille des annonces -->
+    <div class="listings-grid" id="listingsGrid">
+
+      <!-- Annonce 1 -->
+      <div class="listing-card" data-cat="informatique">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=270&auto=format&fit=crop&q=80" alt="MacBook Air" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-vente">Vente</span>
+            <span class="badge badge-cat">&#128187; Informatique</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">MacBook Air 2019 — 13&#8243; 256 Go</div>
+          <div class="listing-card-desc">Excellent &#233;tat, batterie 92&nbsp;%, MacOS Ventura install&#233;. Chargeur inclus. Id&#233;al pour les &#233;tudiants. Vendu car passage &#224; un mod&#232;le plus r&#233;cent.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price">450 &#8364;</div>
+              <div class="listing-member">&#128100; Thomas K. &mdash; Mars 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 2 -->
+      <div class="listing-card" data-cat="mobilier">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=270&auto=format&fit=crop&q=80" alt="Canap&#233;" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-don">Don gratuit</span>
+            <span class="badge badge-cat">&#127968; Mobilier</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Canap&#233; 3 places tissu gris</div>
+          <div class="listing-card-desc">Canap&#233; confortable en bon &#233;tat, quelques traces d&#39;usure sur les accoudoirs. &#192; venir chercher &#224; Toulouse (quartier Antigone). D&#233;m&#233;nagement oblige.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price free">Gratuit !</div>
+              <div class="listing-member">&#128100; Aminata D. &mdash; Avr 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 3 -->
+      <div class="listing-card" data-cat="vetements">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&h=270&auto=format&fit=crop&q=80" alt="V&#234;tements enfant" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-echange">&#201;change</span>
+            <span class="badge badge-cat">&#128084; V&#234;tements</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Lot v&#234;tements enfant 4&#8211;6 ans</div>
+          <div class="listing-card-desc">Une vingtaine de pi&#232;ces en tr&#232;s bon &#233;tat (robes, pantalons, t-shirts). J&#39;&#233;change contre des v&#234;tements taille 8&#8211;10 ans fille ou tout autre proposition utile.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price exchange">&#201;change</div>
+              <div class="listing-member">&#128100; Salimata O. &mdash; Avr 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 4 -->
+      <div class="listing-card" data-cat="electromenager">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=270&auto=format&fit=crop&q=80" alt="Cuiseur de riz" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-vente">Vente</span>
+            <span class="badge badge-cat">&#128268; &#201;lectrom&#233;nager</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Cuiseur de riz &#233;lectrique 1,8 L</div>
+          <div class="listing-card-desc">Marque Tefal, capacit&#233; 1,8 L (8&#8211;10 portions). Parfait fonctionnement. Vendu car achat d&#39;un mod&#232;le plus grand. Id&#233;al pour un &#233;tudiant.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price">15 &#8364;</div>
+              <div class="listing-member">&#128100; Jean-Marc A. &mdash; Mai 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 5 -->
+      <div class="listing-card" data-cat="services">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=270&auto=format&fit=crop&q=80" alt="Cours particuliers" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-echange">&#201;change</span>
+            <span class="badge badge-cat">&#129309; Services</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Cours de soutien maths / physique</div>
+          <div class="listing-card-desc">Ing&#233;nieur de formation, je propose des cours de maths et physique (lyc&#233;e, BTS, L1). J&#39;&#233;change contre des cours de fran&#231;ais pour mes enfants ou tout service utile.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price exchange">&#201;change de services</div>
+              <div class="listing-member">&#128100; Koffi B. &mdash; Avr 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 6 -->
+      <div class="listing-card" data-cat="mobilier">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=270&auto=format&fit=crop&q=80" alt="Bureau et chaise" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-vente">Vente</span>
+            <span class="badge badge-cat">&#127968; Mobilier</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Bureau + chaise de bureau ergonomique</div>
+          <div class="listing-card-desc">Ensemble bureau blanc 120 cm + chaise r&#233;glable noire. Tr&#232;s bon &#233;tat. Parfait pour t&#233;l&#233;travail ou chambre &#233;tudiante. &#192; r&#233;cup&#233;rer sur place (Castelnau-le-Lez).</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price">75 &#8364;</div>
+              <div class="listing-member">&#128100; Rose N. &mdash; Mai 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 7 -->
+      <div class="listing-card" data-cat="vetements">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=270&auto=format&fit=crop&q=80" alt="Pagnes wax" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-vente">Vente</span>
+            <span class="badge badge-cat">&#128084; V&#234;tements</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Pagnes wax ivoiriens (lot de 5)</div>
+          <div class="listing-card-desc">5 pagnes wax de qualit&#233; sup&#233;rieure, motifs vari&#233;s, jamais utilis&#233;s (ramen&#233;s de C&#244;te d&#39;Ivoire). Vari&#233;t&#233; de couleurs. Parfaits pour couture ou port quotidien.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price">45 &#8364;</div>
+              <div class="listing-member">&#128100; Awa T. &mdash; Avr 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonce 8 -->
+      <div class="listing-card" data-cat="autres">
+        <div class="listing-card-img">
+          <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=270&auto=format&fit=crop&q=80" alt="Livres" loading="lazy">
+          <div class="listing-badges">
+            <span class="badge badge-don">Don gratuit</span>
+            <span class="badge badge-cat">&#128218; Autres</span>
+          </div>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-card-title">Lot de livres scolaires BTS Commerce</div>
+          <div class="listing-card-desc">10 manuels BTS commerce / management (2021&#8211;2023), tr&#232;s bon &#233;tat. Don gratuit pour &#233;tudiant dans le besoin, priorit&#233; aux membres r&#233;cemment arriv&#233;s.</div>
+          <div class="listing-card-footer">
+            <div>
+              <div class="listing-price free">Don gratuit</div>
+              <div class="listing-member">&#128100; Michel D. &mdash; Mai 2026</div>
+            </div>
+            <a href="connexion.html" class="listing-btn">Contacter &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /listings-grid -->
+
+    <div style="text-align:center;margin-top:2rem;color:var(--gray-400);font-size:.88rem;">
+      &#128257; Les annonces sont actualis&#233;es r&#233;guli&#232;rement. <a href="connexion.html" style="color:var(--primary);font-weight:600;">Connectez-vous</a> pour voir toutes les annonces et contacter les membres.
+    </div>
+
+  </div>
+</section>
+
+<!-- Proposer une annonce -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="label">Partager</div>
+      <h2>Proposer une annonce</h2>
+      <p>Vous avez un objet dont vous n&#39;avez plus besoin ? Publiez votre annonce en quelques secondes. R&#233;serv&#233; aux membres AITO.</p>
+    </div>
+
+    <div class="announce-form-wrap">
+      <div class="member-notice" style="margin-bottom:1.75rem;">
+        <div class="member-notice-icon">&#128274;</div>
+        <p>La publication est r&#233;serv&#233;e aux <strong>membres &#224; jour de cotisation</strong>. <a href="connexion.html">Connectez-vous</a> ou <a href="adhesion.html">adh&#233;rez</a> pour publier.</p>
+        <a href="connexion.html" class="btn-sm">Se connecter &#8594;</a>
+      </div>
+
+      <form data-form="bourse-echange">
+        <div class="form-row">
+          <div class="form-group"><label>Titre de l&#39;annonce *</label><input type="text" placeholder="Ex: MacBook Air 2019" required></div>
+          <div class="form-group">
+            <label>Cat&#233;gorie *</label>
+            <select required>
+              <option value="">Choisir une cat&#233;gorie...</option>
+              <option>&#128187; Informatique</option>
+              <option>&#127968; Mobilier</option>
+              <option>&#128084; V&#234;tements</option>
+              <option>&#128268; &#201;lectrom&#233;nager</option>
+              <option>&#129309; Services</option>
+              <option>&#128218; Autres</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Type d&#39;offre *</label>
+            <select required>
+              <option value="">Type...</option>
+              <option>Vente</option>
+              <option>&#201;change</option>
+              <option>Don gratuit</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Prix (si vente)</label><input type="text" placeholder="Ex: 50 €"></div>
+          <div class="form-group"><label>Localisation</label><input type="text" placeholder="Ex: Toulouse centre"></div>
+        </div>
+        <div class="form-group"><label>Description *</label><textarea required style="min-height:110px;" placeholder="D&#233;crivez votre objet : &#233;tat, dimensions, contenu du lot, conditions d&#39;&#233;change..."></textarea></div>
+        <div class="form-group"><label>Photo (optionnel)</label><input type="file" accept="image/*"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Publier mon annonce</button>
+      </form>
+      <p style="text-align:center;font-size:.8rem;color:var(--gray-400);margin-top:.75rem;">Votre annonce sera examin&#233;e avant publication.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Adhésion -->
+<section class="section">
+  <div class="container" style="max-width:680px;text-align:center;">
+    <div class="label">Rejoindre la communaut&#233;</div>
+    <h2>Devenez membre de l&#39;AITO</h2>
+    <p style="color:var(--gray-600);margin:1rem 0 2rem;">La bourse d&#39;&#233;change et de nombreux autres avantages sont r&#233;serv&#233;s aux membres. Cotisation annuelle modique, solidarit&#233; garantie.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="adhesion.html" class="btn btn-primary">Adh&#233;rer &#224; l&#39;AITO</a>
+      <a href="contact.html" class="btn btn-outline">Nous contacter</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- /page-content -->
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse H&#233;rault</strong>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a><a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d&#39;Ivoire</a></li><li><a href="bourse-echange.html">Bourse d&#39;&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&#233;</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&#169; 2026 AITO &#8212; Amicale des Ivoiriens de Toulouse H&#233;rault</span><div style="display:flex;gap:.6rem;align-items:center;"><a href="[LIEN_FACEBOOK_ICI]" target="_blank" style="width:28px;height:28px;background:#1877F2;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a><a href="[LIEN_WHATSAPP_ICI]" target="_blank" style="width:28px;height:28px;background:#25D366;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a><a href="mentions-legales.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Mentions l&#233;gales</a><a href="contact.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Contact</a></div></div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+(function(){
+  // Filtre des annonces par catégorie
+  var pills = document.querySelectorAll('.filter-pill');
+  var cards = document.querySelectorAll('.listing-card[data-cat]');
+  pills.forEach(function(pill){
+    pill.addEventListener('click', function(e){
+      e.preventDefault();
+      pills.forEach(function(p){ p.classList.remove('active'); });
+      pill.classList.add('active');
+      var filter = pill.dataset.filter;
+      cards.forEach(function(card){
+        if (filter === 'all' || card.dataset.cat === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

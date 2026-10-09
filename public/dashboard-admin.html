@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Administration Technique &#8212; AITO</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <style>
+
+    body { background: #0f1117; }
+
+
+
+    .db-wrapper { display: block; min-height: 100vh; padding-top: 72px; }
+
+
+
+    /* SIDEBAR ADMIN &#8212; dark tech */
+
+    .db-sidebar {
+
+      background: #0d1117;
+
+      border-right: 1px solid #21262d;
+
+      position: fixed; top: 72px; left: 0; bottom: 0; width: 240px;
+
+      overflow-y: auto; z-index: 100;
+
+      display: flex; flex-direction: column;
+
+      transition: transform .3s;
+
+    }
+
+    .db-sidebar-header { padding: 1.25rem; border-bottom: 1px solid #21262d; }
+
+    .admin-badge {
+
+      display: inline-flex; align-items: center; gap: .4rem;
+
+      background: rgba(248,81,73,.15); color: #f85149;
+
+      border: 1px solid rgba(248,81,73,.25);
+
+      padding: .25rem .75rem; border-radius: 50px;
+
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+
+      letter-spacing: .07em; margin-bottom: .65rem;
+
+    }
+
+    .db-user-info h3 { font-size: .95rem; font-weight: 700; color: #e6edf3; }
+
+    .db-user-info p  { font-size: .76rem; color: #7d8590; margin-top: .1rem; }
+
+
+
+    .db-nav { flex: 1; padding: .75rem 0; }
+
+    .db-nav-section { padding: .4rem 1rem .2rem; font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #7d8590; }
+
+    .db-nav a {
+
+      display: flex; align-items: center; gap: .7rem;
+
+      padding: .55rem 1rem; color: #8b949e; font-size: .85rem; font-weight: 500;
+
+      border-left: 3px solid transparent;
+
+      transition: all .18s;
+
+    }
+
+    .db-nav a:hover { background: rgba(255,255,255,.04); color: #e6edf3; }
+
+    .db-nav a.active { background: rgba(247,127,0,.08); color: #F77F00; border-left-color: #F77F00; }
+
+    .db-nav a .icon { font-size: 1rem; width: 20px; flex-shrink: 0; }
+
+    .db-nav a .badge-count {
+
+      margin-left: auto; background: #f85149; color: #fff;
+
+      font-size: .67rem; font-weight: 700; padding: .1rem .4rem; border-radius: 50px;
+
+    }
+
+    .db-sidebar-footer { padding: 1rem; border-top: 1px solid #21262d; display: flex; flex-direction: column; gap: .4rem; }
+
+    .db-sidebar-footer a { color: #7d8590; font-size: .8rem; display: flex; align-items: center; gap: .45rem; transition: color .2s; }
+
+    .db-sidebar-footer a:hover { color: #e6edf3; }
+
+
+
+    /* MAIN */
+
+    .db-main { margin-left: 240px; padding: 2rem; min-width: 0; }
+
+    .db-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+
+    .db-topbar h1 { font-size: 1.4rem; font-weight: 800; color: #e6edf3; }
+
+    .db-topbar p  { color: #7d8590; font-size: .85rem; margin-top: .25rem; }
+
+
+
+    /* KPI */
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+
+    .kpi-card {
+
+      background: #161b22; border: 1px solid #21262d;
+
+      border-radius: var(--radius-lg); padding: 1.35rem;
+
+      display: flex; align-items: center; gap: 1rem;
+
+    }
+
+    .kpi-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+
+    .kpi-card h4 { font-size: .75rem; color: #7d8590; font-weight: 500; margin-bottom: .2rem; }
+
+    .kpi-value { font-size: 1.7rem; font-weight: 800; color: #e6edf3; line-height: 1; }
+
+    .kpi-delta { font-size: .73rem; margin-top: .2rem; }
+
+    .kpi-delta.ok  { color: #3fb950; }
+
+    .kpi-delta.warn { color: #d29922; }
+
+    .kpi-delta.err  { color: #f85149; }
+
+
+
+    /* PANELS */
+
+    .db-section { display: none; }
+
+    .db-section.active { display: block; }
+
+    .db-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+
+
+    /* CARD */
+
+    .db-card { background: #161b22; border: 1px solid #21262d; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.25rem; }
+
+    .db-card-header { padding: 1rem 1.35rem; border-bottom: 1px solid #21262d; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+
+    .db-card-header h3 { font-size: .97rem; font-weight: 700; color: #e6edf3; }
+
+    .db-card-body { padding: 1.25rem 1.35rem; }
+
+
+
+    /* TABLE */
+
+    .db-table-wrap { overflow-x: auto; }
+
+    .db-table { width: 100%; border-collapse: collapse; background: #161b22; font-size: .83rem; }
+
+    .db-table th { background: #0d1117; color: #7d8590; padding: .75rem 1rem; text-align: left; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+
+    .db-table td { padding: .75rem 1rem; border-bottom: 1px solid #21262d; color: #c9d1d9; }
+
+    .db-table tr:last-child td { border-bottom: none; }
+
+    .db-table tr:hover td { background: rgba(255,255,255,.02); }
+
+
+
+    /* TOGGLE SWITCH */
+
+    .toggle-sw { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+
+    .toggle-sw input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-track { position: absolute; inset: 0; background: #30363d; border-radius: 50px; cursor: pointer; transition: background .2s; }
+
+    .toggle-track::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #8b949e; border-radius: 50%; transition: transform .2s; }
+
+    .toggle-sw input:checked + .toggle-track { background: var(--primary); }
+
+    .toggle-sw input:checked + .toggle-track::before { background: #fff; transform: translateX(18px); }
+
+
+
+    /* STATUS */
+
+    .status { display: inline-flex; align-items: center; gap: .3rem; font-size: .77rem; font-weight: 600; }
+
+    .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    .status-ok::before   { background: #3fb950; } .status-ok   { color: #3fb950; }
+
+    .status-warn::before { background: #d29922; } .status-warn { color: #d29922; }
+
+    .status-err::before  { background: #f85149; } .status-err  { color: #f85149; }
+
+
+
+    /* TERMINAL / LOG */
+
+    .log-terminal {
+
+      background: #010409; border: 1px solid #21262d; border-radius: var(--radius);
+
+      padding: 1rem 1.25rem; font-family: 'Consolas', 'Courier New', monospace;
+
+      font-size: .78rem; color: #3fb950; max-height: 280px; overflow-y: auto;
+
+      line-height: 1.7;
+
+    }
+
+    .log-terminal .log-err  { color: #f85149; }
+
+    .log-terminal .log-warn { color: #d29922; }
+
+    .log-terminal .log-info { color: #79c0ff; }
+
+    .log-terminal .log-ts   { color: #7d8590; }
+
+
+
+    /* PROGRESS BAR */
+
+    .prog-bar { height: 8px; background: #21262d; border-radius: 50px; overflow: hidden; }
+
+    .prog-fill { height: 100%; border-radius: 50px; transition: width 1s ease; }
+
+
+
+    /* PERMISSION GRID */
+
+    .perm-grid { display: grid; grid-template-columns: 180px repeat(4, 1fr); gap: 0; }
+
+    .perm-grid .head { background: #0d1117; padding: .6rem .75rem; font-size: .75rem; font-weight: 700; color: #7d8590; text-transform: uppercase; border: 1px solid #21262d; text-align: center; }
+
+    .perm-grid .perm-row-label { padding: .65rem .75rem; font-size: .83rem; color: #c9d1d9; border: 1px solid #21262d; border-top: none; background: #161b22; font-weight: 500; }
+
+    .perm-grid .perm-cell { display: flex; align-items: center; justify-content: center; border: 1px solid #21262d; border-top: none; border-left: none; }
+
+
+
+    /* FORM admin */
+
+    .admin-input {
+
+      width: 100%; padding: .65rem .9rem;
+
+      background: #0d1117; border: 1px solid #30363d;
+
+      border-radius: var(--radius); color: #e6edf3;
+
+      font-size: .88rem; font-family: inherit;
+
+      transition: border-color .2s;
+
+    }
+
+    .admin-input:focus { outline: none; border-color: var(--accent); }
+
+    .admin-select { width: 100%; padding: .65rem .9rem; background: #0d1117; border: 1px solid #30363d; border-radius: var(--radius); color: #e6edf3; font-size: .88rem; }
+
+    .admin-label { display: block; font-size: .78rem; font-weight: 600; color: #7d8590; margin-bottom: .4rem; }
+
+    .admin-form-group { margin-bottom: 1.1rem; }
+
+
+
+    /* SIDEBAR MOBILE */
+
+    .sidebar-toggle-btn { display: none; position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 200; background: var(--primary); color: #fff; width: 48px; height: 48px; border-radius: 50%; border: none; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
+
+
+
+    @media (max-width: 900px) {
+
+      .db-sidebar { transform: translateX(-100%); }
+
+      .db-sidebar.open { transform: translateX(0); }
+
+      .db-main { margin-left: 0; padding: 1.25rem; }
+
+      .db-wrapper { display: block; }
+
+      .db-two-col { grid-template-columns: 1fr; }
+
+      .sidebar-toggle-btn { display: flex; align-items: center; justify-content: center; }
+
+      .perm-grid { grid-template-columns: 1fr; overflow-x: auto; }
+
+    }
+
+  </style>
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:44px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:44px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+
+
+<!-- NAVBAR ADMIN -->
+
+<nav class="navbar" style="background:#0d1117;border-bottom:1px solid #21262d;top:4px;">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie">
+
+      <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;">
+
+    </div>
+
+    <div style="margin-left:auto;display:flex;align-items:center;gap:1.5rem;">
+
+      <div style="display:flex;align-items:center;gap:.5rem;">
+
+        <span style="width:8px;height:8px;background:#3fb950;border-radius:50%;display:inline-block;"></span>
+
+        <span style="color:#7d8590;font-size:.82rem;">Syst&#232;me op&#233;rationnel</span>
+
+      </div>
+
+      <a href="dashboard-bureau.html" style="color:#7d8590;font-size:.82rem;display:flex;align-items:center;gap:.4rem;">&#127963;&#65039; Bureau</a>
+
+      <a href="index.html" style="color:#7d8590;font-size:.82rem;display:flex;align-items:center;gap:.4rem;">&#8592; Site public</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+<!-- SIDEBAR -->
+
+<div class="db-sidebar" id="dbSidebar">
+
+  <div class="db-sidebar-header">
+
+    <div class="admin-badge">&#9881;&#65039; Administrateur</div>
+
+    <div class="db-user-info">
+
+      <h3>Administrateur Syst&#232;me</h3>
+
+      <p>admin@aito34.fr</p>
+
+    </div>
+
+  </div>
+
+  <nav class="db-nav">
+
+    <div class="db-nav-section">Tableau de bord</div>
+
+    <a href="#" class="active" data-section="overview" onclick="showSection('overview',this)"><span class="icon">&#128202;</span> Vue syst&#232;me</a>
+
+
+
+    <div class="db-nav-section">Utilisateurs</div>
+
+    <a href="#" data-section="users" onclick="showSection('users',this)"><span class="icon">&#128100;</span> Comptes & R&#244;les <span class="badge-count">3</span></a>
+
+    <a href="#" data-section="permissions" onclick="showSection('permissions',this)"><span class="icon">&#128272;</span> Permissions</a>
+
+
+
+    <div class="db-nav-section">Site & Contenu</div>
+
+    <a href="#" data-section="modules" onclick="showSection('modules',this)"><span class="icon">&#129513;</span> Modules du site</a>
+
+    <a href="#" data-section="media" onclick="showSection('media',this)"><span class="icon">&#128444;&#65039;</span> M&#233;diath&#232;que</a>
+
+    <a href="#" data-section="menus" onclick="showSection('menus',this)"><span class="icon">&#128203;</span> Menus & Navigation</a>
+
+
+
+    <div class="db-nav-section">Technique</div>
+
+    <a href="#" data-section="logs" onclick="showSection('logs',this)"><span class="icon">&#128220;</span> Journaux syst&#232;me <span class="badge-count">2</span></a>
+
+    <a href="#" data-section="backup" onclick="showSection('backup',this)"><span class="icon">&#128190;</span> Sauvegardes</a>
+
+    <a href="#" data-section="securite" onclick="showSection('securite',this)"><span class="icon">&#128737;&#65039;</span> S&#233;curit&#233;</a>
+
+    <a href="#" data-section="performance" onclick="showSection('performance',this)"><span class="icon">&#9889;</span> Performance</a>
+
+
+
+    <div class="db-nav-section">Configuration</div>
+
+    <a href="#" data-section="config" onclick="showSection('config',this)"><span class="icon">&#9881;&#65039;</span> Param&#232;tres g&#233;n&#233;raux</a>
+
+    <a href="#" data-section="emails" onclick="showSection('emails',this)"><span class="icon">&#128231;</span> Serveur e-mail</a>
+
+    <a href="#" data-section="paiement" onclick="showSection('paiement',this)"><span class="icon">&#128179;</span> Paiement en ligne</a>
+
+  </nav>
+
+    <!-- Th&#232;me -->
+
+    <div style="padding:.75rem 1rem;border-top:1px solid rgba(255,255,255,.1);">
+
+      <p style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:.5rem;">Th&#232;me</p>
+
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+
+        <button onclick="setMiaTheme('')" title="Clair" style="width:22px;height:22px;border-radius:50%;background:#00703C;border:2px solid rgba(255,255,255,.3);cursor:pointer;"></button>
+
+        <button onclick="setMiaTheme('dark')" title="Sombre" style="width:22px;height:22px;border-radius:50%;background:#161b22;border:2px solid #3fb950;cursor:pointer;"></button>
+
+        <button onclick="setMiaTheme('festif')" title="Festif" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#D4A017,#F77F00);border:2px solid rgba(255,255,255,.3);cursor:pointer;"></button>
+
+        <button onclick="setMiaTheme('lisible')" title="Haute lisibilit&#233;" style="width:22px;height:22px;border-radius:50%;background:#000;border:3px solid #fff;cursor:pointer;"></button>
+
+      </div>
+
+    </div>
+
+  <div class="db-sidebar-footer">
+    <a href="dashboard-bureau.html">&#127963;&#65039; Tableau de bord bureau</a>
+    <a href="#" onclick="logout();return false;">&#128275; D&eacute;connexion</a>
+  </div>
+
+</div>
+
+
+
+<!-- MAIN -->
+
+<div class="db-wrapper">
+
+  <main class="db-main">
+
+    <div class="db-topbar">
+
+      <div>
+
+        <h1 id="dbTitle">Vue syst&#232;me</h1>
+
+        <p id="dbSub" style="color:#7d8590;">Supervision technique de la plateforme AITO</p>
+
+      </div>
+
+      <div style="display:flex;gap:.75rem;align-items:center;">
+
+        <span style="color:#7d8590;font-size:.8rem;">Derni&#232;re v&#233;rification : <strong style="color:#e6edf3;">il y a 2 min</strong></span>
+
+        <button onclick="showToast('Actualisation en cours&#8230;','success')" style="padding:.45rem 1rem;background:#21262d;border:1px solid #30363d;border-radius:var(--radius);color:#e6edf3;font-size:.82rem;cursor:pointer;">&#128260; Actualiser</button>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : VUE SYST&#200;ME &#9552;&#9552; -->
+
+    <div class="db-section active" id="s-overview">
+
+      <div class="kpi-grid">
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(63,185,80,.12);">&#127760;</div><div><h4>Disponibilit&#233;</h4><div class="kpi-value">99.9%</div><div class="kpi-delta ok">&#8593; Uptime 30 jours</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(79,140,255,.12);">&#128101;</div><div><h4>Utilisateurs actifs</h4><div class="kpi-value">34</div><div class="kpi-delta ok">Aujourd'hui</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(210,153,34,.12);">&#9888;&#65039;</div><div><h4>Alertes</h4><div class="kpi-value">2</div><div class="kpi-delta warn">&#192; traiter</div></div></div>
+
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(248,81,73,.12);">&#128190;</div><div><h4>Espace utilis&#233;</h4><div class="kpi-value">68%</div><div class="kpi-delta warn">3.4 Go / 5 Go</div></div></div>
+
+      </div>
+
+
+
+      <div class="db-two-col">
+
+        <!-- Sant&#233; des modules -->
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#129513; &#201;tat des modules</h3></div>
+
+          <div class="db-card-body" style="padding:0;">
+
+            <div style="display:flex;flex-direction:column;">
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid #21262d;">
+
+                <span style="color:#c9d1d9;font-size:.85rem;">&#128272; Authentification</span><span class="status status-ok">Op&#233;rationnel</span>
+
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid #21262d;">
+
+                <span style="color:#c9d1d9;font-size:.85rem;">&#128182; Module Paiement</span><span class="status status-ok">Op&#233;rationnel</span>
+
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid #21262d;">
+
+                <span style="color:#c9d1d9;font-size:.85rem;">&#128231; Serveur e-mail</span><span class="status status-warn">Lenteur d&#233;tect&#233;e</span>
+
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid #21262d;">
+
+                <span style="color:#c9d1d9;font-size:.85rem;">&#128190; Base de donn&#233;es</span><span class="status status-ok">Op&#233;rationnel</span>
+
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;">
+
+                <span style="color:#c9d1d9;font-size:.85rem;">&#128193; Stockage fichiers</span><span class="status status-warn">Espace faible (68%)</span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Ressources serveur -->
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#9889; Ressources serveur</h3></div>
+
+          <div class="db-card-body" style="display:flex;flex-direction:column;gap:1.25rem;">
+
+            <div>
+
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;"><span style="font-size:.82rem;color:#8b949e;">CPU</span><strong style="color:#e6edf3;font-size:.82rem;">23%</strong></div>
+
+              <div class="prog-bar"><div class="prog-fill" style="width:23%;background:#3fb950;"></div></div>
+
+            </div>
+
+            <div>
+
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;"><span style="font-size:.82rem;color:#8b949e;">RAM</span><strong style="color:#e6edf3;font-size:.82rem;">512 Mo / 2 Go (25%)</strong></div>
+
+              <div class="prog-bar"><div class="prog-fill" style="width:25%;background:#3fb950;"></div></div>
+
+            </div>
+
+            <div>
+
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;"><span style="font-size:.82rem;color:#8b949e;">Disque</span><strong style="color:#d29922;font-size:.82rem;">3.4 Go / 5 Go (68%)</strong></div>
+
+              <div class="prog-bar"><div class="prog-fill" style="width:68%;background:#d29922;"></div></div>
+
+            </div>
+
+            <div>
+
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;"><span style="font-size:.82rem;color:#8b949e;">Bande passante</span><strong style="color:#e6edf3;font-size:.82rem;">12 Go / 100 Go (12%)</strong></div>
+
+              <div class="prog-bar"><div class="prog-fill" style="width:12%;background:#3fb950;"></div></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Derniers logs -->
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128220; Derni&#232;res entr&#233;es journal</h3><button onclick="showSection('logs',null)" style="background:none;border:none;color:#F77F00;font-size:.82rem;cursor:pointer;font-weight:600;">Voir tout &#8594;</button></div>
+
+        <div class="db-card-body" style="padding:.75rem 1.25rem;">
+
+          <div class="log-terminal">
+
+            <div><span class="log-ts">[2025-04-03 21:14:02]</span> <span class="log-info">INFO</span>  Nouvelle connexion &#8212; admin@aito34.fr (IP: 91.121.xx.xx)</div>
+
+            <div><span class="log-ts">[2025-04-03 21:09:44]</span> <span class="log-warn">WARN</span>  Temps de r&#233;ponse e-mail &gt; 3s &#8212; smtp.aito34.fr</div>
+
+            <div><span class="log-ts">[2025-04-03 20:55:12]</span> <span class="log-info">INFO</span>  Paiement cotisation re&#231;u &#8212; membre #0042 (30&#8364;)</div>
+
+            <div><span class="log-ts">[2025-04-03 20:30:00]</span> <span class="log-info">INFO</span>  Sauvegarde automatique r&#233;ussie &#8212; backup_20250403_2030.tar.gz</div>
+
+            <div><span class="log-ts">[2025-04-03 19:45:33]</span> <span class="log-warn">WARN</span>  Espace disque &gt; 65% &#8212; action recommand&#233;e</div>
+
+            <div><span class="log-ts">[2025-04-03 18:02:11]</span> <span class="log-info">INFO</span>  Actualit&#233; publi&#233;e &#8212; ID #0031 par boubacar.t</span></div>
+
+            <div><span class="log-ts">[2025-04-03 15:12:54]</span> <span class="log-err">ERROR</span> Tentative connexion &#233;chou&#233;e (3x) &#8212; IP: 185.220.xx.xx &#8594; bloqu&#233;e</div>
+
+            <div><span class="log-ts">[2025-04-03 12:00:00]</span> <span class="log-info">INFO</span>  Certificat SSL valide jusqu'au 2026-01-15</div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : UTILISATEURS & R&#212;LES &#9552;&#9552; -->
+
+    <div class="db-section" id="s-users">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128100; Comptes & R&#244;les</h3>
+
+          <button class="btn btn-primary" style="padding:.45rem 1rem;font-size:.82rem;" onclick="toggleForm('formUser')">+ Cr&#233;er un compte</button>
+
+        </div>
+
+        <div class="db-card-body" id="formUser" style="display:none;border-bottom:1px solid #21262d;padding-bottom:1.5rem;margin-bottom:1.5rem;">
+
+          <form data-form="usercreate" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+
+            <div class="admin-form-group"><label class="admin-label">Pr&#233;nom *</label><input class="admin-input" type="text" required></div>
+
+            <div class="admin-form-group"><label class="admin-label">Nom *</label><input class="admin-input" type="text" required></div>
+
+            <div class="admin-form-group"><label class="admin-label">E-mail *</label><input class="admin-input" type="email" required></div>
+
+            <div class="admin-form-group"><label class="admin-label">R&#244;le *</label>
+
+              <select class="admin-select">
+
+                <option>Administrateur</option>
+
+                <option>Pr&#233;sident</option>
+
+                <option>Vice-Pr&#233;sident</option>
+
+                <option>Secr&#233;taire</option>
+
+                <option>Tr&#233;sorier</option>
+
+                <option>Membre actif</option>
+
+              </select>
+
+            </div>
+
+            <div class="admin-form-group" style="grid-column:1/-1;display:flex;gap:.75rem;">
+
+              <button type="submit" class="btn btn-primary">Cr&#233;er le compte</button>
+
+              <button type="button" class="btn btn-dark" onclick="toggleForm('formUser')">Annuler</button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Utilisateur</th><th>R&#244;le</th><th>Derni&#232;re connexion</th><th>Statut</th><th>2FA</th><th>Actions</th></tr></thead>
+
+            <tbody>
+
+              <tr>
+
+                <td><div><strong style="color:#e6edf3;">Administrateur Syst&#232;me</strong><br><small style="color:#7d8590;">admin@aito34.fr</small></div></td>
+
+                <td><span style="background:rgba(248,81,73,.15);color:#f85149;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700;">Admin</span></td>
+
+                <td>Il y a 2 min</td><td><span class="status status-ok">Actif</span></td>
+
+                <td><span class="status status-ok">Activ&#233;</span></td>
+
+                <td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#9999;&#65039;</button></td>
+
+              </tr>
+
+              <tr>
+
+                <td><div><strong style="color:#e6edf3;">Jean-Baptiste Kon&#233;</strong><br><small style="color:#7d8590;">president@aito34.fr</small></div></td>
+
+                <td><span style="background:rgba(247,127,0,.15);color:#F77F00;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700;">Pr&#233;sident</span></td>
+
+                <td>Il y a 1h</td><td><span class="status status-ok">Actif</span></td>
+
+                <td><span class="status status-warn">Non activ&#233;</span></td>
+
+                <td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#9999;&#65039;</button> <button onclick="showToast('E-mail de r&#233;initialisation envoy&#233;','success')" style="background:#21262d;border:1px solid #30363d;color:#d29922;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#128273; Reset</button></td>
+
+              </tr>
+
+              <tr>
+
+                <td><div><strong style="color:#e6edf3;">Boubacar Traor&#233;</strong><br><small style="color:#7d8590;">secretaire@aito34.fr</small></div></td>
+
+                <td><span style="background:rgba(79,140,255,.15);color:#79c0ff;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700;">Secr&#233;taire</span></td>
+
+                <td>Hier</td><td><span class="status status-ok">Actif</span></td>
+
+                <td><span class="status status-ok">Activ&#233;</span></td>
+
+                <td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#9999;&#65039;</button></td>
+
+              </tr>
+
+              <tr>
+
+                <td><div><strong style="color:#e6edf3;">Mariam Kon&#233;</strong><br><small style="color:#7d8590;">tresorier@aito34.fr</small></div></td>
+
+                <td><span style="background:rgba(168,85,247,.15);color:#d2a8ff;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700;">Tr&#233;sori&#232;re</span></td>
+
+                <td>Il y a 3h</td><td><span class="status status-ok">Actif</span></td>
+
+                <td><span class="status status-ok">Activ&#233;</span></td>
+
+                <td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#9999;&#65039;</button></td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : PERMISSIONS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-permissions">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128272; Matrice des permissions</h3><button onclick="showToast('Permissions sauvegard&#233;es','success')" class="btn btn-primary" style="font-size:.82rem;padding:.45rem 1rem;">Sauvegarder</button></div>
+
+        <div class="db-card-body" style="overflow-x:auto;">
+
+          <table style="width:100%;border-collapse:collapse;min-width:640px;">
+
+            <thead>
+
+              <tr>
+
+                <th style="background:#0d1117;padding:.65rem 1rem;text-align:left;color:#7d8590;font-size:.72rem;text-transform:uppercase;border:1px solid #21262d;">Module / Action</th>
+
+                <th style="background:#0d1117;padding:.65rem 1rem;text-align:center;color:#f85149;font-size:.72rem;border:1px solid #21262d;">Admin</th>
+
+                <th style="background:#0d1117;padding:.65rem 1rem;text-align:center;color:#F77F00;font-size:.72rem;border:1px solid #21262d;">Pr&#233;sident</th>
+
+                <th style="background:#0d1117;padding:.65rem 1rem;text-align:center;color:#79c0ff;font-size:.72rem;border:1px solid #21262d;">Secr&#233;taire</th>
+
+                <th style="background:#0d1117;padding:.65rem 1rem;text-align:center;color:#d2a8ff;font-size:.72rem;border:1px solid #21262d;">Tr&#233;sorier</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="permTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : MODULES &#9552;&#9552; -->
+
+    <div class="db-section" id="s-modules">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#129513; Modules du site</h3></div>
+
+        <div class="db-card-body" style="display:flex;flex-direction:column;gap:.85rem;" id="modulesList"></div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : M&#201;DIATH&#200;QUE &#9552;&#9552; -->
+
+    <div class="db-section" id="s-media">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128444;&#65039; M&#233;diath&#232;que</h3>
+
+          <label class="btn btn-primary" style="padding:.45rem 1rem;font-size:.82rem;cursor:pointer;">
+
+            + Uploader <input type="file" style="display:none;" multiple accept="image/*,application/pdf">
+
+          </label>
+
+        </div>
+
+        <div class="db-card-body">
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;">
+
+            <div style="background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);overflow:hidden;text-align:center;cursor:pointer;" onmouseover="this.style.borderColor='#F77F00'" onmouseout="this.style.borderColor='#21262d'">
+
+              <div style="height:100px;background:#161b22;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">&#128444;&#65039;</div>
+
+              <div style="padding:.5rem;"><p style="font-size:.73rem;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">logo.png</p><p style="font-size:.67rem;color:#7d8590;">30 Ko &#183; PNG</p></div>
+
+            </div>
+
+            <div style="background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);overflow:hidden;text-align:center;cursor:pointer;" onmouseover="this.style.borderColor='#F77F00'" onmouseout="this.style.borderColor='#21262d'">
+
+              <div style="height:100px;background:#161b22;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">&#9884;&#65039;</div>
+
+              <div style="padding:.5rem;"><p style="font-size:.73rem;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">occitanie.svg</p><p style="font-size:.67rem;color:#7d8590;">2 Ko &#183; SVG</p></div>
+
+            </div>
+
+            <div style="background:#0d1117;border:2px dashed #30363d;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;min-height:150px;cursor:pointer;color:#7d8590;font-size:.82rem;flex-direction:column;gap:.5rem;" onmouseover="this.style.borderColor='#F77F00';this.style.color='#F77F00'" onmouseout="this.style.borderColor='#30363d';this.style.color='#7d8590'">
+
+              <span style="font-size:1.8rem;">+</span>Ajouter un m&#233;dia
+
+            </div>
+
+          </div>
+
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid #21262d;">
+
+            <p style="font-size:.8rem;color:#7d8590;">Espace utilis&#233; : <strong style="color:#e6edf3;">34 Mo</strong> / 500 Mo &#183; <span style="color:#3fb950;">466 Mo disponibles</span></p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : JOURNAUX &#9552;&#9552; -->
+
+    <div class="db-section" id="s-logs">
+
+      <div class="db-card">
+
+        <div class="db-card-header">
+
+          <h3>&#128220; Journaux syst&#232;me</h3>
+
+          <div style="display:flex;gap:.75rem;">
+
+            <select class="admin-select" style="padding:.4rem .75rem;font-size:.8rem;width:auto;">
+
+              <option>Tous les niveaux</option><option>INFO</option><option>WARN</option><option>ERROR</option>
+
+            </select>
+
+            <button onclick="showToast('Journal export&#233;','success')" style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.4rem .9rem;border-radius:var(--radius);font-size:.8rem;cursor:pointer;">&#128229; Exporter</button>
+
+          </div>
+
+        </div>
+
+        <div class="db-card-body" style="padding:.75rem 1.25rem;">
+
+          <div class="log-terminal" style="max-height:450px;">
+
+            <div><span class="log-ts">[2025-04-03 21:14:02]</span> <span class="log-info">INFO</span>  Connexion &#8212; admin@aito34.fr</div>
+
+            <div><span class="log-ts">[2025-04-03 21:09:44]</span> <span class="log-warn">WARN</span>  Timeout SMTP (3.2s) &#8212; relai smtp.aito34.fr</div>
+
+            <div><span class="log-ts">[2025-04-03 20:55:12]</span> <span class="log-info">INFO</span>  Paiement confirm&#233; &#8212; ref #PAY-20250403-0042</div>
+
+            <div><span class="log-ts">[2025-04-03 20:30:00]</span> <span class="log-info">INFO</span>  Sauvegarde automatique OK &#8212; 142 Mo</div>
+
+            <div><span class="log-ts">[2025-04-03 19:45:33]</span> <span class="log-warn">WARN</span>  Disque &gt; 65% &#8212; /var/www/mia (3.4G/5G)</div>
+
+            <div><span class="log-ts">[2025-04-03 18:02:11]</span> <span class="log-info">INFO</span>  Actualit&#233; publi&#233;e &#8212; ID #0031</div>
+
+            <div><span class="log-ts">[2025-04-03 15:12:54]</span> <span class="log-err">ERROR</span> Brute-force d&#233;tect&#233;e &#8212; IP 185.220.xx.xx bloqu&#233;e (fail2ban)</div>
+
+            <div><span class="log-ts">[2025-04-03 12:00:00]</span> <span class="log-info">INFO</span>  Certificat SSL OK &#8212; expire 2026-01-15</div>
+
+            <div><span class="log-ts">[2025-04-03 08:00:02]</span> <span class="log-info">INFO</span>  Cron quotidien ex&#233;cut&#233; &#8212; purge sessions, stats, archivage</div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : SAUVEGARDES &#9552;&#9552; -->
+
+    <div class="db-section" id="s-backup">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128190; Sauvegardes</h3>
+
+          <button onclick="showToast('Sauvegarde manuelle lanc&#233;e&#8230;','success')" class="btn btn-primary" style="font-size:.82rem;padding:.45rem 1rem;">&#9654; Lancer maintenant</button>
+
+        </div>
+
+        <div class="db-card-body">
+
+          <div class="db-two-col" style="margin-bottom:1.5rem;">
+
+            <div style="background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);padding:1.1rem;">
+
+              <p style="color:#7d8590;font-size:.78rem;margin-bottom:.25rem;">Derni&#232;re sauvegarde</p>
+
+              <p style="color:#e6edf3;font-weight:700;">03 avr. 2025 &#8212; 20h30</p>
+
+              <p style="color:#3fb950;font-size:.82rem;margin-top:.25rem;">&#10003; R&#233;ussie &#8212; 142 Mo</p>
+
+            </div>
+
+            <div style="background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);padding:1.1rem;">
+
+              <p style="color:#7d8590;font-size:.78rem;margin-bottom:.25rem;">Prochaine sauvegarde auto</p>
+
+              <p style="color:#e6edf3;font-weight:700;">04 avr. 2025 &#8212; 20h30</p>
+
+              <p style="color:#7d8590;font-size:.82rem;margin-top:.25rem;">Fr&#233;quence : quotidienne</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="db-table-wrap">
+
+          <table class="db-table">
+
+            <thead><tr><th>Fichier</th><th>Taille</th><th>Date</th><th>Type</th><th>Action</th></tr></thead>
+
+            <tbody>
+
+              <tr><td>backup_20250403_2030.tar.gz</td><td>142 Mo</td><td>03 avr. 2025 20h30</td><td>Auto</td><td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#11015;&#65039;</button></td></tr>
+
+              <tr><td>backup_20250402_2030.tar.gz</td><td>139 Mo</td><td>02 avr. 2025 20h30</td><td>Auto</td><td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#11015;&#65039;</button></td></tr>
+
+              <tr><td>backup_manuel_20250401.tar.gz</td><td>138 Mo</td><td>01 avr. 2025 14h12</td><td>Manuel</td><td><button style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.3rem .65rem;border-radius:var(--radius);font-size:.75rem;cursor:pointer;">&#11015;&#65039;</button></td></tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : S&#201;CURIT&#201; &#9552;&#9552; -->
+
+    <div class="db-section" id="s-securite">
+
+      <div class="db-two-col">
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#128737;&#65039; Param&#232;tres s&#233;curit&#233;</h3></div>
+
+          <div class="db-card-body" style="display:flex;flex-direction:column;gap:1rem;">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+
+              <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">Authentification 2 facteurs (2FA)</p><p style="color:#7d8590;font-size:.78rem;">Obligatoire pour admin et bureau</p></div>
+
+              <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+
+              <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">HTTPS forc&#233;</p><p style="color:#7d8590;font-size:.78rem;">Redirection HTTP &#8594; HTTPS</p></div>
+
+              <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+
+              <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">Blocage brute-force (fail2ban)</p><p style="color:#7d8590;font-size:.78rem;">Blocage apr&#232;s 5 tentatives &#233;chou&#233;es</p></div>
+
+              <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+
+              <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">Mode maintenance</p><p style="color:#7d8590;font-size:.78rem;">Affiche page de maintenance aux visiteurs</p></div>
+
+              <label class="toggle-sw"><input type="checkbox" id="toggleMaintenance" onchange="handleMaintenance(this.checked)"><span class="toggle-track"></span></label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="db-card">
+
+          <div class="db-card-header"><h3>&#128683; IP bloqu&#233;es</h3><button onclick="showToast('IP d&#233;bloqu&#233;e','success')" style="background:none;border:none;color:#F77F00;font-size:.82rem;cursor:pointer;">G&#233;rer</button></div>
+
+          <div class="db-table-wrap">
+
+            <table class="db-table">
+
+              <thead><tr><th>Adresse IP</th><th>Raison</th><th>Depuis</th><th>Action</th></tr></thead>
+
+              <tbody>
+
+                <tr><td style="font-family:monospace;">185.220.xx.xx</td><td>Brute-force</td><td>Aujourd'hui</td><td><button onclick="showToast('IP d&#233;bloqu&#233;e','success')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:.25rem .6rem;border-radius:var(--radius);font-size:.73rem;cursor:pointer;">D&#233;bloquer</button></td></tr>
+
+                <tr><td style="font-family:monospace;">91.108.xx.xx</td><td>Spam</td><td>Il y a 3j</td><td><button onclick="showToast('IP d&#233;bloqu&#233;e','success')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:.25rem .6rem;border-radius:var(--radius);font-size:.73rem;cursor:pointer;">D&#233;bloquer</button></td></tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : PERFORMANCE &#9552;&#9552; -->
+
+    <div class="db-section" id="s-performance">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#9889; Performance</h3></div>
+
+        <div class="db-card-body" style="display:flex;flex-direction:column;gap:1rem;">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+
+            <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">Cache navigateur</p><p style="color:#7d8590;font-size:.78rem;">Fichiers statiques mis en cache 30 jours</p></div>
+
+            <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+
+            <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">Compression Gzip</p><p style="color:#7d8590;font-size:.78rem;">Compression HTML/CSS/JS &#224; la vol&#233;e</p></div>
+
+            <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+
+            <div><p style="color:#e6edf3;font-size:.88rem;font-weight:600;">Optimisation images automatique</p><p style="color:#7d8590;font-size:.78rem;">Conversion WebP &#224; l'upload</p></div>
+
+            <label class="toggle-sw"><input type="checkbox"><span class="toggle-track"></span></label>
+
+          </div>
+
+          <div style="padding-top:1rem;border-top:1px solid #21262d;">
+
+            <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+
+              <div><p style="color:#7d8590;font-size:.77rem;">Temps moyen r&#233;ponse</p><p style="color:#3fb950;font-size:1.4rem;font-weight:800;">182ms</p></div>
+
+              <div><p style="color:#7d8590;font-size:.77rem;">Score PageSpeed</p><p style="color:#3fb950;font-size:1.4rem;font-weight:800;">87 / 100</p></div>
+
+              <div><p style="color:#7d8590;font-size:.77rem;">Taux de rebond</p><p style="color:#d29922;font-size:1.4rem;font-weight:800;">42%</p></div>
+
+              <div><p style="color:#7d8590;font-size:.77rem;">Pages vues / jour</p><p style="color:#e6edf3;font-size:1.4rem;font-weight:800;">324</p></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : CONFIG G&#201;N&#201;RALE &#9552;&#9552; -->
+
+    <div class="db-section" id="s-config">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#9881;&#65039; Param&#232;tres g&#233;n&#233;raux du site</h3><button onclick="showToast('Param&#232;tres sauvegard&#233;s','success')" class="btn btn-primary" style="font-size:.82rem;padding:.45rem 1rem;">Sauvegarder</button></div>
+
+        <div class="db-card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+
+          <div class="admin-form-group"><label class="admin-label">Nom du site</label><input class="admin-input" type="text" value="AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie"></div>
+
+          <div class="admin-form-group"><label class="admin-label">URL du site</label><input class="admin-input" type="url" value="https://aito34.fr"></div>
+
+          <div class="admin-form-group"><label class="admin-label">E-mail de contact public</label><input class="admin-input" type="email" value="contact@aito34.fr"></div>
+
+          <div class="admin-form-group"><label class="admin-label">Fuseau horaire</label><select class="admin-select"><option>Europe/Paris (UTC+1)</option></select></div>
+
+          <div class="admin-form-group"><label class="admin-label">Langue par d&#233;faut</label><select class="admin-select"><option>Fran&#231;ais</option><option>English</option></select></div>
+
+          <div class="admin-form-group"><label class="admin-label">Mentions l&#233;gales &#8212; &#201;diteur</label><input class="admin-input" type="text" value="Jean-Baptiste Kon&#233; (Pr&#233;sident)"></div>
+
+          <div class="admin-form-group" style="grid-column:1/-1;">
+
+            <label class="admin-label">Description / M&#233;ta SEO</label>
+
+            <textarea class="admin-input" style="min-height:80px;">Association loi 1901 bas&#233;e &#224; Toulouse (R&#233;gion Occitanie), au service de la communaut&#233; ivoirienne et de la diaspora.</textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : E-MAIL &#9552;&#9552; -->
+
+    <div class="db-section" id="s-emails">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128231; Configuration serveur e-mail (SMTP)</h3><button onclick="showToast('E-mail de test envoy&#233;','success')" class="btn btn-dark" style="font-size:.82rem;padding:.45rem 1rem;">Envoyer e-mail test</button></div>
+
+        <div class="db-card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+
+          <div class="admin-form-group"><label class="admin-label">H&#244;te SMTP</label><input class="admin-input" type="text" value="smtp.aito34.fr"></div>
+
+          <div class="admin-form-group"><label class="admin-label">Port</label><input class="admin-input" type="number" value="587"></div>
+
+          <div class="admin-form-group"><label class="admin-label">Utilisateur</label><input class="admin-input" type="email" value="noreply@aito34.fr"></div>
+
+          <div class="admin-form-group"><label class="admin-label">Mot de passe</label><input class="admin-input" type="password" value="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div>
+
+          <div class="admin-form-group"><label class="admin-label">Chiffrement</label><select class="admin-select"><option>STARTTLS</option><option>SSL/TLS</option><option>Aucun</option></select></div>
+
+          <div class="admin-form-group"><label class="admin-label">Nom exp&#233;diteur</label><input class="admin-input" type="text" value="AITO"></div>
+
+          <div style="grid-column:1/-1;">
+
+            <button onclick="showToast('Param&#232;tres SMTP sauvegard&#233;s','success')" class="btn btn-primary" style="font-size:.85rem;">Sauvegarder</button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : PAIEMENT &#9552;&#9552; -->
+
+    <div class="db-section" id="s-paiement">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128179; Configuration paiement en ligne</h3></div>
+
+        <div class="db-card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+
+          <div class="admin-form-group"><label class="admin-label">Prestataire de paiement</label><select class="admin-select"><option>Stripe</option><option>PayPal</option><option>HelloAsso</option></select></div>
+
+          <div class="admin-form-group"><label class="admin-label">Mode</label><select class="admin-select"><option>Production</option><option>Test (sandbox)</option></select></div>
+
+          <div class="admin-form-group"><label class="admin-label">Cl&#233; publique (API)</label><input class="admin-input" type="text" value="pk_live_&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div>
+
+          <div class="admin-form-group"><label class="admin-label">Cl&#233; secr&#232;te (API)</label><input class="admin-input" type="password" value="sk_live_&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div>
+
+          <div style="grid-column:1/-1;display:flex;gap:.75rem;align-items:center;">
+
+            <button onclick="showToast('Configuration paiement sauvegard&#233;e','success')" class="btn btn-primary" style="font-size:.85rem;">Sauvegarder</button>
+
+            <span class="status status-ok" style="font-size:.85rem;">Connexion Stripe v&#233;rifi&#233;e</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- &#9552;&#9552; SECTION : MENUS &#9552;&#9552; -->
+
+    <div class="db-section" id="s-menus">
+
+      <div class="db-card">
+
+        <div class="db-card-header"><h3>&#128203; Navigation du site</h3><button onclick="showToast('Menu sauvegard&#233;','success')" class="btn btn-primary" style="font-size:.82rem;padding:.45rem 1rem;">Sauvegarder</button></div>
+
+        <div class="db-card-body">
+
+          <div style="display:flex;flex-direction:column;gap:.6rem;" id="menuItems">
+
+            <div style="display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);">
+
+              <span style="color:#7d8590;cursor:grab;font-size:1.1rem;">&#10303;</span>
+
+              <input class="admin-input" value="Accueil" style="flex:1;">
+
+              <input class="admin-input" value="index.html" style="flex:1;">
+
+              <label class="toggle-sw" title="Visible"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+              <button onclick="this.closest('div').remove()" style="background:none;border:none;color:#f85149;cursor:pointer;font-size:1.1rem;">&#10005;</button>
+
+            </div>
+
+            <div style="display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);">
+
+              <span style="color:#7d8590;cursor:grab;font-size:1.1rem;">&#10303;</span>
+
+              <input class="admin-input" value="Pr&#233;sentation" style="flex:1;">
+
+              <input class="admin-input" value="presentation.html" style="flex:1;">
+
+              <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+              <button onclick="this.closest('div').remove()" style="background:none;border:none;color:#f85149;cursor:pointer;font-size:1.1rem;">&#10005;</button>
+
+            </div>
+
+            <div style="display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);">
+
+              <span style="color:#7d8590;cursor:grab;font-size:1.1rem;">&#10303;</span>
+
+              <input class="admin-input" value="Actualit&#233;s" style="flex:1;">
+
+              <input class="admin-input" value="actualites.html" style="flex:1;">
+
+              <label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label>
+
+              <button onclick="this.closest('div').remove()" style="background:none;border:none;color:#f85149;cursor:pointer;font-size:1.1rem;">&#10005;</button>
+
+            </div>
+
+          </div>
+
+          <button onclick="addMenuItem()" style="margin-top:.85rem;background:#21262d;border:1px dashed #30363d;color:#8b949e;padding:.65rem 1.25rem;border-radius:var(--radius);font-size:.85rem;cursor:pointer;width:100%;">+ Ajouter un &#233;l&#233;ment de menu</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+  </main>
+
+</div>
+
+
+
+<button class="sidebar-toggle-btn" onclick="document.getElementById('dbSidebar').classList.toggle('open')">&#9776;</button>
+
+
+
+<script src="js/main.js"></script>
+
+<script>
+
+// Toast notification
+async function adminLogout() {
+  await db.auth.signOut();
+  window.location.href = 'connexion.html';
+}
+
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;padding:.75rem 1.25rem;border-radius:8px;font-size:.87rem;font-weight:600;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.4);transition:opacity .4s';
+  t.style.background = type === 'success' ? '#238636' : type === 'info' ? '#1f6feb' : '#da3633';
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3000);
+}
+
+// Sections
+
+function showSection(id, link) {
+
+  document.querySelectorAll('.db-section').forEach(s => s.classList.remove('active'));
+
+  const el = document.getElementById('s-' + id);
+
+  if (el) el.classList.add('active');
+
+  const titles = {
+
+    overview:'Vue syst&#232;me', users:'Comptes & R&#244;les', permissions:'Permissions',
+
+    modules:'Modules du site', media:'M&#233;diath&#232;que', menus:'Navigation',
+
+    logs:'Journaux syst&#232;me', backup:'Sauvegardes', securite:'S&#233;curit&#233;',
+
+    performance:'Performance', config:'Param&#232;tres g&#233;n&#233;raux',
+
+    emails:'Serveur e-mail', paiement:'Paiement en ligne'
+
+  };
+
+  document.getElementById('dbTitle').textContent = titles[id] || id;
+
+  document.querySelectorAll('.db-nav a').forEach(a => a.classList.toggle('active', a.dataset.section === id));
+
+}
+
+
+
+function toggleForm(id) {
+
+  const el = document.getElementById(id);
+
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+
+}
+
+
+
+// Permissions matrix
+
+const perms = [
+
+  ['G&#233;rer les actualit&#233;s','&#10003;','&#10003;','&#10003;','&#8212;'],
+
+  ['G&#233;rer les &#233;v&#233;nements','&#10003;','&#10003;','&#10003;','&#8212;'],
+
+  ['G&#233;rer les adh&#233;rents','&#10003;','&#10003;','&#10003;','&#8212;'],
+
+  ['G&#233;rer les cotisations','&#10003;','&#8212;','&#8212;','&#10003;'],
+
+  ['G&#233;rer le budget','&#10003;','&#8212;','&#8212;','&#10003;'],
+
+  ['G&#233;rer les documents','&#10003;','&#10003;','&#10003;','&#8212;'],
+
+  ['G&#233;rer les partenaires','&#10003;','&#10003;','&#10003;','&#8212;'],
+
+  ['G&#233;rer les projets','&#10003;','&#10003;','&#8212;','&#8212;'],
+
+  ['PV & Comptes-rendus','&#10003;','&#10003;','&#10003;','&#8212;'],
+
+  ['G&#233;rer les utilisateurs','&#10003;','&#8212;','&#8212;','&#8212;'],
+
+  ['Configuration technique','&#10003;','&#8212;','&#8212;','&#8212;'],
+
+  ['Journaux syst&#232;me','&#10003;','&#8212;','&#8212;','&#8212;'],
+
+];
+
+const permTable = document.getElementById('permTable');
+
+perms.forEach(row => {
+
+  const tr = document.createElement('tr');
+
+  tr.innerHTML = `<td style="padding:.6rem 1rem;border:1px solid #21262d;color:#c9d1d9;font-size:.83rem;border-left:1px solid #21262d;">${row[0]}</td>` +
+
+    row.slice(1).map(v => `<td style="padding:.6rem 1rem;border:1px solid #21262d;border-top:none;text-align:center;font-size:.9rem;color:${v==='&#10003;'?'#3fb950':'#30363d'};font-weight:700;">${v}</td>`).join('');
+
+  permTable.appendChild(tr);
+
+});
+
+
+
+// Modules
+
+const modules = [
+
+  { name: 'Espace membre & Connexion', desc: 'Authentification, espace personnel, messagerie interne', on: true },
+
+  { name: 'Gestion des adh&#233;sions', desc: 'Formulaires adh&#233;sion, cotisations, re&#231;us', on: true },
+
+  { name: 'Calendrier &#233;v&#233;nements', desc: 'Agenda, inscriptions, paiement &#233;v&#233;nements', on: true },
+
+  { name: 'Module partenaires', desc: 'Annuaire, soumission dossiers, validation', on: true },
+
+  { name: 'Projets &#233;conomiques', desc: 'Soumission, affichage et gestion des projets', on: true },
+
+  { name: 'Infos Compatriotes', desc: 'Rubrique ressources pour la diaspora', on: true },
+
+  { name: 'Collectivit&#233;s', desc: 'Demandes subvention, autorisation, mise &#224; disposition', on: true },
+
+  { name: 'Assurances d&#233;c&#232;s', desc: 'Informations et formulaires partenaires assurance', on: true },
+
+  { name: 'Newsletter', desc: 'Abonnement et envoi de newsletters aux membres', on: false },
+
+  { name: 'Forum interne', desc: 'Espace de discussion entre membres', on: false },
+
+];
+
+const modulesList = document.getElementById('modulesList');
+
+modules.forEach(m => {
+
+  const div = document.createElement('div');
+
+  div.style.cssText = 'display:flex;align-items:center;gap:1.1rem;padding:.85rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);';
+
+  div.innerHTML = `
+
+    <div style="flex:1;">
+
+      <p style="color:#e6edf3;font-size:.88rem;font-weight:600;">${m.name}</p>
+
+      <p style="color:#7d8590;font-size:.77rem;margin-top:.15rem;">${m.desc}</p>
+
+    </div>
+
+    <span class="status ${m.on?'status-ok':'status-err'}" style="font-size:.8rem;">${m.on?'Actif':'Inactif'}</span>
+
+    <label class="toggle-sw"><input type="checkbox" ${m.on?'checked':''}><span class="toggle-track"></span></label>
+
+  `;
+
+  modulesList.appendChild(div);
+
+});
+
+
+
+function addMenuItem() {
+
+  const div = document.createElement('div');
+
+  div.style.cssText = 'display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:var(--radius);';
+
+  div.innerHTML = `<span style="color:#7d8590;cursor:grab;font-size:1.1rem;">&#10303;</span><input class="admin-input" placeholder="Libell&#233;" style="flex:1;"><input class="admin-input" placeholder="lien.html" style="flex:1;"><label class="toggle-sw"><input type="checkbox" checked><span class="toggle-track"></span></label><button onclick="this.closest('div').remove()" style="background:none;border:none;color:#f85149;cursor:pointer;font-size:1.1rem;">&#10005;</button>`;
+
+  document.getElementById('menuItems').appendChild(div);
+
+}
+
+</script>
+
+<script>
+
+function setMiaTheme(t) {
+
+  if (t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('mia-theme', t); }
+
+  else { document.documentElement.removeAttribute('data-theme'); localStorage.removeItem('mia-theme'); }
+
+}
+
+// Restaurer th&#232;me
+
+const _t = localStorage.getItem('mia-theme');
+
+if (_t) document.documentElement.setAttribute('data-theme', _t);
+
+// ---- MODE MAINTENANCE ----
+function handleMaintenance(on) {
+  if (on) {
+    document.getElementById('maintenanceModal').style.display = 'flex';
+  } else {
+    const htOff = 'AddDefaultCharset UTF-8\n\n<IfModule mod_headers.c>\n  Header set X-Frame-Options "SAMEORIGIN"\n  Header set X-Content-Type-Options "nosniff"\n</IfModule>\n\nErrorDocument 404 /index.html\n';
+    downloadHtaccess(htOff, 'htaccess-maintenance-OFF.txt');
+    showToast('Mode maintenance d\u00e9sactiv\u00e9 \u2014 uploadez le fichier t\u00e9l\u00e9charg\u00e9 sur le serveur', 'info');
+  }
+}
+function downloadHtaccess(content, filename) {
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+  a.download = filename;
+  a.click();
+}
+function activerMaintenance() {
+  const htOn = 'AddDefaultCharset UTF-8\n\nRewriteEngine On\nRewriteCond %{REQUEST_URI} !^/maintenance\\.html$\nRewriteCond %{REQUEST_URI} !^/images/\nRewriteCond %{REQUEST_URI} !^/css/\nRewriteRule ^ /maintenance.html [R=302,L]\n\n<IfModule mod_headers.c>\n  Header set X-Frame-Options "SAMEORIGIN"\n  Header set X-Content-Type-Options "nosniff"\n</IfModule>\n';
+  downloadHtaccess(htOn, 'htaccess-maintenance-ON.txt');
+  document.getElementById('maintenanceModal').style.display = 'none';
+  showToast('Fichier t\u00e9l\u00e9charg\u00e9 \u2014 renommez-le en .htaccess et uploadez-le \u00e0 la racine /public sur le serveur', 'success');
+}
+
+</script>
+
+<!-- Modal Maintenance -->
+<div id="maintenanceModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:12px;padding:2rem;max-width:480px;width:90%;color:#e6edf3;">
+    <h3 style="margin-bottom:1rem;color:#f85149;">&#9888;&#65039; Activer le mode maintenance</h3>
+    <p style="font-size:.88rem;color:#7d8590;margin-bottom:1.25rem;">Le site statique ne peut pas modifier le serveur directement. Voici la proc&#233;dure :</p>
+    <ol style="font-size:.85rem;color:#e6edf3;line-height:1.8;padding-left:1.25rem;margin-bottom:1.5rem;">
+      <li>Cliquez <strong>T&#233;l&#233;charger .htaccess</strong> ci-dessous</li>
+      <li>Renommez le fichier en <code style="background:#21262d;padding:.1rem .4rem;border-radius:4px;">.htaccess</code></li>
+      <li>Uploadez-le via FileZilla dans <code style="background:#21262d;padding:.1rem .4rem;border-radius:4px;">/public</code> sur le serveur (remplace l&#8217;existant)</li>
+    </ol>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+      <button onclick="document.getElementById('maintenanceModal').style.display='none';document.getElementById('toggleMaintenance').checked=false;" style="background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:.6rem 1.2rem;border-radius:8px;cursor:pointer;">Annuler</button>
+      <button onclick="activerMaintenance();" style="background:#f85149;border:none;color:#fff;padding:.6rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;">&#11015;&#65039; T&#233;l&#233;charger .htaccess</button>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
+
+
+

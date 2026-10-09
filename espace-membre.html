@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mon Espace Membre &mdash; AITO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <style>
+    body { background: #0b1120; }
+
+    /* ── LAYOUT ── */
+    .db-wrapper { padding-top: 72px; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .db-sidebar {
+      background: #0d1f14;
+      border-right: 1px solid #1a3325;
+      position: fixed; top: 72px; left: 0; bottom: 0; width: 250px;
+      overflow-y: auto; z-index: 100;
+      display: flex; flex-direction: column;
+      transition: transform .3s;
+    }
+    .db-sidebar-header { padding: 1.35rem 1.25rem; border-bottom: 1px solid #1a3325; }
+    .membre-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(0,112,60,.25); color: #4ade80;
+      border: 1px solid rgba(0,112,60,.4);
+      padding: .25rem .75rem; border-radius: 50px;
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; margin-bottom: .65rem;
+    }
+    .db-user-info h3 { font-size: .97rem; font-weight: 700; color: #e6f0eb; }
+    .db-user-info p  { font-size: .76rem; color: #6b8f7a; margin-top: .15rem; }
+    .db-avatar-circle {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg,#00703C,#00934f);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: .75rem;
+      border: 3px solid rgba(0,112,60,.4);
+    }
+
+    .db-nav { flex: 1; padding: .75rem 0; }
+    .db-nav-section { padding: .5rem 1.1rem .2rem; font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #4a7a5a; }
+    .db-nav a {
+      display: flex; align-items: center; gap: .7rem;
+      padding: .6rem 1.1rem; color: #7aaa8a; font-size: .87rem; font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .18s; text-decoration: none;
+    }
+    .db-nav a:hover { background: rgba(0,112,60,.1); color: #d1f5e0; }
+    .db-nav a.active { background: rgba(0,112,60,.18); color: #4ade80; border-left-color: #00703C; }
+    .db-nav a .icon { font-size: 1rem; width: 20px; flex-shrink: 0; }
+    .db-nav a .badge-count {
+      margin-left: auto; background: #00703C; color: #fff;
+      font-size: .67rem; font-weight: 700; padding: .1rem .45rem; border-radius: 50px;
+    }
+
+    .db-sidebar-footer { padding: 1rem 1.1rem; border-top: 1px solid #1a3325; }
+    .db-sidebar-footer a {
+      display: flex; align-items: center; gap: .5rem;
+      color: #4a7a5a; font-size: .82rem; padding: .45rem 0;
+      transition: color .2s; text-decoration: none;
+    }
+    .db-sidebar-footer a:hover { color: #d1f5e0; }
+
+    /* ── MAIN ── */
+    .db-main { margin-left: 250px; padding: 2rem; min-width: 0; width: calc(100vw - 250px); box-sizing: border-box; }
+    .db-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem; }
+    .db-topbar h1 { font-size: 1.45rem; font-weight: 800; color: #e6f0eb; }
+    .db-topbar p  { color: #6b8f7a; font-size: .85rem; margin-top: .25rem; }
+
+    /* ── KPI ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+    .kpi-card {
+      background: #0d1f14; border: 1px solid #1a3325;
+      border-radius: 14px; padding: 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .kpi-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .kpi-card h4 { font-size: .74rem; color: #6b8f7a; font-weight: 500; margin-bottom: .2rem; }
+    .kpi-value { font-size: 1.55rem; font-weight: 800; color: #e6f0eb; line-height: 1; }
+    .kpi-sub { font-size: .73rem; color: #4ade80; margin-top: .2rem; }
+    .kpi-sub.warn { color: #fbbf24; }
+    .kpi-sub.err  { color: #f87171; }
+
+    /* ── SECTIONS ── */
+    .db-section { display: none; }
+    .db-section.active { display: block; }
+    .db-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .db-three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+
+    /* ── CARDS ── */
+    .db-card { background: #0d1f14; border: 1px solid #1a3325; border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem; }
+    .db-card-header { padding: 1rem 1.35rem; border-bottom: 1px solid #1a3325; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .db-card-header h3 { font-size: .97rem; font-weight: 700; color: #e6f0eb; }
+    .db-card-header .hdr-action { font-size: .8rem; color: #4ade80; cursor: pointer; text-decoration: none; }
+    .db-card-body { padding: 1.25rem 1.35rem; }
+
+    /* ── FORM ── */
+    .mem-label { display: block; font-size: .78rem; font-weight: 600; color: #6b8f7a; margin-bottom: .4rem; }
+    .mem-input, .mem-select, .mem-textarea {
+      width: 100%; padding: .65rem .9rem;
+      background: #071009; border: 1px solid #1a3325;
+      border-radius: 10px; color: #e6f0eb;
+      font-size: .88rem; font-family: inherit;
+      transition: border-color .2s;
+    }
+    .mem-input:focus, .mem-select:focus, .mem-textarea:focus { outline: none; border-color: #00703C; }
+    .mem-input[readonly] { opacity: .55; cursor: default; }
+    .mem-form-group { margin-bottom: 1rem; }
+    .mem-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-green { background: #00703C; color: #fff; border: none; border-radius: 10px; padding: .7rem 1.5rem; font-size: .9rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+    .btn-green:hover { background: #005a30; }
+    .btn-blue  { background: #1d4ed8; color: #fff; border: none; border-radius: 10px; padding: .7rem 1.5rem; font-size: .9rem; font-weight: 700; cursor: pointer; }
+    .btn-red   { background: #dc2626; color: #fff; border: none; border-radius: 10px; padding: .7rem 1.5rem; font-size: .9rem; font-weight: 700; cursor: pointer; }
+    .btn-outline-green { background: transparent; color: #4ade80; border: 1.5px solid #00703C; border-radius: 10px; padding: .6rem 1.2rem; font-size: .85rem; font-weight: 700; cursor: pointer; }
+
+    /* ── TABLE ── */
+    .db-table-wrap { overflow-x: auto; }
+    .db-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+    .db-table th { background: #071009; color: #6b8f7a; padding: .75rem 1rem; text-align: left; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+    .db-table td { padding: .75rem 1rem; border-bottom: 1px solid #1a3325; color: #c9d9d0; }
+    .db-table tr:last-child td { border-bottom: none; }
+    .db-table tr:hover td { background: rgba(0,112,60,.05); }
+
+    /* ── STATUS / BADGES ── */
+    .chip { display: inline-flex; align-items: center; gap: .3rem; font-size: .76rem; font-weight: 700; padding: .2rem .65rem; border-radius: 50px; }
+    .chip-green { background: rgba(74,222,128,.15); color: #4ade80; border: 1px solid rgba(74,222,128,.25); }
+    .chip-orange { background: rgba(251,191,36,.12); color: #fbbf24; border: 1px solid rgba(251,191,36,.25); }
+    .chip-blue   { background: rgba(96,165,250,.12); color: #60a5fa; border: 1px solid rgba(96,165,250,.25); }
+    .chip-red    { background: rgba(248,113,113,.12); color: #f87171; border: 1px solid rgba(248,113,113,.25); }
+
+    /* ── PROGRESS ── */
+    .prog-bar { height: 8px; background: #1a3325; border-radius: 50px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 50px; background: #00703C; transition: width 1s ease; }
+
+    /* ── EVENT ITEM ── */
+    .evt-item { display: flex; align-items: flex-start; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid #1a3325; }
+    .evt-item:last-child { border-bottom: none; }
+    .evt-date-box { min-width: 52px; background: #00703C; border-radius: 10px; text-align: center; padding: .4rem .3rem; flex-shrink: 0; }
+    .evt-date-box .d { font-size: 1.3rem; font-weight: 900; color: #fff; line-height: 1; }
+    .evt-date-box .m { font-size: .62rem; font-weight: 700; color: rgba(255,255,255,.75); text-transform: uppercase; }
+    .evt-info h4 { font-size: .9rem; font-weight: 700; color: #e6f0eb; margin-bottom: .2rem; }
+    .evt-info p  { font-size: .79rem; color: #6b8f7a; }
+
+    /* ── ACTU ITEM ── */
+    .actu-item { padding: .85rem 0; border-bottom: 1px solid #1a3325; }
+    .actu-item:last-child { border-bottom: none; }
+    .actu-item h4 { font-size: .88rem; font-weight: 700; color: #e6f0eb; margin-bottom: .3rem; }
+    .actu-item p  { font-size: .8rem; color: #6b8f7a; line-height: 1.6; }
+    .actu-meta  { font-size: .72rem; color: #4a7a5a; margin-bottom: .35rem; }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 1.75rem; }
+    .timeline::before { content: ''; position: absolute; left: .55rem; top: 0; bottom: 0; width: 2px; background: #1a3325; }
+    .tl-item { position: relative; margin-bottom: 1.1rem; }
+    .tl-dot { position: absolute; left: -1.2rem; top: .25rem; width: 10px; height: 10px; border-radius: 50%; background: #00703C; border: 2px solid #0d1f14; }
+    .tl-item h4 { font-size: .85rem; font-weight: 700; color: #e6f0eb; }
+    .tl-item p  { font-size: .78rem; color: #6b8f7a; margin-top: .1rem; }
+
+    /* ── DOC ITEM ── */
+    .doc-item { display: flex; align-items: center; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid #1a3325; }
+    .doc-item:last-child { border-bottom: none; }
+    .doc-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .doc-info { flex: 1; }
+    .doc-info h4 { font-size: .87rem; font-weight: 700; color: #e6f0eb; }
+    .doc-info p  { font-size: .76rem; color: #6b8f7a; margin-top: .1rem; }
+
+    /* ── AVATAR ── */
+    .avatar-wrap { position: relative; display: inline-block; margin-bottom: 1rem; }
+    .avatar-circle { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg,#00703C,#00934f); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border: 4px solid rgba(0,112,60,.4); overflow: hidden; }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-btn { position: absolute; bottom: 0; right: 0; background: #F77F00; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .78rem; color: #fff; }
+
+    /* ── SIDEBAR MOBILE ── */
+    .sidebar-toggle-btn { display: none; position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 200; background: #00703C; color: #fff; width: 48px; height: 48px; border-radius: 50%; border: none; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.4); align-items: center; justify-content: center; }
+
+    @media(max-width:900px) {
+      .db-sidebar { transform: translateX(-100%); }
+      .db-sidebar.open { transform: translateX(0); }
+      .db-main { margin-left: 0; width: 100vw; padding: 1.25rem; }
+      .db-two-col, .db-three-col, .mem-form-row { grid-template-columns: 1fr; }
+      .sidebar-toggle-btn { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" style="background:#071009;border-bottom:1px solid #1a3325;">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" style="height:32px;width:auto;border-radius:4px;box-shadow:0 1px 5px rgba(0,0,0,.4)"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg>
+      <img src="images/logo.png" alt="AITO" style="height:52px;width:auto;border-radius:6px;" onerror="this.style.display='none'">
+    </a>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:1.5rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <span style="width:8px;height:8px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
+        <span style="color:#6b8f7a;font-size:.82rem;" id="navUserLabel">Espace membre</span>
+      </div>
+      <a href="index.html" style="color:#6b8f7a;font-size:.82rem;">&#8592; Site public</a>
+    </div>
+  </div>
+</nav>
+
+<div class="db-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="db-sidebar" id="dbSidebar">
+    <div class="db-sidebar-header">
+      <div id="sidebarAvatar" class="db-avatar-circle">&#128100;</div>
+      <div class="membre-badge">&#127908; Membre AITO</div>
+      <div class="db-user-info">
+        <h3 id="sidebarNom">Chargement&hellip;</h3>
+        <p id="sidebarEmail"></p>
+      </div>
+    </div>
+
+    <nav class="db-nav">
+      <div class="db-nav-section">Tableau de bord</div>
+      <a href="#" class="active" data-section="overview" onclick="showSection('overview',this)"><span class="icon">&#128202;</span> Vue d&apos;ensemble</a>
+
+      <div class="db-nav-section">Mon compte</div>
+      <a href="#" data-section="profil" onclick="showSection('profil',this)"><span class="icon">&#128100;</span> Mon profil</a>
+      <a href="#" data-section="cotisation" onclick="showSection('cotisation',this)"><span class="icon">&#128179;</span> Cotisation</a>
+      <a href="#" data-section="documents" onclick="showSection('documents',this)"><span class="icon">&#128196;</span> Mes documents</a>
+
+      <div class="db-nav-section">Association</div>
+      <a href="#" data-section="evenements" onclick="showSection('evenements',this)"><span class="icon">&#127978;</span> &Eacute;v&eacute;nements <span class="badge-count" id="evtBadge">4</span></a>
+      <a href="#" data-section="actualites" onclick="showSection('actualites',this)"><span class="icon">&#128240;</span> Actualit&eacute;s</a>
+      <a href="#" data-section="membres" onclick="showSection('membres',this)"><span class="icon">&#128101;</span> Annuaire membres</a>
+
+      <div class="db-nav-section">Paramètres</div>
+      <a href="#" data-section="securite" onclick="showSection('securite',this)"><span class="icon">&#128274;</span> S&eacute;curit&eacute;</a>
+    </nav>
+
+    <div class="db-sidebar-footer">
+      <a href="index.html">&#127968; Retour au site public</a>
+      <a href="dashboard-visiteur.html" id="link-preview" style="display:none;">&#128065;&#65039; Pr&eacute;visualiser le site</a>
+      <a href="#" onclick="logoutMembre()">&#128682; Se d&eacute;connecter</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="db-main">
+
+    <!-- ══ VUE D'ENSEMBLE ══ -->
+    <div class="db-section active" id="section-overview">
+      <div class="db-topbar">
+        <div>
+          <h1>&#128075; Bonjour, <span id="topNom">Membre</span>&nbsp;!</h1>
+          <p>Bienvenue dans votre espace personnel AITO &mdash; <span id="topDate"></span></p>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(74,222,128,.12);">&#9989;</div>
+          <div>
+            <h4>Statut adh&eacute;sion</h4>
+            <div class="kpi-value" id="kpiStatut" style="font-size:1rem;">Actif</div>
+            <div class="kpi-sub" id="kpiStatutSub">Membre v&eacute;rifi&eacute;</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(251,191,36,.12);">&#128179;</div>
+          <div>
+            <h4>Cotisation 2025</h4>
+            <div class="kpi-value" id="kpiCotis">30&nbsp;&euro;</div>
+            <div class="kpi-sub" id="kpiCotisSub">Pay&eacute;e &#10004;</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(96,165,250,.12);">&#127978;</div>
+          <div>
+            <h4>Prochain &eacute;v&eacute;nement</h4>
+            <div class="kpi-value" style="font-size:1rem;">15 Juin</div>
+            <div class="kpi-sub">Assembl&eacute;e G&eacute;n&eacute;rale</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(0,112,60,.18);">&#127942;</div>
+          <div>
+            <h4>Formule</h4>
+            <div class="kpi-value" style="font-size:1.1rem;" id="kpiFormule">Adh&eacute;rent</div>
+            <div class="kpi-sub">Depuis 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenu 2 colonnes -->
+      <div class="db-two-col">
+
+        <!-- Prochains événements -->
+        <div class="db-card">
+          <div class="db-card-header">
+            <h3>&#127978; Prochains &eacute;v&eacute;nements</h3>
+            <a href="#" class="hdr-action" onclick="showSection('evenements',document.querySelector('[data-section=evenements]'))">Voir tout &rarr;</a>
+          </div>
+          <div class="db-card-body" id="overviewEvts">
+            <p style="color:#6b8f7a;font-size:.85rem;">Chargement&hellip;</p>
+          </div>
+        </div>
+
+        <!-- Activité récente -->
+        <div class="db-card">
+          <div class="db-card-header"><h3>&#128336; Activit&eacute; r&eacute;cente</h3></div>
+          <div class="db-card-body">
+            <div class="timeline" id="overviewTimeline">
+              <div class="tl-item"><div class="tl-dot"></div><h4>Connexion r&eacute;ussie</h4><p>Aujourd&apos;hui &mdash; Espace membre</p></div>
+              <div class="tl-item"><div class="tl-dot" style="background:#fbbf24;"></div><h4>Cotisation 2025 enregistr&eacute;e</h4><p>Janvier 2025 &mdash; Formule Adh&eacute;rent</p></div>
+              <div class="tl-item"><div class="tl-dot"></div><h4>Inscription confirm&eacute;e</h4><p>Janvier 2025 &mdash; Bienvenue &agrave; l&apos;AITO !</p></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Actualités rapides -->
+      <div class="db-card">
+        <div class="db-card-header">
+          <h3>&#128240; Derni&egrave;res actualit&eacute;s</h3>
+          <a href="#" class="hdr-action" onclick="showSection('actualites',document.querySelector('[data-section=actualites]'))">Toutes les actus &rarr;</a>
+        </div>
+        <div class="db-card-body" id="overviewActus">
+          <p style="color:#6b8f7a;font-size:.85rem;">Chargement&hellip;</p>
+        </div>
+      </div>
+
+      <!-- Profil complet -->
+      <div class="db-card">
+        <div class="db-card-header"><h3>&#128203; Compl&eacute;tude du profil</h3></div>
+        <div class="db-card-body">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
+            <span style="font-size:.85rem;color:#e6f0eb;">Profil compl&eacute;t&eacute;</span>
+            <span style="font-size:.85rem;font-weight:700;color:#4ade80;" id="profilePct">0%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" id="profileBar" style="width:0%"></div></div>
+          <p style="font-size:.78rem;color:#6b8f7a;margin-top:.75rem;" id="profileHint">Renseignez votre t&eacute;l&eacute;phone et adresse pour atteindre 100&nbsp;%.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PROFIL ══ -->
+    <div class="db-section" id="section-profil">
+      <div class="db-topbar">
+        <div><h1>&#128100; Mon profil</h1><p>G&eacute;rez vos informations personnelles</p></div>
+      </div>
+
+      <div class="db-two-col">
+        <div>
+          <!-- Infos personnelles -->
+          <div class="db-card">
+            <div class="db-card-header"><h3>Informations personnelles</h3></div>
+            <div class="db-card-body">
+              <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;">
+                <div class="avatar-wrap">
+                  <div class="avatar-circle" id="avatarDisp">&#128100;</div>
+                  <button class="avatar-btn" onclick="document.getElementById('avatarInput').click()" title="Changer la photo">&#9998;</button>
+                  <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+                </div>
+                <div>
+                  <div style="font-size:1.05rem;font-weight:800;color:#e6f0eb;" id="profNomAffiche">Kofi Asante</div>
+                  <div style="font-size:.82rem;color:#6b8f7a;" id="profEmailAffiche"></div>
+                  <span class="chip chip-green" style="margin-top:.4rem;" id="profStatutChip">Actif</span>
+                </div>
+              </div>
+              <div class="mem-form-row">
+                <div class="mem-form-group"><label class="mem-label">Nom</label><input class="mem-input" type="text" id="p-nom" readonly></div>
+                <div class="mem-form-group"><label class="mem-label">Pr&eacute;nom</label><input class="mem-input" type="text" id="p-prenom" readonly></div>
+              </div>
+              <div class="mem-form-group"><label class="mem-label">Adresse e-mail</label><input class="mem-input" type="email" id="p-email" readonly></div>
+              <div class="mem-form-row">
+                <div class="mem-form-group"><label class="mem-label">T&eacute;l&eacute;phone</label><input class="mem-input" type="tel" id="p-tel" placeholder="06 XX XX XX XX"></div>
+                <div class="mem-form-group"><label class="mem-label">Adresse postale</label><input class="mem-input" type="text" id="p-adresse" placeholder="Votre adresse"></div>
+              </div>
+              <div class="mem-form-group"><label class="mem-label">Situation professionnelle</label><input class="mem-input" type="text" id="p-situation" placeholder="Ex: Ing&eacute;nieur, &Eacute;tudiant, Entrepreneur&hellip;"></div>
+              <div class="mem-form-group"><label class="mem-label">Centres d&apos;int&eacute;r&ecirc;t</label><textarea class="mem-textarea" id="p-notes" rows="3" placeholder="Sport, culture, cuisine ivoirienne&hellip;"></textarea></div>
+              <button class="btn-green" onclick="sauvegarderProfil()" style="width:100%">&#10003; Enregistrer les modifications</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- Infos adhésion -->
+          <div class="db-card">
+            <div class="db-card-header"><h3>Adh&eacute;sion</h3></div>
+            <div class="db-card-body">
+              <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+                <tr style="border-bottom:1px solid #1a3325"><td style="padding:.6rem 0;color:#6b8f7a">Num&eacute;ro membre</td><td style="font-weight:700;color:#e6f0eb;text-align:right;" id="aNumero">#AITO-001</td></tr>
+                <tr style="border-bottom:1px solid #1a3325"><td style="padding:.6rem 0;color:#6b8f7a">Formule</td><td style="font-weight:700;color:#e6f0eb;text-align:right;" id="aFormule">Adh&eacute;rent</td></tr>
+                <tr style="border-bottom:1px solid #1a3325"><td style="padding:.6rem 0;color:#6b8f7a">Statut</td><td style="text-align:right;" id="aStatut"><span class="chip chip-green">Actif</span></td></tr>
+                <tr style="border-bottom:1px solid #1a3325"><td style="padding:.6rem 0;color:#6b8f7a">Cotisation</td><td style="text-align:right;" id="aCotis"><span class="chip chip-green">Pay&eacute;e &#10004;</span></td></tr>
+                <tr><td style="padding:.6rem 0;color:#6b8f7a">Depuis</td><td style="font-weight:700;color:#e6f0eb;text-align:right;">Janvier 2025</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Carte membre -->
+          <div class="db-card">
+            <div class="db-card-header"><h3>&#127919; Carte de membre</h3></div>
+            <div class="db-card-body">
+              <div style="background:linear-gradient(135deg,#00703C,#00934f);border-radius:14px;padding:1.5rem;color:#fff;position:relative;overflow:hidden;">
+                <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.07);"></div>
+                <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:.5rem;">AITO &mdash; Amicale des Ivoiriens de Toulouse H&eacute;rault</div>
+                <div style="font-size:1.2rem;font-weight:900;margin-bottom:.25rem;" id="carteNom">Kofi ASANTE</div>
+                <div style="font-size:.8rem;opacity:.8;margin-bottom:.75rem;" id="carteFormule">Adh&eacute;rent 2025</div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                  <div>
+                    <div style="font-size:.67rem;opacity:.6;">N&deg; membre</div>
+                    <div style="font-size:.88rem;font-weight:700;" id="carteNum">#AITO-001</div>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" style="height:28px;border-radius:3px;"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg>
+                </div>
+              </div>
+              <button class="btn-outline-green" style="width:100%;margin-top:1rem;" onclick="showToast('Téléchargement de la carte membre — fonctionnalité en cours de déploiement.','info')">&#11015; T&eacute;l&eacute;charger la carte PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COTISATION ══ -->
+    <div class="db-section" id="section-cotisation">
+      <div class="db-topbar">
+        <div><h1>&#128179; Ma cotisation</h1><p>Suivi de votre adh&eacute;sion et de vos paiements</p></div>
+      </div>
+
+      <div class="db-two-col">
+        <div class="db-card">
+          <div class="db-card-header"><h3>Cotisation en cours</h3></div>
+          <div class="db-card-body">
+            <div style="text-align:center;padding:1rem 0;">
+              <div style="font-size:3rem;margin-bottom:.5rem;">&#127942;</div>
+              <div style="font-size:2rem;font-weight:900;color:#4ade80;" id="cotMontant">30 €</div>
+              <div style="color:#6b8f7a;font-size:.85rem;margin-bottom:1rem;" id="cotFormule">Formule Adh&eacute;rent &mdash; Ann&eacute;e 2025</div>
+              <span class="chip chip-green" id="cotStatutChip">Pay&eacute;e &#10004;</span>
+            </div>
+            <div style="background:#071009;border-radius:10px;padding:1rem;margin-top:1rem;">
+              <div style="display:flex;justify-content:space-between;font-size:.83rem;padding:.35rem 0;border-bottom:1px solid #1a3325;"><span style="color:#6b8f7a">P&eacute;riode</span><span style="color:#e6f0eb;font-weight:600;">Jan 2025 &mdash; D&eacute;c 2025</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:.83rem;padding:.35rem 0;border-bottom:1px solid #1a3325;"><span style="color:#6b8f7a">Montant annuel</span><span style="color:#e6f0eb;font-weight:600;" id="cotMontantRow">30 &euro;</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:.83rem;padding:.35rem 0;"><span style="color:#6b8f7a">Mode de paiement</span><span style="color:#e6f0eb;font-weight:600;">HelloAsso</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="db-card">
+            <div class="db-card-header"><h3>Comparatif des formules</h3></div>
+            <div class="db-card-body">
+              <div class="db-table-wrap">
+                <table class="db-table">
+                  <thead><tr><th>Formule</th><th>Montant</th><th>Avantages</th></tr></thead>
+                  <tbody>
+                    <tr><td style="font-weight:700;">&#127338; &Eacute;tudiant</td><td>15 &euro;/an</td><td><span class="chip chip-blue">Tarif r&eacute;duit</span></td></tr>
+                    <tr style="background:rgba(0,112,60,.08);"><td style="font-weight:700;color:#4ade80;">&#10004; Adh&eacute;rent</td><td>30 &euro;/an</td><td><span class="chip chip-green">Standard</span></td></tr>
+                    <tr><td style="font-weight:700;">&#11088; Soutien</td><td>50 &euro;/an</td><td><span class="chip chip-orange">Bienfaiteur</span></td></tr>
+                    <tr><td style="font-weight:700;">&#127881; Honneur</td><td>120 &euro;/an</td><td><span class="chip chip-orange">Prestige</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <button class="btn-outline-green" style="width:100%;margin-top:1rem;" onclick="showToast('Contactez le trésorier pour changer de formule.','info')">Changer de formule &rarr;</button>
+            </div>
+          </div>
+
+          <div class="db-card">
+            <div class="db-card-header"><h3>Renouvellement</h3></div>
+            <div class="db-card-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+                <span style="font-size:.85rem;color:#e6f0eb;">Ann&eacute;e 2025</span>
+                <span class="chip chip-green">Pay&eacute;e</span>
+              </div>
+              <div class="prog-bar" style="margin-bottom:.5rem;"><div class="prog-fill" style="width:33%"></div></div>
+              <p style="font-size:.78rem;color:#6b8f7a;">Expire le 31 d&eacute;cembre 2025 &mdash; Renouvellement disponible en novembre.</p>
+              <a href="adhesion.html" style="display:block;text-align:center;margin-top:1rem;background:#00703C;color:#fff;padding:.6rem 1rem;border-radius:10px;font-weight:700;text-decoration:none;font-size:.88rem;">Renouveler via HelloAsso &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DOCUMENTS ══ -->
+    <div class="db-section" id="section-documents">
+      <div class="db-topbar">
+        <div><h1>&#128196; Mes documents</h1><p>Acc&eacute;dez &agrave; vos justificatifs et aux documents officiels</p></div>
+      </div>
+
+      <div class="db-two-col">
+        <div class="db-card">
+          <div class="db-card-header"><h3>Documents personnels</h3></div>
+          <div class="db-card-body">
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(74,222,128,.12);">&#127919;</div>
+              <div class="doc-info"><h4>Carte de membre 2025</h4><p>PDF &mdash; G&eacute;n&eacute;r&eacute;e automatiquement</p></div>
+              <button class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;" onclick="showToast('Téléchargement en cours…','info')">&#11015;</button>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(96,165,250,.12);">&#128203;</div>
+              <div class="doc-info"><h4>Re&ccedil;u de cotisation 2025</h4><p>PDF &mdash; 30,00 &euro; &mdash; Janvier 2025</p></div>
+              <button class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;" onclick="showToast('Téléchargement en cours…','info')">&#11015;</button>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(251,191,36,.12);">&#127941;</div>
+              <div class="doc-info"><h4>Certificat d&apos;adh&eacute;sion</h4><p>PDF &mdash; Valide jusqu&apos;au 31/12/2025</p></div>
+              <button class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;" onclick="showToast('Téléchargement en cours…','info')">&#11015;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="db-card">
+          <div class="db-card-header"><h3>Documents de l&apos;association</h3></div>
+          <div class="db-card-body">
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(0,112,60,.18);">&#128218;</div>
+              <div class="doc-info"><h4>Statuts de l&apos;association</h4><p>PDF &mdash; Version 1.0 &mdash; 2025</p></div>
+              <a href="statuts.html" class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;">&#128065;</a>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(0,112,60,.18);">&#128196;</div>
+              <div class="doc-info"><h4>R&egrave;glement int&eacute;rieur</h4><p>PDF &mdash; Mis &agrave; jour 2025</p></div>
+              <button class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;" onclick="showToast('Document disponible prochainement.','info')">&#128065;</button>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(0,112,60,.18);">&#128200;</div>
+              <div class="doc-info"><h4>Compte-rendu AG 2024</h4><p>PDF &mdash; Assembl&eacute;e G&eacute;n&eacute;rale annuelle</p></div>
+              <button class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;" onclick="showToast('Document disponible prochainement.','info')">&#128065;</button>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon" style="background:rgba(247,127,0,.12);">&#127969;</div>
+              <div class="doc-info"><h4>Guide du nouvel adh&eacute;rent</h4><p>PDF &mdash; Informations pratiques</p></div>
+              <button class="btn-outline-green" style="padding:.4rem .85rem;font-size:.78rem;" onclick="showToast('Document disponible prochainement.','info')">&#128065;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ÉVÉNEMENTS ══ -->
+    <div class="db-section" id="section-evenements">
+      <div class="db-topbar">
+        <div><h1>&#127978; &Eacute;v&eacute;nements</h1><p>Agenda et inscriptions aux activit&eacute;s de l&apos;association</p></div>
+      </div>
+      <div class="db-card">
+        <div class="db-card-header"><h3>Prochains &eacute;v&eacute;nements 2025</h3></div>
+        <div class="db-card-body" id="evtList">
+          <p style="color:#6b8f7a;font-size:.85rem;">Chargement&hellip;</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTUALITÉS ══ -->
+    <div class="db-section" id="section-actualites">
+      <div class="db-topbar">
+        <div><h1>&#128240; Actualit&eacute;s</h1><p>Les derni&egrave;res nouvelles de l&apos;AITO</p></div>
+      </div>
+      <div class="db-card">
+        <div class="db-card-header"><h3>Derniers articles</h3></div>
+        <div class="db-card-body" id="actuList">
+          <p style="color:#6b8f7a;font-size:.85rem;">Chargement&hellip;</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANNUAIRE ══ -->
+    <div class="db-section" id="section-membres">
+      <div class="db-topbar">
+        <div><h1>&#128101; Annuaire membres</h1><p>R&eacute;pertoire des adh&eacute;rents de l&apos;AITO</p></div>
+      </div>
+      <div class="db-card">
+        <div class="db-card-header"><h3>Membres actifs</h3></div>
+        <div class="db-card-body">
+          <div style="background:#071009;border:1px dashed #1a3325;border-radius:10px;padding:2rem;text-align:center;">
+            <div style="font-size:2.5rem;margin-bottom:.75rem;">&#128274;</div>
+            <h3 style="color:#e6f0eb;margin-bottom:.5rem;">Annuaire en cours de constitution</h3>
+            <p style="color:#6b8f7a;font-size:.85rem;max-width:400px;margin:0 auto;">L&apos;annuaire des membres sera disponible d&egrave;s que la base sera compl&egrave;te. Contactez le bureau pour plus d&apos;informations.</p>
+            <a href="contact.html" style="display:inline-block;margin-top:1.25rem;background:#00703C;color:#fff;padding:.6rem 1.5rem;border-radius:10px;font-weight:700;text-decoration:none;font-size:.88rem;">Contacter le bureau &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SÉCURITÉ ══ -->
+    <div class="db-section" id="section-securite">
+      <div class="db-topbar">
+        <div><h1>&#128274; S&eacute;curit&eacute;</h1><p>G&eacute;rez votre mot de passe et la s&eacute;curit&eacute; de votre compte</p></div>
+      </div>
+      <div class="db-two-col">
+        <div class="db-card">
+          <div class="db-card-header"><h3>Changer le mot de passe</h3></div>
+          <div class="db-card-body">
+            <div class="mem-form-group"><label class="mem-label">Nouveau mot de passe</label><input class="mem-input" type="password" id="p-newpwd" placeholder="8 caract&egrave;res minimum"></div>
+            <div class="mem-form-group"><label class="mem-label">Confirmer le mot de passe</label><input class="mem-input" type="password" id="p-confirmpwd" placeholder="Identique ci-dessus"></div>
+            <button class="btn-blue" style="width:100%" onclick="changerMotDePasse()">&#128274; Mettre &agrave; jour le mot de passe</button>
+          </div>
+        </div>
+        <div class="db-card">
+          <div class="db-card-header"><h3>Activit&eacute; du compte</h3></div>
+          <div class="db-card-body">
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot"></div><h4>Connexion</h4><p>Aujourd&apos;hui &mdash; navigateur actuel</p></div>
+              <div class="tl-item"><div class="tl-dot"></div><h4>Compte cr&eacute;&eacute;</h4><p>Janvier 2025</p></div>
+            </div>
+            <div style="background:#071009;border:1px solid #1a3325;border-radius:10px;padding:1rem;margin-top:1rem;">
+              <div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem;color:#6b8f7a;"><span style="width:8px;height:8px;background:#4ade80;border-radius:50%;display:inline-block;flex-shrink:0"></span> Session active &mdash; compte s&eacute;curis&eacute;</div>
+            </div>
+            <button class="btn-red" style="width:100%;margin-top:1rem;" onclick="logoutMembre()">&#128682; Se d&eacute;connecter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<button class="sidebar-toggle-btn" id="sidebarToggle" onclick="document.getElementById('dbSidebar').classList.toggle('open')">&#9776;</button>
+
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<script src="js/main.js"></script>
+<script>
+let currentUser = null, membreData = null;
+
+const MOIS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+// ── Init ──────────────────────────────────────────────────
+(async () => {
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) { window.location.href = 'connexion.html'; return; }
+
+  const role = user.user_metadata?.role;
+  if (role && role !== 'membre' && ROLE_REDIRECTS[role]) {
+    window.location.href = ROLE_REDIRECTS[role]; return;
+  }
+
+  currentUser = user;
+  if (user.user_metadata?.nom === 'Bureau AITO') {
+    const lp = document.getElementById('link-preview');
+    if (lp) lp.style.display = '';
+  }
+  const { data } = await db.from('membres').select('*').eq('email', user.email).single();
+  membreData = data;
+
+  if (!membreData || membreData.statut === 'en_attente') {
+    document.body.innerHTML = `<div style="max-width:480px;margin:4rem auto;padding:2rem;background:#0d1f14;border:1px solid #1a3325;border-radius:20px;text-align:center;color:#e6f0eb;"><div style="font-size:3rem">⏳</div><h2 style="margin:.75rem 0;color:#fbbf24">Demande en cours d'examen</h2><p style="color:#6b8f7a;font-size:.9rem;line-height:1.6">Votre inscription a bien été reçue.<br>La secrétaire examinera votre dossier et vous contactera par email.</p><button onclick="db.auth.signOut().then(()=>location.href='connexion.html')" style="margin-top:1.5rem;background:#6b7280;color:#fff;border:none;border-radius:8px;padding:.65rem 1.5rem;font-weight:700;cursor:pointer">Se déconnecter</button></div>`;
+    return;
+  }
+
+  if (membreData.statut === 'candidat' && !membreData.formule) {
+    window.location.href = 'adhesion-formule.html'; return;
+  }
+
+  await chargerEspace();
+})();
+
+async function chargerEspace() {
+  const prenom = membreData.prenom || currentUser.user_metadata?.prenom || '';
+  const nom    = membreData.nom    || currentUser.user_metadata?.nom    || '';
+  const email  = currentUser.email;
+  const formule = membreData.formule || 'Adhérent';
+  const montant = membreData.montant || 30;
+  const statut  = membreData.statut || 'actif';
+  const cotis   = membreData.statut_cotisation || 'paye';
+
+  // Navbar
+  document.getElementById('navUserLabel').textContent = prenom + ' ' + nom;
+
+  // Sidebar
+  document.getElementById('sidebarNom').textContent   = prenom + ' ' + nom;
+  document.getElementById('sidebarEmail').textContent = email;
+  if (membreData.avatar_url) {
+    document.getElementById('sidebarAvatar').innerHTML = `<img src="${membreData.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    document.getElementById('sidebarAvatar').textContent = (prenom[0]||'') + (nom[0]||'');
+    document.getElementById('sidebarAvatar').style.fontSize = '1.3rem';
+    document.getElementById('sidebarAvatar').style.fontWeight = '900';
+    document.getElementById('sidebarAvatar').style.color = '#fff';
+  }
+
+  // Topbar
+  document.getElementById('topNom').textContent = prenom;
+  const now = new Date();
+  document.getElementById('topDate').textContent = now.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  // KPI
+  document.getElementById('kpiStatut').textContent   = statut.charAt(0).toUpperCase()+statut.slice(1);
+  document.getElementById('kpiCotis').textContent     = montant + ' €';
+  const cotisLabels = { paye:'Payée ✔', en_attente:'En attente ⏳', exonere:'Exonérée' };
+  document.getElementById('kpiCotisSub').textContent  = cotisLabels[cotis] || cotis;
+  if (cotis !== 'paye') document.getElementById('kpiCotisSub').classList.add('warn');
+  document.getElementById('kpiFormule').textContent   = formule;
+
+  // Profil completeness
+  let pct = 40;
+  if (membreData.telephone) pct += 20;
+  if (membreData.adresse)   pct += 20;
+  if (membreData.notes)     pct += 10;
+  if (membreData.avatar_url) pct += 10;
+  document.getElementById('profilePct').textContent = pct + '%';
+  document.getElementById('profileBar').style.width = pct + '%';
+  if (pct >= 100) document.getElementById('profileHint').textContent = 'Profil complet — merci !';
+  else if (pct >= 70) document.getElementById('profileHint').textContent = 'Ajoutez votre photo pour atteindre 100 %.';
+
+  // Section profil
+  document.getElementById('profNomAffiche').textContent  = nom + ' ' + prenom;
+  document.getElementById('profEmailAffiche').textContent = email;
+  document.getElementById('profStatutChip').textContent   = statut.charAt(0).toUpperCase()+statut.slice(1);
+  document.getElementById('p-nom').value       = nom;
+  document.getElementById('p-prenom').value    = prenom;
+  document.getElementById('p-email').value     = email;
+  document.getElementById('p-tel').value       = membreData.telephone || '';
+  document.getElementById('p-adresse').value   = membreData.adresse   || '';
+  document.getElementById('p-situation').value = membreData.notes     || '';
+  if (membreData.avatar_url) {
+    document.getElementById('avatarDisp').innerHTML = `<img src="${membreData.avatar_url}" style="width:100%;height:100%;object-fit:cover;">`;
+  }
+
+  // Carte membre
+  document.getElementById('aFormule').textContent = formule;
+  document.getElementById('aStatut').innerHTML    = `<span class="chip ${statut==='actif'?'chip-green':'chip-orange'}">${statut}</span>`;
+  document.getElementById('aCotis').innerHTML     = `<span class="chip ${cotis==='paye'?'chip-green':'chip-orange'}">${cotisLabels[cotis]||cotis}</span>`;
+  document.getElementById('carteNom').textContent    = (nom+' '+prenom).toUpperCase();
+  document.getElementById('carteFormule').textContent = formule + ' 2025';
+
+  // Cotisation section
+  document.getElementById('cotMontant').textContent  = montant + ' €';
+  document.getElementById('cotFormule').textContent  = 'Formule ' + formule + ' — Année 2025';
+  document.getElementById('cotMontantRow').textContent = montant + ' €';
+  document.getElementById('cotStatutChip').textContent = cotisLabels[cotis] || cotis;
+
+  // Événements
+  const { data: evts } = await db.from('evenements').select('mois,titre,statut').order('mois');
+  const evtHTML = evts && evts.length ? evts.map(e => `
+    <div class="evt-item">
+      <div class="evt-date-box"><div class="d">${e.mois}</div><div class="m">${MOIS[(e.mois-1)%12]}</div></div>
+      <div class="evt-info" style="flex:1">
+        <h4>${e.titre}</h4>
+        <p><span class="chip ${e.statut==='a_venir'?'chip-blue':e.statut==='en_cours'?'chip-green':'chip-orange'}" style="font-size:.72rem;">${e.statut.replace('_',' ')}</span></p>
+      </div>
+      <button class="btn-outline-green" style="padding:.4rem .9rem;font-size:.78rem;flex-shrink:0;" onclick="showToast('Inscription enregistrée pour cet événement !','success')">S&apos;inscrire</button>
+    </div>`).join('') : '<p style="color:#6b8f7a">Aucun événement à venir.</p>';
+  document.getElementById('evtList').innerHTML         = evtHTML;
+  document.getElementById('overviewEvts').innerHTML    = evtHTML;
+
+  // Actualités
+  const { data: actus } = await db.from('actualites').select('titre,contenu,categorie,date_publication').eq('publie',true).order('date_publication',{ascending:false}).limit(8);
+  const actuHTML = actus && actus.length ? actus.map(a => `
+    <div class="actu-item">
+      <div class="actu-meta"><span class="chip chip-blue" style="font-size:.7rem;">${a.categorie||'Info'}</span> &nbsp;${a.date_publication||''}</div>
+      <h4>${a.titre}</h4>
+      <p>${(a.contenu||'').substring(0,180)}&hellip;</p>
+    </div>`).join('') : '<p style="color:#6b8f7a">Aucune actualité.</p>';
+  document.getElementById('actuList').innerHTML        = actuHTML;
+  document.getElementById('overviewActus').innerHTML   = actuHTML;
+}
+
+// ── Navigation ────────────────────────────────────────────
+function showSection(id, el) {
+  document.querySelectorAll('.db-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.db-nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('dbSidebar').classList.remove('open');
+  return false;
+}
+
+// ── Sauvegarder profil ────────────────────────────────────
+async function sauvegarderProfil() {
+  const updates = {
+    telephone: document.getElementById('p-tel').value.trim(),
+    adresse:   document.getElementById('p-adresse').value.trim(),
+    notes:     document.getElementById('p-situation').value.trim(),
+  };
+  const { error } = await db.from('membres').update(updates).eq('email', currentUser.email);
+  if (error) { showToast('Erreur : ' + error.message, 'error'); return; }
+  Object.assign(membreData, updates);
+  showToast('Profil mis à jour !');
+}
+
+// ── Changer mot de passe ──────────────────────────────────
+async function changerMotDePasse() {
+  const pwd1 = document.getElementById('p-newpwd').value;
+  const pwd2 = document.getElementById('p-confirmpwd').value;
+  if (!pwd1 || pwd1.length < 8) { showToast('8 caractères minimum.', 'error'); return; }
+  if (pwd1 !== pwd2) { showToast('Les mots de passe ne correspondent pas.', 'error'); return; }
+  const { error } = await db.auth.updateUser({ password: pwd1 });
+  if (error) { showToast('Erreur : ' + error.message, 'error'); return; }
+  document.getElementById('p-newpwd').value = '';
+  document.getElementById('p-confirmpwd').value = '';
+  showToast('Mot de passe mis à jour !');
+}
+
+// ── Upload avatar ─────────────────────────────────────────
+async function uploadAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Image trop grande (max 2 Mo).', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const url = e.target.result;
+    document.getElementById('avatarDisp').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
+    document.getElementById('sidebarAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    db.from('membres').update({ avatar_url: url }).eq('email', currentUser.email);
+    if (membreData) membreData.avatar_url = url;
+    showToast('Photo de profil mise à jour !');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Déconnexion ───────────────────────────────────────────
+async function logoutMembre() {
+  await db.auth.signOut();
+  window.location.href = 'connexion.html';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Actualit&#233;s &#8212; AITO Ivoire Association</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+
+    <div class="nav-menu" id="navMenu">
+
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+
+      <div class="dropdown"><a href="#">Services ?</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion & Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+
+      <a href="dashboard-bureau.html" style="color:rgba(255,255,255,.55);font-size:.8rem;padding:.4rem .7rem;border-radius:6px;display:none;" id="navBureau">Bureau</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<div class="page-content">
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.65),rgba(0,70,30,.55)),url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+
+  <div class="label">Vie associative</div>
+
+  <h1>Actualit&#233;s</h1>
+
+  <p>Toutes les nouvelles, communiqu&#233;s et annonces de votre association.</p>
+
+</div>
+
+
+
+<section class="section">
+
+  <div class="container">
+
+    <!-- Filtres -->
+
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;">
+
+      <button class="btn btn-dark" style="padding:.5rem 1.2rem;border-radius:50px;font-size:.85rem;">Toutes</button>
+
+      <button class="btn btn-outline" style="padding:.5rem 1.2rem;border-radius:50px;font-size:.85rem;background:transparent;border:1.5px solid var(--gray-200);color:var(--gray-800);">Communiqu&#233;s</button>
+
+      <button class="btn btn-outline" style="padding:.5rem 1.2rem;border-radius:50px;font-size:.85rem;background:transparent;border:1.5px solid var(--gray-200);color:var(--gray-800);">&#201;v&#233;nements</button>
+
+      <button class="btn btn-outline" style="padding:.5rem 1.2rem;border-radius:50px;font-size:.85rem;background:transparent;border:1.5px solid var(--gray-200);color:var(--gray-800);">Partenariats</button>
+
+    </div>
+
+
+
+    <div style="display:flex;flex-direction:column;gap:2rem;">
+
+
+
+      <!-- Article 1 -->
+
+      <div class="card" style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;padding:0;overflow:hidden;align-items:stretch;" class="news-item">
+
+        <div style="min-height:160px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&h=200&auto=format&fit=crop&q=80" alt="Assembl&#233;e g&#233;n&#233;rale" style="width:100%;height:100%;object-fit:cover;display:block;min-height:160px;"></div>
+
+        <div style="padding:1.75rem;">
+
+          <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;">
+
+            <span class="badge badge-accent">Communiqu&#233;</span>
+
+            <span style="color:var(--gray-400);font-size:.83rem;">15 mai 2025</span>
+
+          </div>
+
+          <h3 style="font-size:1.2rem;font-weight:700;color:var(--primary);margin-bottom:.6rem;">Assembl&#233;e G&#233;n&#233;rale Annuelle 2025 &#8212; Convocation</h3>
+
+          <p style="color:var(--gray-600);line-height:1.7;font-size:.93rem;">L'assembl&#233;e g&#233;n&#233;rale annuelle se tiendra le 15 juin 2025 &#224; 14h00 &#224; la salle du conseil de la mairie. Tous les adh&#233;rents &#224; jour de cotisation sont convoqu&#233;s. L'ordre du jour comprend le bilan moral, le bilan financier et l'&#233;lection du nouveau bureau.</p>
+
+          <a href="reunions.html" class="card-link" style="margin-top:1rem;">Lire la suite ?</a>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Article 2 -->
+
+      <div class="card" style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;padding:0;overflow:hidden;align-items:stretch;">
+
+        <div style="min-height:160px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300&h=200&auto=format&fit=crop&q=80" alt="Gala annuel" style="width:100%;height:100%;object-fit:cover;display:block;min-height:160px;"></div>
+
+        <div style="padding:1.75rem;">
+
+          <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;">
+
+            <span class="badge badge-green">&#201;v&#233;nement</span>
+
+            <span style="color:var(--gray-400);font-size:.83rem;">2 mai 2025</span>
+
+          </div>
+
+          <h3 style="font-size:1.2rem;font-weight:700;color:var(--primary);margin-bottom:.6rem;">Ouverture des inscriptions &#8212; Gala annuel 28 juin</h3>
+
+          <p style="color:var(--gray-600);line-height:1.7;font-size:.93rem;">Les inscriptions pour le gala annuel 2025 sont d&#233;sormais ouvertes. Soir&#233;e festive avec repas, animations et remise de distinctions. Places limit&#233;es &#8212; r&#233;servez d&#232;s maintenant depuis votre espace membre.</p>
+
+          <a href="evenements.html" class="card-link" style="margin-top:1rem;">Voir l'&#233;v&#233;nement ?</a>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Article 3 -->
+
+      <div class="card" style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;padding:0;overflow:hidden;align-items:stretch;">
+
+        <div style="min-height:160px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1560252811-6aec5e189f73?w=300&h=200&auto=format&fit=crop&q=80" alt="Partenariat" style="width:100%;height:100%;object-fit:cover;display:block;min-height:160px;"></div>
+
+        <div style="padding:1.75rem;">
+
+          <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;">
+
+            <span class="badge badge-primary">Partenariat</span>
+
+            <span style="color:var(--gray-400);font-size:.83rem;">20 avril 2025</span>
+
+          </div>
+
+          <h3 style="font-size:1.2rem;font-weight:700;color:var(--primary);margin-bottom:.6rem;">Nouveau partenaire : Assurances S&#233;r&#233;nit&#233;</h3>
+
+          <p style="color:var(--gray-600);line-height:1.7;font-size:.93rem;">Nous sommes heureux d'accueillir Assurances S&#233;r&#233;nit&#233; comme nouveau partenaire officiel. Des offres exclusives de pr&#233;voyance et d'assurance d&#233;c&#232;s sont d&#233;sormais disponibles pour tous les adh&#233;rents.</p>
+
+          <a href="partenaires.html" class="card-link" style="margin-top:1rem;">D&#233;couvrir le partenaire ?</a>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Article 4 -->
+
+      <div class="card" style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;padding:0;overflow:hidden;align-items:stretch;">
+
+        <div style="min-height:160px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=300&h=200&auto=format&fit=crop&q=80" alt="Projets &#233;conomiques" style="width:100%;height:100%;object-fit:cover;display:block;min-height:160px;"></div>
+
+        <div style="padding:1.75rem;">
+
+          <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;">
+
+            <span class="badge badge-green">Projets</span>
+
+            <span style="color:var(--gray-400);font-size:.83rem;">5 avril 2025</span>
+
+          </div>
+
+          <h3 style="font-size:1.2rem;font-weight:700;color:var(--primary);margin-bottom:.6rem;">Appel &#224; projets &#233;conomiques 2025</h3>
+
+          <p style="color:var(--gray-600);line-height:1.7;font-size:.93rem;">L'association lance son appel &#224; projets &#233;conomiques annuel. Les membres porteurs d'initiatives commerciales, sociales ou solidaires peuvent soumettre leur dossier jusqu'au 30 juin 2025.</p>
+
+          <a href="projets-economiques.html" class="card-link" style="margin-top:1rem;">Soumettre un projet ?</a>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Newsletter -->
+
+<section class="section section-alt">
+
+  <div class="container" style="max-width:560px;">
+
+    <div class="section-header">
+
+      <div class="label">Newsletter</div>
+
+      <h2>Restez inform&#233;</h2>
+
+      <p>Abonnez-vous &#224; notre newsletter pour recevoir les actualit&#233;s directement dans votre bo&#238;te mail.</p>
+
+    </div>
+
+    <form data-form="newsletter" style="display:flex;gap:1rem;flex-wrap:wrap;">
+
+      <input type="email" placeholder="Votre adresse e-mail" required style="flex:1;padding:.75rem 1rem;border:1.5px solid var(--gray-200);border-radius:50px;font-size:.95rem;min-width:200px;">
+
+      <button type="submit" class="btn btn-primary" style="border-radius:50px;">S'abonner</button>
+
+    </form>
+
+  </div>
+
+</section>
+
+
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&#233;</a></li><li><a href="mentions-legales.html#rgpd">RGPD</a></li></ul></div>
+
+  </div>
+
+  <div class="footer-bottom"><span>&#169; 2025 AITO &#8212; Amicale des Ivoiriens de l'H&#233;rault</span><a href="mentions-legales.html">Mentions l&#233;gales</a></div>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+<style>.news-item{grid-template-columns:200px 1fr}@media(max-width:600px){.card[style*="grid-template-columns"]{grid-template-columns:1fr !important}}</style>
+
+</body>
+
+</html>
+
+

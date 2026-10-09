@@ -1,0 +1,650 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>R&#233;unions en ligne &#8212; AITO · Amicale des Ivoiriens de Toulouse H&#233;rault</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+
+/* ── Réunion App ── */
+.meeting-app-wrapper {
+  position: relative;
+  background: #0f1117;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  min-height: 740px;
+  border: 2px solid rgba(0,112,60,.3);
+}
+.meeting-app-wrapper iframe {
+  display: block;
+  width: 100%;
+  height: 740px;
+  border: none;
+  background: #0f1117;
+}
+.meeting-app-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1.25rem;
+  background: linear-gradient(90deg, #00703C, #009A44);
+  color: #fff;
+}
+.meeting-app-header .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.4); }
+.meeting-app-header .dot.green { background: #4ade80; }
+.meeting-app-title { font-size: .85rem; font-weight: 700; letter-spacing: .03em; margin-left: .25rem; }
+.meeting-app-badge { margin-left: auto; background: rgba(255,255,255,.15); border-radius: 20px; padding: .2rem .75rem; font-size: .72rem; font-weight: 600; }
+
+/* ── Mobile Card ── */
+.mobile-meeting-card {
+  display: none;
+  background: linear-gradient(135deg, #00703C 0%, #009A44 50%, #F77F00 100%);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 20px 60px rgba(0,112,60,.35);
+}
+.mobile-meeting-card .meeting-icon {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+.mobile-meeting-card h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: .75rem;
+  color: #fff;
+}
+.mobile-meeting-card p {
+  font-size: .95rem;
+  color: rgba(255,255,255,.88);
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-meeting-mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  background: #fff;
+  color: #00703C;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: .9rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-meeting-mobile:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.3); }
+.btn-meeting-mobile svg { flex-shrink: 0; }
+.mobile-meeting-tips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin-top: 1.75rem;
+}
+.mobile-tip {
+  background: rgba(255,255,255,.15);
+  border-radius: 12px;
+  padding: .75rem 1rem;
+  font-size: .82rem;
+  text-align: left;
+  backdrop-filter: blur(4px);
+}
+.mobile-tip strong { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; opacity: .75; margin-bottom: .2rem; }
+@media(max-width: 480px) { .mobile-meeting-tips { grid-template-columns: 1fr; } }
+
+/* ── Feature Cards ── */
+.reunion-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.reunion-feature-card {
+  background: #fff;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  transition: transform .22s, box-shadow .22s, border-color .22s;
+}
+.reunion-feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+.rfcard-icon { font-size: 2rem; margin-bottom: .75rem; }
+.rfcard-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: .4rem; }
+.rfcard-desc { font-size: .85rem; color: var(--gray-600); line-height: 1.6; }
+
+/* ── Steps ── */
+.reunion-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 2rem; counter-reset: steps; }
+.reunion-step { position: relative; padding: 1.5rem 1.5rem 1.5rem 3.5rem; background: #fff; border-radius: var(--radius-lg); border: 1.5px solid var(--gray-200); }
+.reunion-step::before { counter-increment: steps; content: counter(steps); position: absolute; left: 1.1rem; top: 1.4rem; width: 1.8rem; height: 1.8rem; background: var(--accent); color: #fff; font-weight: 800; font-size: .85rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.reunion-step h4 { font-size: .95rem; font-weight: 700; margin-bottom: .4rem; color: var(--text); }
+.reunion-step p { font-size: .82rem; color: var(--gray-600); line-height: 1.6; }
+
+/* ── Compatibilité badge ── */
+.compat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.compat-item { display: flex; align-items: center; gap: .75rem; background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: .9rem 1rem; }
+.compat-icon { font-size: 1.5rem; flex-shrink: 0; }
+.compat-info strong { display: block; font-size: .85rem; font-weight: 700; color: var(--text); }
+.compat-info span { font-size: .75rem; color: var(--gray-600); }
+
+/* ── Iframe responsive ── */
+@media(max-width: 900px) { .meeting-app-wrapper iframe { height: 600px; } .meeting-app-wrapper { min-height: 600px; } }
+@media(max-width: 640px) { .meeting-app-wrapper { display: none; } .mobile-meeting-card { display: block; } }
+
+/* ── Auth overlay ── */
+#authOverlay {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+}
+#authOverlay .spinner {
+  width: 44px; height: 44px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#authOverlay p { color: var(--gray-600); font-size: .9rem; }
+
+/* ── Access denied screen ── */
+#accessDenied {
+  display: none;
+  min-height: calc(100vh - 112px);
+  align-items: center; justify-content: center;
+  padding: 3rem 1.5rem;
+}
+.access-denied-card {
+  background: #fff;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.access-denied-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.access-denied-card h2 { font-size: 1.6rem; color: var(--text); margin-bottom: .75rem; }
+.access-denied-card p { color: var(--gray-600); font-size: .95rem; line-height: 1.65; margin-bottom: 1.75rem; }
+.access-denied-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+
+    <div class="nav-menu" id="navMenu">
+
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+
+      <div class="dropdown"><a href="#">Services &#9662;</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion &amp; Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a><a href="reunions.html" style="font-weight:700;color:var(--accent);">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d'&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<!-- Overlay de chargement (auth) -->
+<div id="authOverlay">
+  <div class="spinner"></div>
+  <p>V&#233;rification de votre acc&#232;s&#8230;</p>
+</div>
+
+<!-- Écran accès refusé -->
+<div id="accessDenied">
+  <div class="access-denied-card">
+    <div class="access-denied-icon">&#128274;</div>
+    <h2>Acc&#232;s r&#233;serv&#233; aux membres</h2>
+    <p>La salle de r&#233;unions en ligne est exclusivement accessible aux <strong>membres actifs de l'AITO</strong>. Rejoignez l'association ou connectez-vous pour acc&#233;der &#224; cet espace.</p>
+    <div class="access-denied-actions">
+      <a href="adhesion.html" class="btn btn-primary">Devenir membre</a>
+      <a href="connexion.html" class="btn btn-outline">Se connecter</a>
+    </div>
+    <p style="margin-top:1.5rem;font-size:.8rem;color:var(--gray-400);">Si vous &#234;tes d&#233;j&#224; membre, connectez-vous avec votre adresse email AITO.</p>
+  </div>
+</div>
+
+<div class="page-content" id="pageContent" style="display:none">
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,30,15,.72),rgba(0,60,30,.62)),url('https://images.unsplash.com/photo-1588702547923-7408785f6b3e?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+
+  <div class="label" style="background:rgba(255,255,255,.2);color:#fff;">&#128249; Communication</div>
+
+  <h1>R&#233;unions en ligne</h1>
+
+  <p>Organisez et participez aux r&#233;unions de l'AITO depuis n'importe o&#249;, sans installation. Vid&#233;o HD, enregistrement cloud, partage WhatsApp.</p>
+
+</div>
+
+
+
+<!-- Bannière stats -->
+
+<section class="section" style="padding:2rem 0;background:linear-gradient(90deg,#00703C,#009A44);color:#fff;">
+
+  <div class="container">
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;text-align:center;">
+
+      <div><div style="font-size:2rem;font-weight:800;">1 clic</div><div style="font-size:.85rem;opacity:.9;">pour cr&#233;er une salle</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">10 000 min</div><div style="font-size:.85rem;opacity:.9;">gratuites / mois</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">Cloud</div><div style="font-size:.85rem;opacity:.9;">Enregistrement auto</div></div>
+
+      <div><div style="font-size:2rem;font-weight:800;">0 install</div><div style="font-size:.85rem;opacity:.9;">Navigateur suffisant</div></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Fonctionnalités -->
+
+<section class="section">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Fonctionnalit&#233;s</div>
+
+      <h2>Tout ce qu'il faut pour vos r&#233;unions</h2>
+
+      <p>ReunionPro est l'application de vid&#233;oconf&#233;rence int&#233;gr&#233;e au site AITO, sp&#233;cialement con&#231;ue pour faciliter les &#233;changes entre membres.</p>
+
+    </div>
+
+    <div class="reunion-features">
+
+      <div class="reunion-feature-card">
+        <div class="rfcard-icon">&#128249;</div>
+        <div class="rfcard-title">Vid&#233;o &amp; Audio HD</div>
+        <div class="rfcard-desc">Communication bidirectionnelle de haute qualit&#233; avec tous les participants. Micro et cam&#233;ra contr&#244;lables individuellement.</div>
+      </div>
+
+      <div class="reunion-feature-card">
+        <div class="rfcard-icon">&#128274;</div>
+        <div class="rfcard-title">Salle s&#233;curis&#233;e</div>
+        <div class="rfcard-desc">Chaque r&#233;union g&#233;n&#232;re une salle unique avec un code d'acc&#232;s priv&#233;. Seules les personnes invit&#233;es peuvent rejoindre.</div>
+      </div>
+
+      <div class="reunion-feature-card">
+        <div class="rfcard-icon">&#128228;</div>
+        <div class="rfcard-title">Invitation WhatsApp</div>
+        <div class="rfcard-desc">Partagez l'invitation en un clic via WhatsApp : lien direct + code d'acc&#232;s envoy&#233;s automatiquement &#224; vos contacts.</div>
+      </div>
+
+      <div class="reunion-feature-card">
+        <div class="rfcard-icon">&#9729;</div>
+        <div class="rfcard-title">Enregistrement Cloud</div>
+        <div class="rfcard-desc">Les r&#233;unions sont enregistr&#233;es automatiquement dans le cloud Daily.co. Retrouvez vos archives &agrave; tout moment.</div>
+      </div>
+
+      <div class="reunion-feature-card">
+        <div class="rfcard-icon">&#128279;</div>
+        <div class="rfcard-title">Lien direct</div>
+        <div class="rfcard-desc">Rejoignez une r&#233;union par un simple lien ou en saisissant le code fourni par l'organisateur. Aucun compte requis.</div>
+      </div>
+
+      <div class="reunion-feature-card">
+        <div class="rfcard-icon">&#128241;</div>
+        <div class="rfcard-title">Compatible mobile</div>
+        <div class="rfcard-desc">Fonctionne sur Android et iPhone en redirigeant vers l'application native Daily.co pour la meilleure exp&#233;rience mobile.</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Application intégrée -->
+
+<section class="section section-alt">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Application</div>
+
+      <h2>D&#233;marrer ou rejoindre une r&#233;union</h2>
+
+      <p>Utilisez ReunionPro directement ci-dessous. Cr&#233;ez votre salle en un clic ou rejoignez une r&#233;union existante avec votre code.</p>
+
+    </div>
+
+    <!-- Version desktop : iframe intégré -->
+    <div class="meeting-app-wrapper" id="meetingDesktop">
+      <div class="meeting-app-header">
+        <span class="dot"></span><span class="dot"></span><span class="dot green"></span>
+        <span class="meeting-app-title">ReunionPro &#8212; AITO</span>
+        <span class="meeting-app-badge">&#128249; Vid&#233;oconf&#233;rence s&#233;curis&#233;e</span>
+      </div>
+      <iframe
+        src="https://reunionpro.vercel.app"
+        title="ReunionPro — Réunions en ligne AITO"
+        allow="camera; microphone; fullscreen; display-capture; autoplay"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <!-- Version mobile : carte avec lien -->
+    <div class="mobile-meeting-card" id="meetingMobile">
+      <span class="meeting-icon">&#128249;</span>
+      <h3>Rejoindre depuis votre mobile</h3>
+      <p>Pour une exp&#233;rience optimale sur mobile, ouvrez ReunionPro dans votre navigateur. L'application d&#233;tecte automatiquement votre appareil (Android ou iPhone) et vous redirige vers la meilleure interface.</p>
+      <a href="https://reunionpro.vercel.app" target="_blank" rel="noopener" class="btn-meeting-mobile">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        Ouvrir ReunionPro
+      </a>
+      <div class="mobile-meeting-tips">
+        <div class="mobile-tip"><strong>Android</strong>Redirection vers Daily.co natif pour la meilleure vid&#233;o</div>
+        <div class="mobile-tip"><strong>iPhone</strong>Acc&#232;s via digbeu.daily.co avec token s&#233;curis&#233;</div>
+        <div class="mobile-tip"><strong>Code</strong>Entrez le code fourni par l'organisateur</div>
+        <div class="mobile-tip"><strong>Lien direct</strong>Cliquez simplement sur le lien WhatsApp re&#231;u</div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Comment ça marche -->
+
+<section class="section">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Mode d'emploi</div>
+
+      <h2>Comment utiliser ReunionPro ?</h2>
+
+      <p>En quelques &#233;tapes simples, organisez ou participez &agrave; une r&#233;union de l'AITO.</p>
+
+    </div>
+
+    <div style="margin-top:2rem;">
+
+      <h3 style="color:var(--primary);margin-bottom:1.25rem;font-size:1.05rem;">&#128100; Organiser une r&#233;union</h3>
+
+      <div class="reunion-steps">
+
+        <div class="reunion-step">
+          <h4>Cr&#233;er la salle</h4>
+          <p>Cliquez sur "Cr&#233;er une r&#233;union" dans l'application ci-dessus. Une salle s&#233;curis&#233;e est g&#233;n&#233;r&#233;e instantan&#233;ment.</p>
+        </div>
+
+        <div class="reunion-step">
+          <h4>Inviter les membres</h4>
+          <p>Partagez le lien ou le code via le bouton WhatsApp. Vos invit&#233;s re&#231;oivent automatiquement les informations de connexion.</p>
+        </div>
+
+        <div class="reunion-step">
+          <h4>D&#233;marrer la r&#233;union</h4>
+          <p>Activez votre cam&#233;ra et votre micro, puis attendez que les participants rejoignent. La r&#233;union est enregistr&#233;e automatiquement.</p>
+        </div>
+
+        <div class="reunion-step">
+          <h4>Acc&#233;der aux archives</h4>
+          <p>L'enregistrement cloud est disponible apr&#232;s la r&#233;union via Daily.co. Conservez les comptes rendus vid&#233;o ind&#233;finiment.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div style="margin-top:2.5rem;">
+
+      <h3 style="color:var(--primary);margin-bottom:1.25rem;font-size:1.05rem;">&#128101; Rejoindre une r&#233;union</h3>
+
+      <div class="reunion-steps">
+
+        <div class="reunion-step">
+          <h4>Recevoir l'invitation</h4>
+          <p>L'organisateur vous envoie un lien ou un code via WhatsApp, email ou SMS.</p>
+        </div>
+
+        <div class="reunion-step">
+          <h4>Rejoindre la salle</h4>
+          <p>Cliquez sur le lien ou entrez le code dans le champ "Rejoindre" de l'application ci-dessus.</p>
+        </div>
+
+        <div class="reunion-step">
+          <h4>Autoriser l'acc&#232;s</h4>
+          <p>Accordez l'acc&#232;s &#224; votre cam&#233;ra et micro lorsque le navigateur le demande. Sur mobile, suivez la redirection.</p>
+        </div>
+
+        <div class="reunion-step">
+          <h4>Participer</h4>
+          <p>Vous &#234;tes connect&#233; ! Utilisez les contr&#244;les vid&#233;o/audio pour g&#233;rer votre participation durant la r&#233;union.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- Compatibilité -->
+
+<section class="section section-alt">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Compatibilit&#233;</div>
+
+      <h2>Fonctionne sur tous vos appareils</h2>
+
+      <p>ReunionPro s'adapte automatiquement &#224; votre appareil et syst&#232;me pour la meilleure exp&#233;rience possible.</p>
+
+    </div>
+
+    <div class="compat-grid">
+
+      <div class="compat-item">
+        <div class="compat-icon">&#128187;</div>
+        <div class="compat-info"><strong>Chrome / Edge</strong><span>Interface int&#233;gr&#233;e PC</span></div>
+      </div>
+
+      <div class="compat-item">
+        <div class="compat-icon">&#128038;</div>
+        <div class="compat-info"><strong>Firefox</strong><span>Interface int&#233;gr&#233;e PC</span></div>
+      </div>
+
+      <div class="compat-item">
+        <div class="compat-icon">&#129426;</div>
+        <div class="compat-info"><strong>Android</strong><span>Daily.co natif</span></div>
+      </div>
+
+      <div class="compat-item">
+        <div class="compat-icon">&#63743;</div>
+        <div class="compat-info"><strong>iPhone / iPad</strong><span>digbeu.daily.co s&#233;curis&#233;</span></div>
+      </div>
+
+      <div class="compat-item">
+        <div class="compat-icon">&#9729;</div>
+        <div class="compat-info"><strong>Enregistrement</strong><span>Cloud Daily.co</span></div>
+      </div>
+
+      <div class="compat-item">
+        <div class="compat-icon">&#128228;</div>
+        <div class="compat-info"><strong>WhatsApp</strong><span>Partage en 1 clic</span></div>
+      </div>
+
+    </div>
+
+    <div style="background:rgba(247,127,0,.07);border:1px solid rgba(247,127,0,.25);border-radius:var(--radius-lg);padding:1.5rem;margin-top:2rem;display:flex;gap:1rem;align-items:flex-start;">
+      <span style="font-size:1.5rem;flex-shrink:0;">&#128161;</span>
+      <div>
+        <strong style="color:var(--primary);display:block;margin-bottom:.35rem;">Conseil technique</strong>
+        <p style="font-size:.88rem;color:var(--gray-600);margin:0;line-height:1.65;">Pour une qualit&#233; optimale, utilisez Chrome ou Edge sur PC avec une connexion internet stable. Autorisez l'acc&#232;s &#224; votre cam&#233;ra et votre microphone lorsque le navigateur vous le demande. Sur mobile, cliquez directement sur le lien WhatsApp re&#231;u pour &#234;tre redirig&#233; automatiquement.</p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- CTA -->
+
+<section class="section">
+
+  <div class="container" style="max-width:700px;text-align:center;">
+
+    <div class="label">Besoin d'aide ?</div>
+
+    <h2>Une question sur les r&#233;unions en ligne ?</h2>
+
+    <p style="color:var(--gray-600);margin:1rem 0 2rem;">Si vous rencontrez des difficult&#233;s techniques ou souhaitez organiser une r&#233;union officielle du bureau, contactez l'association. Nous vous accompagnons.</p>
+
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+
+      <a href="contact.html" class="btn btn-primary">Contacter l'AITO</a>
+
+      <a href="https://reunionpro.vercel.app" target="_blank" rel="noopener" class="btn btn-outline">Ouvrir ReunionPro &#8599;</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse H&eacute;rault</strong>
+
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a></li><li><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a></li><li><a href="reunions.html"><strong>&#128249; R&#233;unions en ligne</strong></a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li><li><a href="mentions-legales.html#confidentialite">Confidentialit&#233;</a></li></ul></div>
+
+  </div>
+
+  <div class="footer-bottom"><span>&#169; 2026 AITO &#8212; Amicale des Ivoiriens de Toulouse H&eacute;rault</span><div style="display:flex;gap:.6rem;align-items:center;"><a href="[LIEN_FACEBOOK_ICI]" target="_blank" style="width:28px;height:28px;background:#1877F2;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a><a href="[LIEN_WHATSAPP_ICI]" target="_blank" style="width:28px;height:28px;background:#25D366;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a><a href="mentions-legales.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Mentions l&#233;gales</a><a href="contact.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Contact</a></div></div>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+<script>
+// Rôles autorisés à accéder aux réunions (tous sauf visiteur)
+var ROLES_MEMBRES = ['membre', 'admin', 'president', 'vicepresident', 'secretaire', 'tresorier', 'bureau'];
+
+(async function () {
+  var overlay      = document.getElementById('authOverlay');
+  var denied       = document.getElementById('accessDenied');
+  var pageContent  = document.getElementById('pageContent');
+
+  try {
+    var res  = await db.auth.getUser();
+    var user = res.data && res.data.user;
+
+    if (!user) {
+      // Non connecté → page de connexion
+      window.location.href = 'connexion.html';
+      return;
+    }
+
+    var role = (user.user_metadata && user.user_metadata.role) || '';
+
+    if (ROLES_MEMBRES.indexOf(role) === -1) {
+      // Connecté mais pas membre (ex : visiteur)
+      overlay.style.display = 'none';
+      denied.style.display  = 'flex';
+      return;
+    }
+
+    // Accès accordé
+    overlay.style.display     = 'none';
+    pageContent.style.display = 'block';
+
+    // Détection mobile
+    var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if (isMobile) {
+      var desktop = document.getElementById('meetingDesktop');
+      var mobile  = document.getElementById('meetingMobile');
+      if (desktop) desktop.style.display = 'none';
+      if (mobile)  mobile.style.display  = 'block';
+    }
+
+  } catch (e) {
+    // En cas d'erreur inattendue, on redirige vers connexion
+    window.location.href = 'connexion.html';
+  }
+})();
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion &mdash; AITO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(135deg,#00703C 0%,#004d2a 50%,#1a1a2e 100%)}
+.top-bar{padding:1rem 2rem;display:flex;align-items:center;gap:.75rem}
+.top-bar img{height:40px}
+.top-bar span{color:#fff;font-weight:800;font-size:1.1rem}
+.top-bar a{margin-left:auto;color:rgba(255,255,255,.7);font-size:.85rem;text-decoration:none}
+.top-bar a:hover{color:#fff}
+.center{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem}
+.card{background:#fff;border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,.35)}
+.card-logo{text-align:center;margin-bottom:1.75rem}
+.card-logo img{height:60px;margin-bottom:.75rem}
+.card-logo h1{font-size:1.3rem;font-weight:800;color:#00703C}
+.card-logo p{font-size:.83rem;color:#6b7280;margin-top:.3rem}
+.tabs{display:flex;background:#f3f4f6;border-radius:12px;padding:.25rem;margin-bottom:1.5rem}
+.tab-btn{flex:1;padding:.55rem;border:none;background:none;border-radius:9px;font-size:.88rem;font-weight:600;color:#6b7280;cursor:pointer;transition:.2s}
+.tab-btn.active{background:#fff;color:#00703C;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.form-group{margin-bottom:1rem}
+label{display:block;font-size:.82rem;font-weight:600;color:#374151;margin-bottom:.4rem}
+input{width:100%;padding:.7rem 1rem;border:1.5px solid #d1d5db;border-radius:10px;font-size:.92rem;color:#111;transition:border-color .2s}
+input:focus{outline:none;border-color:#00703C}
+.btn-main{width:100%;padding:.8rem;background:#00703C;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:.25rem;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn-main:hover{background:#004d2a}
+.btn-google{width:100%;padding:.75rem;background:#fff;color:#374151;border:1.5px solid #d1d5db;border-radius:10px;font-size:.92rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:.75rem;transition:background .2s}
+.btn-google:hover{background:#f9fafb}
+.btn-google svg{width:20px;height:20px;flex-shrink:0}
+.divider{text-align:center;margin:1rem 0;font-size:.78rem;color:#9ca3af;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:44%;height:1px;background:#e5e7eb}
+.divider::before{left:0}.divider::after{right:0}
+.err{background:#fee2e2;color:#dc2626;border-radius:8px;padding:.6rem 1rem;font-size:.82rem;margin-top:.75rem;display:none}
+.info-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.9rem 1rem;margin-top:1.25rem;font-size:.8rem;color:#166534;line-height:1.6}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer-link{text-align:center;margin-top:1.25rem;font-size:.8rem;color:#6b7280}
+.footer-link a{color:#00703C;font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <img src="images/logo.png" alt="AITO" onerror="this.style.display='none'">
+  <span>AITO</span>
+  <a href="index.html">&larr; Retour au site</a>
+</div>
+
+<div class="center">
+  <div class="card">
+    <div class="card-logo">
+      <h1>Connexion</h1>
+      <p>Membres, bureau et administrateurs</p>
+    </div>
+
+    <!-- Onglets Membre / Bureau -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('membre',this)">&#128100; Espace membre</button>
+      <button class="tab-btn" onclick="switchTab('bureau',this)">&#128274; Bureau / Admin</button>
+    </div>
+
+    <!-- Tab Membre -->
+    <div class="tab-panel active" id="tab-membre">
+
+      <!-- Sous-onglets Connexion / Inscription -->
+      <div style="display:flex;gap:.5rem;margin-bottom:1.25rem">
+        <button id="sub-login-btn" onclick="showSubPanel('login')" style="flex:1;padding:.45rem;border:1.5px solid #00703C;border-radius:8px;background:#00703C;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">Se connecter</button>
+        <button id="sub-signup-btn" onclick="showSubPanel('signup')" style="flex:1;padding:.45rem;border:1.5px solid #00703C;border-radius:8px;background:#fff;color:#00703C;font-weight:700;cursor:pointer;font-size:.85rem">Cr&eacute;er mon compte</button>
+      </div>
+
+      <!-- Connexion -->
+      <div id="sub-login">
+        <form id="formMembre">
+          <div class="form-group">
+            <label for="m-email">Adresse e-mail</label>
+            <input type="email" id="m-email" placeholder="votre@email.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="m-pwd">Mot de passe</label>
+            <input type="password" id="m-pwd" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-main" id="btnMembre">
+            <span class="spinner" id="spinMembre"></span>
+            Se connecter
+          </button>
+          <div class="err" id="errMembre">Identifiants incorrects. V&eacute;rifiez votre e-mail et mot de passe.</div>
+        </form>
+        <div class="divider">ou</div>
+        <button class="btn-google" id="btnGoogleMembre" onclick="loginGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continuer avec Google
+        </button>
+      </div>
+
+      <!-- Inscription -->
+      <div id="sub-signup" style="display:none">
+        <div class="info-box" style="margin-bottom:1rem">
+          &#128101; Remplissez ce formulaire. Apr&egrave;s validation, vous recevrez un email pour acc&eacute;der &agrave; votre espace.
+        </div>
+        <form id="formSignup">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+            <div class="form-group" style="margin-bottom:.75rem">
+              <label for="s-prenom">Pr&eacute;nom *</label>
+              <input type="text" id="s-prenom" placeholder="Votre pr&eacute;nom" required>
+            </div>
+            <div class="form-group" style="margin-bottom:.75rem">
+              <label for="s-nom">Nom *</label>
+              <input type="text" id="s-nom" placeholder="Votre nom" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="s-email">Adresse e-mail *</label>
+            <input type="email" id="s-email" placeholder="votre@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="s-tel">T&eacute;l&eacute;phone (optionnel)</label>
+            <input type="tel" id="s-tel" placeholder="06 XX XX XX XX">
+          </div>
+          <button type="submit" class="btn-main" id="btnSignup">
+            <span class="spinner" id="spinSignup"></span>
+            Envoyer ma demande d&apos;adh&eacute;sion
+          </button>
+          <div class="err" id="errSignup"></div>
+        </form>
+        <div id="signupSuccess" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:1.25rem;text-align:center;margin-top:1rem">
+          <div style="font-size:2rem">&#9989;</div>
+          <h3 style="color:#00703C;margin:.5rem 0">Demande re&ccedil;ue !</h3>
+          <p style="font-size:.85rem;color:#166534;line-height:1.6">Votre demande a bien &eacute;t&eacute; enregistr&eacute;e.<br>Vous recevrez un email d&egrave;s que le bureau aura valid&eacute; votre adh&eacute;sion.</p>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:1.25rem">
+        &#128100; D&eacute;j&agrave; membre ? <a href="#" onclick="showSubPanel('login');return false;" style="color:#00703C;font-weight:700">Se connecter &rarr;</a>
+      </div>
+    </div>
+
+    <!-- Tab Bureau -->
+    <div class="tab-panel" id="tab-bureau">
+      <form id="formBureau">
+        <div class="form-group">
+          <label for="b-email">Adresse e-mail officielle</label>
+          <input type="email" id="b-email" placeholder="role@aito34.fr" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="b-pwd">Mot de passe</label>
+          <input type="password" id="b-pwd" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-main" id="btnBureau">
+          <span class="spinner" id="spinBureau"></span>
+          Acc&eacute;der au tableau de bord
+        </button>
+        <div class="err" id="errBureau">Identifiants incorrects ou acc&egrave;s non autoris&eacute;.</div>
+      </form>
+
+      <div class="divider">ou</div>
+
+      <button class="btn-google" onclick="loginGoogle()">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Connexion avec Google
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Vérifier si déjà connecté
+(async () => {
+  const { data: { user } } = await db.auth.getUser();
+  if (user) {
+    // Afficher un message "déjà connecté" au lieu de rediriger
+    var form = document.getElementById('loginForm') || document.querySelector('form');
+    var already = document.createElement('div');
+    already.style.cssText = 'background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:center;';
+    already.innerHTML = '<p style="color:#166534;font-weight:600;margin-bottom:.75rem;">✅ Vous êtes déjà connecté en tant que <strong>' + (user.user_metadata?.prenom || user.email) + '</strong></p>'
+      + '<div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">'
+      + '<a href="' + (ROLE_REDIRECTS[user.user_metadata?.role] || 'espace-membre.html') + '" style="background:#166534;color:#fff;padding:.5rem 1.2rem;border-radius:8px;font-weight:600;font-size:.9rem;text-decoration:none;">Mon espace →</a>'
+      + '<button onclick="db.auth.signOut().then(()=>location.reload())" style="background:#dc2626;color:#fff;padding:.5rem 1.2rem;border-radius:8px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;">Se déconnecter</button>'
+      + '</div>';
+    if(form) form.parentNode.insertBefore(already, form);
+    if(form) form.style.display = 'none';
+  }
+})();
+
+function redirectUser(user) {
+  const role = user.user_metadata?.role;
+  if (role && ROLE_REDIRECTS[role]) {
+    window.location.href = ROLE_REDIRECTS[role];
+  } else {
+    window.location.href = 'espace-membre.html';
+  }
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showSubPanel(panel) {
+  document.getElementById('sub-login').style.display  = panel==='login'  ? 'block' : 'none';
+  document.getElementById('sub-signup').style.display = panel==='signup' ? 'block' : 'none';
+  document.getElementById('sub-login-btn').style.background  = panel==='login'  ? '#00703C' : '#fff';
+  document.getElementById('sub-login-btn').style.color       = panel==='login'  ? '#fff' : '#00703C';
+  document.getElementById('sub-signup-btn').style.background = panel==='signup' ? '#00703C' : '#fff';
+  document.getElementById('sub-signup-btn').style.color      = panel==='signup' ? '#fff' : '#00703C';
+}
+
+async function doLogin(emailId, pwdId, errId, btnId, spinId) {
+  const email = document.getElementById(emailId).value.trim();
+  const pwd   = document.getElementById(pwdId).value;
+  const err   = document.getElementById(errId);
+  const btn   = document.getElementById(btnId);
+  const spin  = document.getElementById(spinId);
+  err.style.display = 'none';
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pwd });
+  if (error) {
+    err.style.display = 'block';
+    btn.disabled = false;
+    spin.style.display = 'none';
+    return;
+  }
+  redirectUser(data.user);
+}
+
+document.getElementById('formMembre').addEventListener('submit', e => {
+  e.preventDefault();
+  doLogin('m-email','m-pwd','errMembre','btnMembre','spinMembre');
+});
+
+document.getElementById('formBureau').addEventListener('submit', e => {
+  e.preventDefault();
+  doLogin('b-email','b-pwd','errBureau','btnBureau','spinBureau');
+});
+
+document.getElementById('formSignup').addEventListener('submit', async e => {
+  e.preventDefault();
+  const prenom = document.getElementById('s-prenom').value.trim();
+  const nom    = document.getElementById('s-nom').value.trim();
+  const email  = document.getElementById('s-email').value.trim().toLowerCase();
+  const tel    = document.getElementById('s-tel').value.trim();
+  const err    = document.getElementById('errSignup');
+  const btn    = document.getElementById('btnSignup');
+  const spin   = document.getElementById('spinSignup');
+  err.style.display = 'none';
+  if (!prenom || !nom) { err.textContent = 'Veuillez saisir votre pr\u00e9nom et nom.'; err.style.display='block'; return; }
+  btn.disabled = true; spin.style.display = 'inline-block';
+  // Vérifier doublon email
+  const { data: exist } = await db.from('membres').select('id').eq('email', email).maybeSingle();
+  if (exist) {
+    err.textContent = 'Cet email est d\u00e9j\u00e0 enregistr\u00e9. Connectez-vous ou contactez la secr\u00e9taire.';
+    err.style.display = 'block'; btn.disabled = false; spin.style.display = 'none'; return;
+  }
+  // Insérer la demande sans créer de compte auth
+  const today = new Date().toISOString().split('T')[0];
+  const { error } = await db.from('membres').insert({
+    nom, prenom, email,
+    telephone: tel || null,
+    statut: 'en_attente',
+    statut_cotisation: 'en_attente',
+    date_adhesion: today
+  });
+  if (error) {
+    err.textContent = 'Erreur : ' + error.message;
+    err.style.display = 'block'; btn.disabled = false; spin.style.display = 'none'; return;
+  }
+  document.getElementById('formSignup').style.display = 'none';
+  document.getElementById('signupSuccess').style.display = 'block';
+});
+
+async function loginGoogle() {
+  await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/connexion.html' }
+  });
+}
+</script>
+</body>
+</html>

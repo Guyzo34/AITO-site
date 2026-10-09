@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+  <script src="js/maintenance.js"></script>
+
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Projets &#201;conomiques &#8212; AITO · Amicale des Ivoiriens de Toulouse et de l'Occitanie</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+<style>
+.nav-logo { display:flex !important; align-items:center !important; gap:10px !important; margin-right:1.5rem; flex-shrink:0; text-decoration:none; }
+.nav-logo-flag { flex-shrink:0; display:flex; align-items:center; }
+.nav-logo-flag svg { height:36px; width:auto; border-radius:4px; box-shadow:0 1px 5px rgba(0,0,0,.4); display:block; }
+.nav-logo img { height:80px !important; width:auto !important; border-radius:8px !important; display:block !important; filter:drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.nav-logo-texts { display:flex; flex-direction:column; line-height:1.25; }
+.nav-logo-acronym { font-family:'Playfair Display',Georgia,serif; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:1.5px; }
+.nav-logo-name { font-size:.65rem; color:rgba(255,255,255,.6); letter-spacing:.4px; line-height:1.3; }
+@media(max-width:768px){ .nav-logo img { height:52px !important; } .nav-logo-name { display:none; } .nav-logo-acronym { font-size:1.1rem; } }
+</style>
+</head>
+
+<body>
+
+<div class="flag-bar" aria-hidden="true"></div>
+
+<nav class="navbar">
+
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#F77F00"/><rect x="1" width="1" height="2" fill="#FFFFFF"/><rect x="2" width="1" height="2" fill="#009A44"/></svg></div>
+      <img src="images/logo.png" alt="AITO Logo">
+    </a>
+
+    <div class="nav-occitanie" title="R&#233;gion Occitanie"><img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:38px;width:auto;opacity:.92;"></div>
+
+    <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+
+    <div class="nav-menu" id="navMenu">
+
+      <a href="index.html">Accueil</a><a href="presentation.html">Pr&#233;sentation</a><a href="gouvernance.html">Gouvernance</a><a href="actualites.html">Actualit&#233;s</a><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a>
+
+      <div class="dropdown"><a href="#">Services ?</a><div class="dropdown-menu"><a href="adhesion.html">Adh&#233;sion & Cotisations</a><a href="collectivites.html">Collectivit&#233;s</a><a href="projets-economiques.html">Projets &#233;conomiques</a><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a><a href="compatriotes.html">Infos Compatriotes</a><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a><a href="reunions.html">&#128249; R&#233;unions en ligne</a><a href="bourse-echange.html">&#128257; Bourse d&#39;&#233;change</a><a href="boutique.html">&#128717;&#65039; Boutique AITO</a></div></div>
+
+      <a href="partenaires.html">Partenaires</a><a href="contact.html">Contact</a><a href="connexion.html" class="btn-nav">Mon espace</a>
+
+      <a href="dashboard-bureau.html" style="color:rgba(255,255,255,.55);font-size:.8rem;padding:.4rem .7rem;border-radius:6px;display:none;" id="navBureau">Bureau</a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<div class="page-content">
+
+
+
+<div class="page-hero" style="background:linear-gradient(rgba(0,40,15,.65),rgba(0,70,30,.55)),url('https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=1400&h=500&auto=format&fit=crop&q=80') center/cover no-repeat">
+
+  <div class="label">Volet &#233;conomique</div>
+
+  <h1>Projets &#201;conomiques</h1>
+
+  <p>Soumettez vos initiatives, trouvez des partenaires ou investisseurs, et valorisez vos projets au sein de notre r&#233;seau.</p>
+
+</div>
+
+
+
+<section class="section">
+
+  <div class="container">
+
+    <div class="section-header"><div class="label">En cours</div><h2>Projets pr&#233;sent&#233;s par les membres</h2></div>
+
+    <div class="cards-grid">
+
+      <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem;">
+
+          <div class="card-icon">&#128722;</div>
+
+          <span class="badge badge-green">En recherche de fonds</span>
+
+        </div>
+
+        <h3>&#201;picerie communautaire en ligne</h3>
+
+        <p>Plateforme de vente de produits alimentaires africains authentiques, avec livraison &#224; domicile en &#206;le-de-France.</p>
+
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;font-size:.83rem;color:var(--gray-400);">
+
+          <span>&#128205; Paris</span><span>&#128176; Recherche 15 000&#8364;</span><span>&#128100; A. Diallo</span>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem;">
+
+          <div class="card-icon">&#127891;</div>
+
+          <span class="badge badge-primary">En d&#233;veloppement</span>
+
+        </div>
+
+        <h3>Centre de soutien scolaire</h3>
+
+        <p>Cours de soutien et d'accompagnement pour les enfants d'adh&#233;rents, en pr&#233;sentiel et en ligne.</p>
+
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;font-size:.83rem;color:var(--gray-400);">
+
+          <span>&#128205; R&#233;gion parisienne</span><span>&#129309; Recherche partenaires</span><span>&#128100; F. Traor&#233;</span>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem;">
+
+          <div class="card-icon">&#127968;</div>
+
+          <span class="badge badge-accent">Actif</span>
+
+        </div>
+
+        <h3>Immobilier solidaire au pays</h3>
+
+        <p>Programme de construction de logements abordables dans les pays d'origine des membres de la diaspora.</p>
+
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;font-size:.83rem;color:var(--gray-400);">
+
+          <span>&#127757; International</span><span>&#128176; 50 000&#8364; lev&#233;s</span><span>&#128100; M. Kon&#233;</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<section class="section section-alt">
+
+  <div class="container" style="max-width:680px;">
+
+    <div class="section-header"><div class="label">Soumettre</div><h2>D&#233;poser un projet</h2><p>Pr&#233;sentez votre initiative aux membres et au r&#233;seau de partenaires de l'association.</p></div>
+
+    <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:2.5rem;border:1px solid var(--gray-200);">
+
+      <form data-form="projet">
+
+        <div class="form-group"><label>Nom du projet *</label><input type="text" required></div>
+
+        <div class="form-row">
+
+          <div class="form-group"><label>Secteur *</label>
+
+            <select required>
+
+              <option value="">S&#233;lectionnez</option>
+
+              <option>Commerce & Distribution</option>
+
+              <option>Agriculture & Alimentation</option>
+
+              <option>&#201;ducation & Formation</option>
+
+              <option>Sant&#233; & Bien-&#234;tre</option>
+
+              <option>Immobilier & Construction</option>
+
+              <option>Technologie & Num&#233;rique</option>
+
+              <option>Tourisme & Culture</option>
+
+              <option>Autre</option>
+
+            </select>
+
+          </div>
+
+          <div class="form-group"><label>Stade du projet</label>
+
+            <select>
+
+              <option>Id&#233;e / Concept</option>
+
+              <option>En d&#233;veloppement</option>
+
+              <option>Recherche de financement</option>
+
+              <option>En activit&#233;</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group"><label>Pr&#233;nom *</label><input type="text" required></div>
+
+          <div class="form-group"><label>Nom *</label><input type="text" required></div>
+
+        </div>
+
+        <div class="form-group"><label>E-mail *</label><input type="email" required></div>
+
+        <div class="form-group"><label>Description du projet *</label><textarea required style="min-height:140px;" placeholder="D&#233;crivez votre projet, son impact, vos besoins..."></textarea></div>
+
+        <div class="form-group"><label>Montant recherch&#233; (si applicable)</label><input type="number" placeholder="0" min="0"></div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Soumettre mon projet</button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- -- BUDGET & FINANCEMENT -- -->
+
+<section class="section">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div class="label">Logique budg&#233;taire</div>
+
+      <h2>Budget & Financement des &#233;v&#233;nements</h2>
+
+      <p>Chaque &#233;v&#233;nement dispose d'un responsable budg&#233;taire d&#233;sign&#233;. La r&#232;gle d'or : chaque &#233;v&#233;nement doit &#234;tre <strong>autofinanc&#233; ou subventionn&#233;</strong>, jamais d&#233;ficitaire pour l'association.</p>
+
+    </div>
+
+
+
+    <!-- Tableau des 5 cat&#233;gories -->
+
+    <div style="overflow-x:auto;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);margin-bottom:2.5rem;">
+
+      <table style="width:100%;border-collapse:collapse;background:var(--white);font-size:.9rem;">
+
+        <thead>
+
+          <tr style="background:var(--primary-dark);color:rgba(255,255,255,.9);">
+
+            <th style="padding:.9rem 1.2rem;text-align:left;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Cat&#233;gorie d'&#233;v&#233;nement</th>
+
+            <th style="padding:.9rem 1.2rem;text-align:left;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Co&#251;t estim&#233;</th>
+
+            <th style="padding:.9rem 1.2rem;text-align:left;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Source de financement</th>
+
+            <th style="padding:.9rem 1.2rem;text-align:left;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Responsable</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr style="border-bottom:1px solid var(--gray-100);">
+
+            <td style="padding:.85rem 1.2rem;"><strong>Petits &#233;v&#233;nements</strong><br><small style="color:var(--gray-400);">Brunchs, sorties parcs, BBQ</small></td>
+
+            <td style="padding:.85rem 1.2rem;"><span class="badge badge-green">5 &#8211; 10 &#8364; / pers.</span></td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Participation des membres</td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Membre b&#233;n&#233;vole d&#233;sign&#233;</td>
+
+          </tr>
+
+          <tr style="border-bottom:1px solid var(--gray-100);background:var(--gray-50);">
+
+            <td style="padding:.85rem 1.2rem;"><strong>&#201;v&#233;nements moyens</strong><br><small style="color:var(--gray-400);">Conf&#233;rences, tournois sportifs, concours cuisine</small></td>
+
+            <td style="padding:.85rem 1.2rem;"><span class="badge badge-primary">50 &#8211; 200 &#8364;</span></td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Cotisations + participations membres</td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Commission th&#233;matique</td>
+
+          </tr>
+
+          <tr style="border-bottom:1px solid var(--gray-100);">
+
+            <td style="padding:.85rem 1.2rem;"><strong>Sorties &#233;t&#233;</strong><br><small style="color:var(--gray-400);">Plage, parcs r&#233;gionaux, coucher de soleil</small></td>
+
+            <td style="padding:.85rem 1.2rem;"><span class="badge badge-green">Co&#251;t quasi nul</span></td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Co-voiturage + participation libre</td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Coordinateur &#233;t&#233; d&#233;sign&#233;</td>
+
+          </tr>
+
+          <tr style="border-bottom:1px solid var(--gray-100);background:var(--gray-50);">
+
+            <td style="padding:.85rem 1.2rem;"><strong style="color:var(--primary);">F&#234;te de l'Ind&#233;pendance &#8212; 7 Ao&#251;t</strong><br><small style="color:var(--gray-400);">&#201;v&#233;nement phare annuel &#8212; 100+ participants</small></td>
+
+            <td style="padding:.85rem 1.2rem;"><span class="badge badge-accent">500 &#8211; 1 500 &#8364;</span></td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Entr&#233;e payante + Mairie/M&#233;tropole + sponsors Orange Money + commerces africains</td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);"><strong>Responsable d&#233;sign&#233; 6 mois avant</strong></td>
+
+          </tr>
+
+          <tr>
+
+            <td style="padding:.85rem 1.2rem;"><strong>F&#234;te de fin d'ann&#233;e</strong><br><small style="color:var(--gray-400);">Cl&#244;ture festive annuelle &#8212; membres & familles</small></td>
+
+            <td style="padding:.85rem 1.2rem;"><span class="badge badge-accent">300 &#8211; 800 &#8364;</span></td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Cotisations + participation + subventions associatives</td>
+
+            <td style="padding:.85rem 1.2rem;color:var(--gray-600);">Bureau + commission culturelle</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+
+    <!-- Sources de financement -->
+
+    <div class="section-header" style="margin-bottom:1.5rem;">
+
+      <div class="label">Sources</div>
+
+      <h3 style="font-size:1.3rem;">Les 5 sources de financement de l'AITO</h3>
+
+    </div>
+
+    <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#128179;</div>
+
+        <h3>Cotisations</h3>
+
+        <p>Base financi&#232;re stable. 15&#8364; &#233;tudiant, 30&#8364; actif, 50&#8364; famille. &#192; jour = acc&#232;s &#224; tous les &#233;v&#233;nements.</p>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#128101;</div>
+
+        <h3>Participations</h3>
+
+        <p>Contribution aux frais r&#233;els de chaque &#233;v&#233;nement. Tarification juste et transparente pour chaque activit&#233;.</p>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#127963;&#65039;</div>
+
+        <h3>Mairie & M&#233;tropole</h3>
+
+        <p>Partenariats institutionnels. Demandes de subvention et mises &#224; disposition de salles pour les &#233;v&#233;nements phares.</p>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#128188;</div>
+
+        <h3>Sponsors priv&#233;s</h3>
+
+        <p>Orange Money, commerces africains de la r&#233;gion, entreprises partenaires sensibles &#224; la cause communautaire.</p>
+
+      </div>
+
+      <div class="card" style="text-align:center;">
+
+        <div class="card-icon">&#128203;</div>
+
+        <h3>Subventions asso.</h3>
+
+        <p>Fonds associatifs r&#233;gionaux, dispositifs Occitanie et appels &#224; projets culturels et sociaux.</p>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Principe cl&#233; -->
+
+    <div style="background:linear-gradient(135deg,rgba(0,112,60,.06),rgba(247,127,0,.06));border-radius:var(--radius-lg);padding:1.75rem 2rem;margin-top:2rem;border-left:4px solid var(--primary);">
+
+      <h4 style="color:var(--primary);margin-bottom:.75rem;">Principe cl&#233; : un responsable budg&#233;taire par &#233;v&#233;nement</h4>
+
+      <p style="color:var(--gray-600);line-height:1.7;margin:0;">Pour chaque &#233;v&#233;nement planifi&#233;, un <strong>responsable budg&#233;taire</strong> est d&#233;sign&#233; par le bureau. Ce responsable est charg&#233; d'&#233;tablir le devis pr&#233;visionnel, de suivre les d&#233;penses en temps r&#233;el, de collecter les participations et de rendre compte au tr&#233;sorier &#224; l'issue de l'&#233;v&#233;nement. <strong>Aucun &#233;v&#233;nement ne doit &#234;tre lanc&#233; sans budget approuv&#233;.</strong></p>
+
+    </div>
+
+    <div style="text-align:center;margin-top:2rem;">
+
+      <a href="financement.html" class="btn btn-primary">Voir le guide complet des sources de financement ?</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+</div>
+
+<footer class="footer">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand"><img src="images/logo.png" alt="AITO Logo" style="height:60px;width:auto;margin-bottom:.75rem;"><strong style="color:#fff;font-size:1.05rem;">AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</strong>
+
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.5rem;">
+
+        <img src="images/occitanie.svg" alt="R&#233;gion Occitanie" style="height:32px;width:auto;" title="R&#233;gion Occitanie">
+
+        <span style="font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.3;">Association de la<br>r&#233;gion Occitanie</span>
+
+      </div><p>Association loi 1901 au service de ses membres et de la communaut&#233;.</p></div>
+
+    <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">Accueil</a></li><li><a href="actualites.html">Actualit&#233;s</a></li><li><a href="evenements.html">&#201;v&#233;nements</a>
+      <a href="galerie.html">Galerie</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="adhesion.html">Adh&#233;sion</a></li><li><a href="connexion.html">Espace membre</a></li><li><a href="collectivites.html">Collectivit&#233;s</a></li><li><a href="projets-economiques.html">Projets &#233;conomiques</a></li><li><a href="financement.html">Financement &amp; Subventions</a><a href="assurances.html">Assurances d&#233;c&#232;s</a></li><li><a href="compatriotes.html">Infos Compatriotes</a></li><li><a href="tourisme.html">Tourisme C&#244;te d'Ivoire</a></li><li><a href="bourse-echange.html">Bourse d'&#233;change</a></li><li><a href="boutique.html">Boutique AITO</a></li></ul></div>
+
+    <div class="footer-col"><h4>L&#233;gal</h4><ul><li><a href="mentions-legales.html">Mentions l&#233;gales</a></li></ul></div>
+
+  </div>
+
+  <div class="footer-bottom"><span>&#169; 2026 AITO &#8212; Amicale des Ivoiriens de Toulouse et de l'Occitanie</span><div style="display:flex;gap:.6rem;align-items:center;"><a href="[LIEN_FACEBOOK_ICI]" target="_blank" style="width:28px;height:28px;background:#1877F2;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a><a href="[LIEN_WHATSAPP_ICI]" target="_blank" style="width:28px;height:28px;background:#25D366;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a><a href="mentions-legales.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Mentions l&#233;gales</a><a href="contact.html" style="color:rgba(255,255,255,.4);font-size:.8rem;">Contact</a></div></div>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+</body>
+
+</html>
+
+

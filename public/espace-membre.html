@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/maintenance.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Espace Membre &mdash; AITO</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<style>
+.em-wrapper{max-width:900px;margin:2rem auto;padding:1rem}
+.em-hero{background:linear-gradient(135deg,#00703C,#004d2a);color:#fff;border-radius:16px;padding:2rem;display:flex;align-items:center;gap:2rem;margin-bottom:2rem;flex-wrap:wrap}
+.em-avatar-wrap{position:relative;flex-shrink:0}
+.em-avatar{width:100px;height:100px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.4);background:#005a30}
+.em-avatar-placeholder{width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:2.5rem;border:4px solid rgba(255,255,255,.3)}
+.em-avatar-upload{position:absolute;bottom:0;right:0;background:#F77F00;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#fff}
+.em-info h2{font-size:1.4rem;font-weight:800;margin-bottom:.25rem}
+.em-info p{opacity:.8;font-size:.88rem}
+.em-badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:.2rem .75rem;font-size:.78rem;font-weight:600;margin-top:.5rem}
+.em-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:2px solid #e5e7eb;flex-wrap:wrap}
+.em-tab{padding:.65rem 1.25rem;border:none;background:none;cursor:pointer;font-size:.9rem;font-weight:600;color:#6b7280;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.2s}
+.em-tab.active{color:#00703C;border-bottom-color:#00703C}
+.em-panel{display:none}.em-panel.active{display:block}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:.4rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.7rem 1rem;border:1.5px solid #d1d5db;border-radius:10px;font-size:.9rem}
+.btn-save{background:#00703C;color:#fff;border:none;border-radius:10px;padding:.75rem 2rem;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;margin-top:.5rem}
+.login-card{background:#fff;border-radius:20px;padding:2.5rem 2rem;max-width:420px;margin:3rem auto;box-shadow:0 10px 40px rgba(0,0,0,.12)}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="AITO" class="logo-img" style="height:44px">
+      <span class="logo-text">AITO</span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">Accueil</a>
+      <a href="evenements.html">&#201;v&eacute;nements</a>
+      <a href="adhesion.html">Adh&eacute;sion</a>
+    </nav>
+  </div>
+</header>
+
+<!-- VUE CHARGEMENT (remplacée par JS) -->
+<div id="loginView" style="display:flex;align-items:center;justify-content:center;min-height:60vh">
+  <div style="text-align:center;color:#6b7280">
+    <div style="width:40px;height:40px;border:3px solid #e5e7eb;border-top-color:#00703C;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem"></div>
+    <p>Chargement&hellip;</p>
+  </div>
+</div>
+
+<!-- VUE MEMBRE -->
+<div class="em-wrapper" id="memberView" style="display:none">
+  <div class="em-hero">
+    <div class="em-avatar-wrap">
+      <div id="avatarPlaceholder" class="em-avatar-placeholder">&#128100;</div>
+      <img id="avatarImg" class="em-avatar" src="" alt="Avatar" style="display:none">
+      <button class="em-avatar-upload" onclick="document.getElementById('avatarInput').click()" title="Changer la photo">&#9998;</button>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+    </div>
+    <div class="em-info">
+      <h2 id="memNomComplet">Chargement&hellip;</h2>
+      <p id="memEmail"></p>
+      <p id="memFormule"></p>
+      <span class="em-badge" id="memStatutBadge">actif</span>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+      <a href="index.html" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4)">&#127968; Site</a>
+      <a href="dashboard-visiteur.html" id="link-preview" style="display:none;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:.5rem 1rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,.1)">&#128065;&#65039; Pr&eacute;visualiser</a>
+      <button onclick="logoutMembre()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-weight:600">D&eacute;connexion</button>
+    </div>
+  </div>
+
+  <div class="em-tabs">
+    <button class="em-tab active" onclick="switchTab('profil',this)">&#128100; Mon profil</button>
+    <button class="em-tab" onclick="switchTab('cotisation',this)">&#128179; Cotisation</button>
+    <button class="em-tab" onclick="switchTab('evenements',this)">&#127978; &Eacute;v&eacute;nements</button>
+    <button class="em-tab" onclick="switchTab('actualites',this)">&#128240; Actualit&eacute;s</button>
+  </div>
+
+  <!-- Profil -->
+  <div class="em-panel active" id="tab-profil">
+    <div class="card">
+      <h3 style="margin-bottom:1.25rem;color:#00703C">Mes informations</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Nom</label><input type="text" id="p-nom" readonly style="background:#f9fafb;color:#6b7280"></div>
+        <div class="form-group"><label>Pr&eacute;nom</label><input type="text" id="p-prenom" readonly style="background:#f9fafb;color:#6b7280"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>T&eacute;l&eacute;phone</label><input type="tel" id="p-tel" placeholder="06 XX XX XX XX"></div>
+        <div class="form-group"><label>Adresse</label><input type="text" id="p-adresse" placeholder="Votre adresse"></div>
+      </div>
+      <div class="form-group"><label>Situation (emploi, &eacute;tudes&hellip;)</label><input type="text" id="p-situation" placeholder="Ex: Ing&eacute;nieur, &Eacute;tudiant&hellip;"></div>
+      <div class="form-group"><label>Centres d'int&eacute;r&ecirc;t</label><textarea id="p-notes" rows="3" placeholder="Sport, culture, cuisine ivoirienne&hellip;"></textarea></div>
+      <button class="btn-save" onclick="sauvegarderProfil()">&#10003; Enregistrer mes informations</button>
+    </div>
+    <div class="card" style="margin-top:1rem">
+      <h3 style="margin-bottom:1rem;color:#00703C">Changer mon mot de passe</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="p-newpwd" placeholder="8 caract&egrave;res min."></div>
+        <div class="form-group"><label>Confirmer</label><input type="password" id="p-confirmpwd" placeholder="Idem ci-dessus"></div>
+      </div>
+      <button class="btn-save" style="background:#1d4ed8" onclick="changerMotDePasse()">&#128274; Mettre &agrave; jour le mot de passe</button>
+    </div>
+  </div>
+
+  <!-- Cotisation -->
+  <div class="em-panel" id="tab-cotisation">
+    <div class="card"><h3 style="margin-bottom:1.25rem;color:#00703C">Ma cotisation</h3><div id="cotisInfo"><p>Chargement&hellip;</p></div></div>
+  </div>
+
+  <!-- Evenements -->
+  <div class="em-panel" id="tab-evenements">
+    <div class="card"><h3 style="margin-bottom:1.25rem;color:#00703C">Prochains &eacute;v&eacute;nements</h3><div id="evtList">Chargement&hellip;</div></div>
+  </div>
+
+  <!-- Actualites -->
+  <div class="em-panel" id="tab-actualites">
+    <div class="card"><h3 style="margin-bottom:1.25rem;color:#00703C">Derni&egrave;res actualit&eacute;s</h3><div id="actuList">Chargement&hellip;</div></div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+let currentUser = null, membreData = null;
+
+(async () => {
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) {
+    // Non connecté → redirection vers connexion.html
+    window.location.href = 'connexion.html';
+    return;
+  }
+  // Rôle bureau → rediriger vers son dashboard
+  const role = user.user_metadata?.role;
+  if (role && role !== 'membre' && ROLE_REDIRECTS[role]) {
+    window.location.href = ROLE_REDIRECTS[role];
+    return;
+  }
+  currentUser = user;
+  if (user.user_metadata?.nom === 'Bureau AITO') {
+    const lp = document.getElementById('link-preview');
+    if (lp) lp.style.display = '';
+  }
+  await afficherEspaceMembre();
+})();
+
+async function afficherEspaceMembre() {
+  document.getElementById('loginView').style.display  = 'none';
+  document.getElementById('memberView').style.display = 'block';
+  const { data } = await db.from('membres').select('*').eq('email', currentUser.email).single();
+  membreData = data;
+  if (!membreData) {
+    document.getElementById('memNomComplet').textContent = currentUser.email;
+    document.getElementById('memEmail').textContent = currentUser.email;
+    return;
+  }
+  if (membreData.statut === 'banni') {
+    document.getElementById('memberView').innerHTML = '<div style="text-align:center;padding:3rem;background:#fef2f2;border-radius:12px;margin:2rem auto;max-width:480px"><div style="font-size:3rem">&#128683;</div><h2 style="color:#dc2626;margin:.75rem 0">Acc\u00e8s suspendu</h2><p style="color:#7f1d1d">Votre compte a \u00e9t\u00e9 banni. Contactez le bureau.</p><a href="contact.html" style="display:inline-block;margin-top:1rem;background:#dc2626;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700">Contacter le bureau</a></div>';
+    return;
+  }
+  document.getElementById('memNomComplet').textContent = membreData.nom + ' ' + membreData.prenom;
+  document.getElementById('memEmail').textContent      = currentUser.email;
+  document.getElementById('memFormule').textContent    = 'Formule : ' + membreData.formule;
+  const st = membreData.statut || 'actif';
+  document.getElementById('memStatutBadge').textContent = st.charAt(0).toUpperCase() + st.slice(1);
+  document.getElementById('p-nom').value       = membreData.nom || '';
+  document.getElementById('p-prenom').value    = membreData.prenom || '';
+  document.getElementById('p-tel').value       = membreData.telephone || '';
+  document.getElementById('p-adresse').value   = membreData.adresse || '';
+  document.getElementById('p-situation').value = membreData.notes || '';
+  if (membreData.avatar_url) {
+    document.getElementById('avatarImg').src = membreData.avatar_url;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarPlaceholder').style.display = 'none';
+  }
+  const montants = { 'Adherent':30,'Soutien':50,'Etudiant':15,'Honneur':120 };
+  const cotisStatut = membreData.statut_cotisation || 'en_attente';
+  const montant = membreData.montant || montants[membreData.formule] || 30;
+  const colors = { paye:'#166534', en_attente:'#92400e', exonere:'#1e40af' };
+  const labels = { paye:'Pay\u00e9e &#10004;', en_attente:'En attente &#9201;', exonere:'Exon\u00e9r\u00e9e &#128275;' };
+  document.getElementById('cotisInfo').innerHTML = `<table style="width:100%;border-collapse:collapse"><tr style="border-bottom:1px solid #f0f0f0"><td style="padding:.5rem;color:#6b7280">Formule</td><td style="font-weight:700">${membreData.formule}</td></tr><tr style="border-bottom:1px solid #f0f0f0"><td style="padding:.5rem;color:#6b7280">Montant annuel</td><td style="font-weight:700">${montant} &euro;</td></tr><tr><td style="padding:.5rem;color:#6b7280">Statut</td><td style="color:${colors[cotisStatut]||'#374151'};font-weight:700">${labels[cotisStatut]||cotisStatut}</td></tr></table>${cotisStatut==='en_attente'?'<div style="margin-top:1rem;padding:1rem;background:#fffbeb;border-radius:8px;font-size:.85rem;color:#92400e">&#9888; Cotisation en attente. Contactez le tr\u00e9sorier.</div>':''}`;
+  const { data: evts } = await db.from('evenements').select('mois,titre,statut').order('mois');
+  const moisNoms = ['Jan','F\u00e9v','Mar','Avr','Mai','Jun','Jul','Ao\u00fb','Sep','Oct','Nov','D\u00e9c'];
+  document.getElementById('evtList').innerHTML = evts && evts.length ? evts.map(e=>`<div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid #f0f0f0"><span style="background:#00703C;color:#fff;border-radius:6px;padding:.2rem .5rem;font-size:.78rem;font-weight:700">${moisNoms[e.mois-1]||e.mois}</span><span style="flex:1;font-weight:600">${e.titre}</span><span class="badge badge-${e.statut==='termine'?'green':e.statut==='en_cours'?'orange':'blue'}">${e.statut}</span></div>`).join('') : '<p style="color:#888">Aucun \u00e9v\u00e9nement.</p>';
+  const { data: actus } = await db.from('actualites').select('titre,contenu,categorie,date_publication').eq('publie',true).order('date_publication',{ascending:false}).limit(8);
+  document.getElementById('actuList').innerHTML = actus && actus.length ? actus.map(a=>`<div style="padding:.75rem 0;border-bottom:1px solid #f0f0f0"><div style="margin-bottom:.3rem"><span class="badge badge-blue" style="font-size:.72rem">${a.categorie}</span> <span style="font-size:.78rem;color:#9ca3af">${a.date_publication||''}</span></div><strong>${a.titre}</strong><p style="font-size:.85rem;color:#6b7280;margin-top:.25rem">${(a.contenu||'').substring(0,150)}&hellip;</p></div>`).join('') : '<p style="color:#888">Aucune actualit\u00e9.</p>';
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.em-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.em-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+async function sauvegarderProfil() {
+  if(!membreData) { showToast('Profil non charg\u00e9.','error'); return; }
+  const { error } = await db.from('membres').update({ telephone: document.getElementById('p-tel').value.trim(), adresse: document.getElementById('p-adresse').value.trim(), notes: document.getElementById('p-situation').value.trim() }).eq('email', currentUser.email);
+  if (error) { showToast('Erreur : '+error.message,'error'); return; }
+  showToast('Profil mis \u00e0 jour !');
+}
+
+async function changerMotDePasse() {
+  const pwd1 = document.getElementById('p-newpwd').value;
+  const pwd2 = document.getElementById('p-confirmpwd').value;
+  if(!pwd1||pwd1.length<8){showToast('8 caract\u00e8res minimum.','error');return;}
+  if(pwd1!==pwd2){showToast('Mots de passe diff\u00e9rents.','error');return;}
+  const { error } = await db.auth.updateUser({ password: pwd1 });
+  if(error){showToast('Erreur : '+error.message,'error');return;}
+  document.getElementById('p-newpwd').value='';
+  document.getElementById('p-confirmpwd').value='';
+  showToast('Mot de passe mis \u00e0 jour !');
+}
+
+async function uploadAvatar(input) {
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){showToast('Image trop grande (max 2 Mo).','error');return;}
+  showToast('Upload en cours\u2026','info');
+  const ext  = file.name.split('.').pop();
+  const path = currentUser.id+'/avatar.'+ext;
+  const { error: upErr } = await db.storage.from('avatars').upload(path, file, { upsert: true });
+  if(upErr){showToast('Erreur upload : '+upErr.message,'error');return;}
+  const { data } = db.storage.from('avatars').getPublicUrl(path);
+  await db.from('membres').update({ avatar_url: data.publicUrl }).eq('email', currentUser.email);
+  document.getElementById('avatarImg').src = data.publicUrl+'?t='+Date.now();
+  document.getElementById('avatarImg').style.display = 'block';
+  document.getElementById('avatarPlaceholder').style.display = 'none';
+  showToast('Photo mise \u00e0 jour !');
+}
+
+async function logoutMembre() {
+  await db.auth.signOut();
+  window.location.reload();
+}
+</script>
+</body>
+</html>
